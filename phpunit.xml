@@ -1,10 +1,11 @@
-<phpunit colors="true" bootstrap="tests/bootstrap.php">
+<phpunit colors="true" bootstrap="tests/bootstrap.php" displayDetailsOnTestsThatTriggerDeprecations="true">
     <testsuites>
         <testsuite name="all">
             <directory>tests</directory>
         </testsuite>
     </testsuites>
-    <logging>
+    <!-- The logging is apparently deprecated, will fix later if there's a replacement feature -->
+    <!-- <logging>
         <log type="coverage-clover" target="build/logs/clover.xml"/>
-    </logging>
+    </logging> -->
 </phpunit>

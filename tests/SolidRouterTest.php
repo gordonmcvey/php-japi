@@ -1,11 +1,14 @@
 <?php
 
+use Docnet\JAPI\Exceptions\Routing;
+use PHPUnit\Framework\TestCase;
+
 require_once('Controllers/Example.php');
 require_once('Controllers/World.php');
 require_once('Controllers/Three.php');
 require_once('Controllers/HeardYoLike.php');
 
-class SolidRouterTest extends PHPUnit_Framework_TestCase
+class SolidRouterTest extends TestCase
 {
 
     /**
@@ -97,35 +100,34 @@ class SolidRouterTest extends PHPUnit_Framework_TestCase
 
     /**
      * Test for failed routing
-     *
-     * @expectedException \Docnet\JAPI\Exceptions\Routing
      */
     public function testRoutingFailure()
     {
         $obj_router = new \Docnet\JAPI\SolidRouter();
+
+        $this->expectException(Routing::class);
         $obj_router->route('/missing-url');
     }
 
     /**
      * Test for failed URL parsing
-     *
-     * @expectedException \Docnet\JAPI\Exceptions\Routing
      */
     public function testMalformedUrl()
     {
         $obj_router = new \Docnet\JAPI\SolidRouter();
+
+        $this->expectException(Routing::class);
         $obj_router->route('http://:80');
     }
 
     /**
      * Test for failed URL regex match
-     *
-     * @expectedException \Docnet\JAPI\Exceptions\Routing
      */
     public function testNonUrlString()
     {
         $obj_router = new \Docnet\JAPI\SolidRouter();
+
+        $this->expectException(Routing::class);
         $obj_router->route('-');
     }
-
 }

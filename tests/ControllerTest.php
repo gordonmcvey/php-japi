@@ -1,12 +1,14 @@
 <?php
 
+use PHPUnit\Framework\TestCase;
+
 require_once('Controllers/Example.php');
 require_once('Controllers/Headers.php');
 require_once('Controllers/Exceptional.php');
 require_once('Controllers/JsonParams.php');
 require_once('Controllers/ProtectedFunctions.php');
 
-class ControllerTest extends PHPUnit_Framework_TestCase
+class ControllerTest extends TestCase
 {
 
     public function testBasicResponse()

@@ -28,45 +28,42 @@ class SolidRouter
 
     /**
      * URL to route
-     *
-     * @var string
      */
-    protected $str_url = '';
+    protected string $url = '';
 
     /**
      * Output from parse_url()
      *
      * @var array|mixed
      */
-    protected $arr_url = [];
+    protected array $parsedUrl = [];
 
     /**
      * Controller class as determined by parseController()
-     *
-     * @var string
      */
-    protected $str_controller = '';
+    protected string $controllerClass = '';
 
     /**
      * Static routes
      *
-     * @var array
      */
-    private $arr_static_routes = [];
+    private array $staticRoutes = [];
 
     /**
-     * @var string
+     * Namespace for the controller
+     * 
+     * @todo Implement a StatRoutes class to maintain this?
      */
-    private $str_controller_namespace = '\\';
+    private string $controllerNamespace = '\\';
 
     /**
      * We need to know the base namespace for the controller
      *
-     * @param string $str_controller_namespace
+     * @param string $controllerNamespace
      */
-    public function __construct($str_controller_namespace = '\\')
+    public function __construct($controllerNamespace = '\\')
     {
-        $this->str_controller_namespace = $str_controller_namespace;
+        $this->controllerNamespace = $controllerNamespace;
     }
 
     /**
@@ -77,23 +74,25 @@ class SolidRouter
      * Keep URL string and parse_url array response as member vars in case we
      * want to evaluate later.
      *
-     * @param string $str_url
      * @throws Routing
-     * @return $this
      */
-    public function route($str_url = NULL)
+    public function route(?string $url = null): static
     {
-        $this->str_url = (NULL === $str_url ? $_SERVER['REQUEST_URI'] : $str_url);
-        $this->arr_url = parse_url($this->str_url);
-        if (!$this->arr_url || !isset($this->arr_url['path'])) {
-            throw new Routing('URL parse error (parse_url): ' . $this->str_url);
+        $this->url = (null === $url ? $_SERVER['REQUEST_URI'] : $url);
+        $locallyParsedUrl = parse_url($this->url);
+
+        if (!$locallyParsedUrl || !isset($locallyParsedUrl['path'])) {
+            throw new Routing('URL parse error (parse_url): ' . $this->url);
         }
+        $this->parsedUrl = $locallyParsedUrl;
+
         if (!$this->routeStatic()) {
-            if (!(bool)preg_match_all("#/(?<controller>[\w\-]+)#", $this->arr_url['path'], $arr_matches)) {
-                throw new Routing('URL parse error (preg_match): ' . $this->str_url);
+            if (!(bool)preg_match_all("#/(?<controller>[\w\-]+)#", $this->parsedUrl['path'], $matches)) {
+                throw new Routing('URL parse error (preg_match): ' . $this->url);
             }
-            $this->setup(implode("\t", $arr_matches['controller']));
+            $this->setup(implode("\t", $matches['controller']));
         }
+
         return $this;
     }
 
@@ -102,10 +101,10 @@ class SolidRouter
      *
      * @return bool
      */
-    protected function routeStatic()
+    protected function routeStatic(): bool
     {
-        if (isset($this->arr_static_routes[$this->arr_url['path']])) {
-            $this->setup($this->arr_static_routes[$this->arr_url['path']], NULL, FALSE);
+        if (isset($this->staticRoutes[$this->parsedUrl['path']])) {
+            $this->setup($this->staticRoutes[$this->parsedUrl['path']], NULL, FALSE);
             return TRUE;
         }
         return FALSE;
@@ -120,56 +119,43 @@ class SolidRouter
      */
     protected function setup($str_controller, $bol_parse = TRUE)
     {
-        $this->str_controller = ($bol_parse ? $this->parseController($str_controller) : $str_controller);
-        if (!method_exists($this->str_controller, 'dispatch')) {
-            throw new Routing("Could not find controller: {$this->str_controller}");
+        $this->controllerClass = ($bol_parse ? $this->parseController($str_controller) : $str_controller);
+        if (!method_exists($this->controllerClass, 'dispatch')) {
+            throw new Routing("Could not find controller: {$this->controllerClass}");
         }
     }
 
     /**
      * Translate URL controller name into name-spaced class
-     *
-     * @param $str_controller
-     * @return string
      */
-    protected function parseController($str_controller)
+    protected function parseController(string $controllerName): string
     {
-        return $this->str_controller_namespace . str_replace([" ", "\t"], ["", '\\'], ucwords(str_replace("-", " ", strtolower($str_controller))));
+        return $this->controllerNamespace . str_replace([" ", "\t"], ["", '\\'], ucwords(str_replace("-", " ", strtolower($controllerName))));
     }
 
     /**
      * Get the routed controller
-     *
-     * @return string
      */
-    public function getController()
+    public function getController(): string
     {
-        return $this->str_controller;
+        return $this->controllerClass;
     }
 
     /**
      * Add a single static route
-     *
-     * @param string $str_path
-     * @param string $str_controller
-     * @return \Docnet\JAPI\SolidRouter
      */
-    public function addRoute($str_path, $str_controller)
+    public function addRoute(string $path, string $controllerName): static
     {
-        $this->arr_static_routes[$str_path] = $str_controller;
+        $this->staticRoutes[$path] = $controllerName;
         return $this;
     }
 
     /**
-     * Set the static routes
-     *
-     * @param array $arr_routes
-     * @return \Docnet\JAPI\SolidRouter
+     * Bulk-set the static routes
      */
-    public function setRoutes(Array $arr_routes)
+    public function setRoutes(array $staticRoutes): static
     {
-        $this->arr_static_routes = $arr_routes;
+        $this->staticRoutes = $staticRoutes;
         return $this;
     }
-
 }

@@ -16,6 +16,6 @@ class JsonParams extends \Docnet\JAPI\Controller
      * @param string $str_body
      */
     public function setBody($str_body) {
-        $this->str_request_body = $str_body;
+        $this->requestBody = $str_body;
     }
 }

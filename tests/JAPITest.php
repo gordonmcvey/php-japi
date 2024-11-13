@@ -3,7 +3,6 @@
 use Docnet\JAPI;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
-use Psr\Log\LogLevel;
 
 require_once('Controllers/Example.php');
 require_once('Controllers/Exceptional.php');
@@ -118,10 +117,8 @@ class JAPITest extends TestCase
     public function testLogger()
     {
         // Mock the logger
-        $obj_logger = $this->getMockBuilder(LoggerInterface::class)->onlyMethods(['log'])->getMock();
-        $obj_logger->expects($this->once())->method('log')->with(
-            $this->equalTo(LogLevel::ERROR)
-        );
+        $obj_logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
+        $obj_logger->expects($this->once())->method('error');;
 
         // Mock JAPI
         $obj_japi = $this->getMockBuilder(JAPI::class)->onlyMethods(['sendResponse'])->getMock();

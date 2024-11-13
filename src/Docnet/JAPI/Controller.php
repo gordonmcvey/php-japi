@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types= 1);
+
 /**
  * Copyright 2015 Docnet
  *
@@ -30,29 +33,25 @@ abstract class Controller
 
     /**
      * Response data
-     *
-     * @var null|object|array
      */
-    protected $obj_response = null;
+    protected object|array|null $response = null;
 
     /**
      * Request body
-     * @var string
      */
-    protected $str_request_body = null;
+    protected ?string $requestBody = null;
 
     /**
      * Request body decoded as json
-     * @var string
      */
-    protected $str_request_body_json = null;
+    protected mixed $requestBodyJson = null;
 
     /**
      * Default, empty pre dispatch
      *
      * Usually overridden for authentication
      */
-    public function preDispatch()
+    public function preDispatch(): void
     {
     }
 
@@ -61,7 +60,7 @@ abstract class Controller
      *
      * Available for override - perhaps for UOW DB writes?
      */
-    public function postDispatch()
+    public function postDispatch(): void
     {
     }
 
@@ -72,7 +71,7 @@ abstract class Controller
      *
      * @return bool
      */
-    protected final function isPost()
+    protected final function isPost(): bool
     {
         return ($_SERVER['REQUEST_METHOD'] === 'POST');
     }
@@ -88,32 +87,30 @@ abstract class Controller
      *
      * @return array
      */
-    protected function getHeaders()
+    protected function getHeaders(): array
     {
         if (function_exists('getallheaders')) {
             return getallheaders();
         }
-        $arr_headers = [];
-        foreach ($_SERVER as $str_key => $str_value) {
-            if (strpos($str_key, 'HTTP_') === 0) {
-                $arr_headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($str_key, 5)))))] = $str_value;
+        $headers = [];
+        foreach ($_SERVER as $key => $value) {
+            if (strpos($key, 'HTTP_') === 0) {
+                $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($key, 5)))))] = $value;
             }
         }
-        return $arr_headers;
+        return $headers;
     }
 
     /**
      * Get the request body
-     *
-     * @return string
      */
-    protected function getBody()
+    protected function getBody(): ?string
     {
-        if ($this->str_request_body === null) {
+        if ($this->requestBody === null) {
             // We store this as prior to php5.6 this can only be read once
-            $this->str_request_body = file_get_contents('php://input');
+            $this->requestBody = file_get_contents('php://input');
         }
-        return $this->str_request_body;
+        return $this->requestBody;
     }
 
     /**
@@ -121,83 +118,66 @@ abstract class Controller
      *
      * @return mixed
      */
-    protected function getJson()
+    protected function getJson(): mixed
     {
-        if ($this->str_request_body_json === null) {
-            $this->str_request_body_json = json_decode($this->getBody());
+        if ($this->requestBodyJson === null) {
+            $this->requestBodyJson = json_decode($this->getBody());
         }
-        return $this->str_request_body_json;
+        return $this->requestBodyJson;
     }
 
     /**
      * Get a request parameter. Check GET then POST data, then optionally any json body data.
-     *
-     * @param string $str_key
-     * @param mixed $str_default
-     * @param bool $check_json_body
-     * @return mixed
      */
-    protected function getParam($str_key, $str_default = null, $check_json_body = false)
+    protected function getParam(string $key, mixed $default = null, bool $checkJsonBody = false): mixed
     {
-        $str_query = $this->getQuery($str_key);
-        if (null !== $str_query) {
-            return $str_query;
+        $query = $this->getQuery($key);
+        if (null !== $query) {
+            return $query;
         }
-        $str_post = $this->getPost($str_key);
-        if (NULL !== $str_post) {
-            return $str_post;
+        $post = $this->getPost($key);
+        if (null !== $post) {
+            return $post;
         }
         // Optionally check Json in Body
-        if ($check_json_body && isset($this->getJson()->$str_key)) {
-            if (null !== $this->getJson()->$str_key) {
-                return $this->getJson()->$str_key;
+        if ($checkJsonBody && isset($this->getJson()->$key)) {
+            if (null !== $this->getJson()->$key) {
+                return $this->getJson()->$key;
             }
         }
-        return $str_default;
+        return $default;
     }
 
     /**
      * Get a Query/GET input parameter
-     *
-     * @param string $str_key
-     * @param mixed $str_default
-     * @return mixed
      */
-    protected function getQuery($str_key, $str_default = NULL)
+    protected function getQuery(string $key, mixed $default = null): mixed
     {
-        return (isset($_GET[$str_key]) ? $_GET[$str_key] : $str_default);
+        return (isset($_GET[$key]) ? $_GET[$key] : $default);
     }
 
     /**
      * Get a POST parameter
-     *
-     * @param string $str_key
-     * @param mixed $str_default
-     * @return mixed
      */
-    protected function getPost($str_key, $str_default = NULL)
+    protected function getPost(string $key, mixed $default = null): mixed
     {
-        return (isset($_POST[$str_key]) ? $_POST[$str_key] : $str_default);
+        return (isset($_POST[$key]) ? $_POST[$key] : $default);
     }
 
     /**
      * Set the response object
-     *
-     * @param $obj_response
      */
-    protected function setResponse($obj_response)
+    protected function setResponse(object|array|null $response): void
     {
-        $this->obj_response = $obj_response;
+        $this->response = $response;
     }
 
     /**
      * Get the response data
-     *
-     * @return object|array
      */
-    public function getResponse()
+    public function getResponse(): array|object|null
     {
-        return $this->obj_response;
+        return $this->response;
     }
 
     /**
@@ -206,5 +186,4 @@ abstract class Controller
      * @return mixed
      */
     abstract public function dispatch();
-
 }

@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types= 1);
+
 /**
  * Copyright 2015 Docnet
  *
@@ -44,9 +47,9 @@ trait HasLogger
      *
      * @return LoggerInterface
      */
-    protected function getLogger()
+    protected function getLogger(): ?LoggerInterface
     {
-        if(NULL === $this->logger) {
+        if(null === $this->logger) {
             $this->logger = new NullLogger();
         }
         return $this->logger;

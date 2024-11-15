@@ -33,6 +33,8 @@ abstract class Controller
 {
     /**
      * Response data
+     *
+     * @var array<array-key, mixed>|object|null
      */
     protected object|array|null $response = null;
 
@@ -83,7 +85,7 @@ abstract class Controller
      *
      * @todo Test on Google App Engine
      *
-     * @return array
+     * @return array<string, mixed>
      */
     protected function getHeaders(): array
     {
@@ -106,7 +108,7 @@ abstract class Controller
     {
         if ($this->requestBody === null) {
             // We store this as prior to php5.6 this can only be read once
-            $this->requestBody = file_get_contents('php://input');
+            $this->requestBody = (string) file_get_contents('php://input');
         }
         return $this->requestBody;
     }
@@ -164,6 +166,8 @@ abstract class Controller
 
     /**
      * Set the response object
+     *
+     * @param array<array-key, mixed>|object|null $response
      */
     protected function setResponse(object|array|null $response): void
     {
@@ -172,6 +176,8 @@ abstract class Controller
 
     /**
      * Get the response data
+     *
+     * @return array<array-key, mixed>|object|null
      */
     public function getResponse(): array|object|null
     {

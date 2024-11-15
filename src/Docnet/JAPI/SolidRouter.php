@@ -37,7 +37,7 @@ class SolidRouter
     /**
      * Output from parse_url()
      *
-     * @var array|mixed
+     * @var array<string, mixed>
      */
     protected array $parsedUrl = [];
 
@@ -49,6 +49,7 @@ class SolidRouter
     /**
      * Static routes
      *
+     * @var array<string, string>
      */
     private array $staticRoutes = [];
 
@@ -108,13 +109,11 @@ class SolidRouter
     /**
      * Check & store controller from URL parts
      *
-     * @param $str_controller
-     * @param $bol_parse
      * @throws Routing
      */
-    protected function setup($str_controller, $bol_parse = true): void
+    protected function setup(string $controller, bool $parse = true): void
     {
-        $this->controllerClass = ($bol_parse ? $this->parseController($str_controller) : $str_controller);
+        $this->controllerClass = ($parse ? $this->parseController($controller) : $controller);
         if (!method_exists($this->controllerClass, 'dispatch')) {
             throw new Routing("Could not find controller: {$this->controllerClass}");
         }
@@ -149,6 +148,8 @@ class SolidRouter
 
     /**
      * Bulk-set the static routes
+     *
+     * @param array<string, string> $staticRoutes
      */
     public function setRoutes(array $staticRoutes): static
     {

@@ -44,7 +44,7 @@ class JAPI implements LoggerAwareInterface
      *
      * @param bool $exposeErrors Set to true if you want to include more detailed debugging data in error output
      */
-    public function __construct(private readonly bool $exposeErrors = false)
+    public function __construct(private bool $exposeErrors = false)
     {
         register_shutdown_function($this->timeToDie(...));
     }
@@ -122,10 +122,10 @@ class JAPI implements LoggerAwareInterface
     /**
      * Output the response as JSON with HTTP headers
      *
-     * @param array|object $response
+     * @param array<array-key, mixed>|object|null $response
      * @param int $httpCode
      */
-    protected function sendResponse(array|object|null $response, int $httpCode = 200)
+    protected function sendResponse(array|object|null $response, int $httpCode = 200): void
     {
         $httpCode = min(max($httpCode, 100), 505);
         http_response_code($httpCode);
@@ -135,8 +135,6 @@ class JAPI implements LoggerAwareInterface
 
     /**
      * Tell JAPI to expose error detail, or not!
-     *
-     * @param bool $exposeErrors
      */
     public function exposeErrorDetail(bool $exposeErrors = true): void
     {

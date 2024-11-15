@@ -50,20 +50,12 @@ class SolidRouter
     private array $staticRoutes = [];
 
     /**
-     * Namespace for the controller
-     * 
-     * @todo Implement a StatRoutes class to maintain this?
-     */
-    private string $controllerNamespace = '\\';
-
-    /**
      * We need to know the base namespace for the controller
      *
-     * @param string $controllerNamespace
+     * @param string $controllerNamespace Namespace for the controller
      */
-    public function __construct($controllerNamespace = '\\')
+    public function __construct(private readonly string $controllerNamespace = '\\')
     {
-        $this->controllerNamespace = $controllerNamespace;
     }
 
     /**

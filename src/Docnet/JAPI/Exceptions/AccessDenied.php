@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types= 1);
-
 /**
  * Copyright 2018 Venditan Limited
  *
@@ -17,6 +15,9 @@ declare(strict_types= 1);
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+declare(strict_types=1);
+
 namespace Docnet\JAPI\Exceptions;
 
 /**

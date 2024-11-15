@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types= 1);
-
 /**
  * Copyright 2015 Docnet
  *
@@ -17,6 +15,9 @@ declare(strict_types= 1);
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+declare(strict_types=1);
+
 namespace Docnet\JAPI;
 
 /**
@@ -30,7 +31,6 @@ namespace Docnet\JAPI;
  */
 abstract class Controller
 {
-
     /**
      * Response data
      */
@@ -68,10 +68,8 @@ abstract class Controller
      * Was there an HTTP POST?
      *
      * Realistically, we're probably not going to use PUT, DELETE (for now)
-     *
-     * @return bool
      */
-    protected final function isPost(): bool
+    final protected function isPost(): bool
     {
         return ($_SERVER['REQUEST_METHOD'] === 'POST');
     }

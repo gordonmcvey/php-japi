@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2015 Docnet
  *
@@ -14,6 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+declare(strict_types=1);
+
 namespace Docnet\JAPI;
 
 use Docnet\JAPI\Exceptions\Routing;
@@ -25,7 +29,6 @@ use Docnet\JAPI\Exceptions\Routing;
  */
 class SolidRouter
 {
-
     /**
      * URL to route
      */
@@ -96,10 +99,10 @@ class SolidRouter
     protected function routeStatic(): bool
     {
         if (isset($this->staticRoutes[$this->parsedUrl['path']])) {
-            $this->setup($this->staticRoutes[$this->parsedUrl['path']], NULL, FALSE);
-            return TRUE;
+            $this->setup($this->staticRoutes[$this->parsedUrl['path']], false);
+            return true;
         }
-        return FALSE;
+        return false;
     }
 
     /**
@@ -109,7 +112,7 @@ class SolidRouter
      * @param $bol_parse
      * @throws Routing
      */
-    protected function setup($str_controller, $bol_parse = TRUE)
+    protected function setup($str_controller, $bol_parse = true): void
     {
         $this->controllerClass = ($bol_parse ? $this->parseController($str_controller) : $str_controller);
         if (!method_exists($this->controllerClass, 'dispatch')) {
@@ -122,7 +125,9 @@ class SolidRouter
      */
     protected function parseController(string $controllerName): string
     {
-        return $this->controllerNamespace . str_replace([" ", "\t"], ["", '\\'], ucwords(str_replace("-", " ", strtolower($controllerName))));
+        return $this->controllerNamespace . str_replace([" ", "\t"], ["", '\\'], ucwords(
+            str_replace("-", " ", strtolower($controllerName))
+        ));
     }
 
     /**

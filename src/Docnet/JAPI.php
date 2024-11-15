@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types= 1);
-
 /**
  * Copyright 2015 Docnet
  *
@@ -17,6 +15,9 @@ declare(strict_types= 1);
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+declare(strict_types=1);
+
 namespace Docnet;
 
 use Docnet\JAPI\Controller;
@@ -36,12 +37,11 @@ use Psr\Log\LoggerAwareInterface;
  */
 class JAPI implements LoggerAwareInterface
 {
-
     use HasLogger;
 
     /**
      * Hook up the shutdown function so we always send nice JSON error responses
-     * 
+     *
      * @param bool $exposeErrors Set to true if you want to include more detailed debugging data in error output
      */
     public function __construct(private readonly bool $exposeErrors = false)
@@ -56,7 +56,7 @@ class JAPI implements LoggerAwareInterface
     {
         try {
             $controller = is_callable($controllerSource) ? $controllerSource() : $controllerSource;
-            if($controller instanceof Controller) {
+            if ($controller instanceof Controller) {
                 $this->dispatch($controller);
             } else {
                 throw new \Exception('Unable to bootstrap', 500);
@@ -109,10 +109,10 @@ class JAPI implements LoggerAwareInterface
             'msg' => ($error instanceof \ErrorException ? 'Internal Error' : 'Exception')
         ];
         $logMessage = get_class($error) . ': ' . $error->getMessage();
-        if($this->exposeErrors) {
+        if ($this->exposeErrors) {
             $response['detail'] = $logMessage;
         }
-        if($code < 400 || $code > 505) {
+        if ($code < 400 || $code > 505) {
             $code = 500;
         }
         $this->sendResponse($response, $code);

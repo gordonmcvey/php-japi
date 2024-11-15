@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types= 1);
-
 /**
  * Copyright 2015 Docnet
  *
@@ -17,6 +15,9 @@ declare(strict_types= 1);
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+declare(strict_types=1);
+
 namespace Docnet\JAPI;
 
 /**
@@ -30,9 +31,10 @@ namespace Docnet\JAPI;
  */
 abstract class Controller
 {
-
     /**
      * Response data
+     *
+     * @var array<array-key, mixed>|object|null
      */
     protected object|array|null $response = null;
 
@@ -68,10 +70,8 @@ abstract class Controller
      * Was there an HTTP POST?
      *
      * Realistically, we're probably not going to use PUT, DELETE (for now)
-     *
-     * @return bool
      */
-    protected final function isPost(): bool
+    final protected function isPost(): bool
     {
         return ($_SERVER['REQUEST_METHOD'] === 'POST');
     }
@@ -85,7 +85,7 @@ abstract class Controller
      *
      * @todo Test on Google App Engine
      *
-     * @return array
+     * @return array<string, mixed>
      */
     protected function getHeaders(): array
     {
@@ -108,7 +108,7 @@ abstract class Controller
     {
         if ($this->requestBody === null) {
             // We store this as prior to php5.6 this can only be read once
-            $this->requestBody = file_get_contents('php://input');
+            $this->requestBody = (string) file_get_contents('php://input');
         }
         return $this->requestBody;
     }
@@ -166,6 +166,8 @@ abstract class Controller
 
     /**
      * Set the response object
+     *
+     * @param array<array-key, mixed>|object|null $response
      */
     protected function setResponse(object|array|null $response): void
     {
@@ -174,6 +176,8 @@ abstract class Controller
 
     /**
      * Get the response data
+     *
+     * @return array<array-key, mixed>|object|null
      */
     public function getResponse(): array|object|null
     {

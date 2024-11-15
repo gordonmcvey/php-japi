@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types= 1);
-
 /**
  * Copyright 2015 Docnet
  *
@@ -17,6 +15,9 @@ declare(strict_types= 1);
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+declare(strict_types=1);
+
 namespace Docnet;
 
 use Psr\Log\LoggerInterface;
@@ -30,7 +31,7 @@ trait HasLogger
     /**
      * @var LoggerInterface
      */
-    protected $logger = NULL;
+    protected $logger = null;
 
     /**
      * Sets a logger.
@@ -49,7 +50,7 @@ trait HasLogger
      */
     protected function getLogger(): ?LoggerInterface
     {
-        if(null === $this->logger) {
+        if (null === $this->logger) {
             $this->logger = new NullLogger();
         }
         return $this->logger;

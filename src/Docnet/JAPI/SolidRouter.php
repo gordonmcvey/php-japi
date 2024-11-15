@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2015 Docnet
  *
@@ -14,6 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+declare(strict_types=1);
+
 namespace Docnet\JAPI;
 
 use Docnet\JAPI\Exceptions\Routing;
@@ -25,7 +29,6 @@ use Docnet\JAPI\Exceptions\Routing;
  */
 class SolidRouter
 {
-
     /**
      * URL to route
      */
@@ -34,7 +37,7 @@ class SolidRouter
     /**
      * Output from parse_url()
      *
-     * @var array|mixed
+     * @var array<string, mixed>
      */
     protected array $parsedUrl = [];
 
@@ -46,6 +49,7 @@ class SolidRouter
     /**
      * Static routes
      *
+     * @var array<string, string>
      */
     private array $staticRoutes = [];
 
@@ -96,22 +100,20 @@ class SolidRouter
     protected function routeStatic(): bool
     {
         if (isset($this->staticRoutes[$this->parsedUrl['path']])) {
-            $this->setup($this->staticRoutes[$this->parsedUrl['path']], NULL, FALSE);
-            return TRUE;
+            $this->setup($this->staticRoutes[$this->parsedUrl['path']], false);
+            return true;
         }
-        return FALSE;
+        return false;
     }
 
     /**
      * Check & store controller from URL parts
      *
-     * @param $str_controller
-     * @param $bol_parse
      * @throws Routing
      */
-    protected function setup($str_controller, $bol_parse = TRUE)
+    protected function setup(string $controller, bool $parse = true): void
     {
-        $this->controllerClass = ($bol_parse ? $this->parseController($str_controller) : $str_controller);
+        $this->controllerClass = ($parse ? $this->parseController($controller) : $controller);
         if (!method_exists($this->controllerClass, 'dispatch')) {
             throw new Routing("Could not find controller: {$this->controllerClass}");
         }
@@ -122,7 +124,9 @@ class SolidRouter
      */
     protected function parseController(string $controllerName): string
     {
-        return $this->controllerNamespace . str_replace([" ", "\t"], ["", '\\'], ucwords(str_replace("-", " ", strtolower($controllerName))));
+        return $this->controllerNamespace . str_replace([" ", "\t"], ["", '\\'], ucwords(
+            str_replace("-", " ", strtolower($controllerName))
+        ));
     }
 
     /**
@@ -144,6 +148,8 @@ class SolidRouter
 
     /**
      * Bulk-set the static routes
+     *
+     * @param array<string, string> $staticRoutes
      */
     public function setRoutes(array $staticRoutes): static
     {

@@ -40,17 +40,13 @@ class JAPI implements LoggerAwareInterface
     use HasLogger;
 
     /**
-     * Should we expose detailed error information in responses?
-     */
-    private bool $exposeErrors = false;
-
-    /**
      * Hook up the shutdown function so we always send nice JSON error responses
+     * 
+     * @param bool $exposeErrors Set to true if you want to include more detailed debugging data in error output
      */
-    public function __construct()
+    public function __construct(private readonly bool $exposeErrors = false)
     {
-        // @todo Will this work with the new syntax for passing callbacks?
-        register_shutdown_function([$this, 'timeToDie']);
+        register_shutdown_function($this->timeToDie(...));
     }
 
     /**

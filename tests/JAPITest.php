@@ -1,6 +1,7 @@
 <?php
 
 use Docnet\JAPI;
+use Docnet\JAPI\Http\RequestInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
@@ -18,7 +19,7 @@ class JAPITest extends TestCase
     public function testDispatchCycle()
     {
         // Mocked controller & expectations
-        $obj_controller = $this->getMockBuilder(Example::class)->getMock();
+        $obj_controller = $this->getMockBuilder(Example::class)->disableOriginalConstructor()->getMock();
         
         $obj_controller->expects($this->once())->method('preDispatch');
         $obj_controller->expects($this->once())->method('dispatch');
@@ -37,7 +38,7 @@ class JAPITest extends TestCase
     public function testConcreteBootstrapCycle()
     {
         // Mocked controller & expectations
-        $obj_controller = $this->getMockBuilder(Example::class)->getMock();
+        $obj_controller = $this->getMockBuilder(Example::class)->disableOriginalConstructor()->getMock();
 
         $obj_controller->expects($this->once())->method('preDispatch');
         $obj_controller->expects($this->once())->method('dispatch');
@@ -75,7 +76,7 @@ class JAPITest extends TestCase
         );
 
         // Dispatch
-        $obj_japi->bootstrap(new Whoops());
+        $obj_japi->bootstrap(new Whoops($this->createMock(RequestInterface::class)));
     }
 
     /**
@@ -92,7 +93,7 @@ class JAPITest extends TestCase
         );
 
         // Dispatch
-        $obj_japi->bootstrap(new Exceptional());
+        $obj_japi->bootstrap(new Exceptional($this->createMock(RequestInterface::class)));
     }
 
     /**
@@ -108,7 +109,7 @@ class JAPITest extends TestCase
         );
 
         // Dispatch
-        $obj_japi->bootstrap(new Example());
+        $obj_japi->bootstrap(new Example($this->createMock(RequestInterface::class)));
     }
 
     /**
@@ -125,7 +126,7 @@ class JAPITest extends TestCase
         $obj_japi->setLogger($obj_logger);
 
         // Dispatch
-        $obj_japi->bootstrap(new Exceptional());
+        $obj_japi->bootstrap(new Exceptional($this->createMock(RequestInterface::class)));
     }
 
     /**
@@ -137,7 +138,7 @@ class JAPITest extends TestCase
         $obj_japi = $this->getMockBuilder(JAPI::class)->onlyMethods(['sendResponse'])->getMock();
 
         // Dispatch
-        $obj_japi->bootstrap(new Exceptional());
+        $obj_japi->bootstrap(new Exceptional($this->createMock(RequestInterface::class)));
 
         // If something went wrong then we'd never get here
         $this->assertTrue(true);
@@ -149,7 +150,7 @@ class JAPITest extends TestCase
     public function testBootstrapAccessDeniedErrorCycle()
     {
         // Mock JAPI
-        $obj_japi = $this->getMockBuilder(JAPI::class)->onlyMethods(['sendResponse', 'jsonError'])->getMock();
+        $obj_japi = $this->getMockBuilder(JAPI::class)->disableOriginalConstructor()->onlyMethods(['sendResponse', 'jsonError'])->getMock();
         $obj_japi->expects($this->never())->method('sendResponse');
         $obj_japi->expects($this->once())->method('jsonError')->with(
             $this->equalTo(new \Docnet\JAPI\Exceptions\AccessDenied('Error Message', 403)),
@@ -157,7 +158,6 @@ class JAPITest extends TestCase
         );
 
         // Dispatch
-        $obj_japi->bootstrap(new AccessDenied());
+        $obj_japi->bootstrap(new AccessDenied($this->createMock(RequestInterface::class)));
     }
-
 }

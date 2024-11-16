@@ -20,6 +20,8 @@ declare(strict_types=1);
 
 namespace Docnet\JAPI;
 
+use Docnet\JAPI\Http\RequestInterface;
+
 /**
  * Base Controller
  *
@@ -48,6 +50,10 @@ abstract class Controller
      */
     protected mixed $requestBodyJson = null;
 
+    public function __construct(private readonly RequestInterface $request)
+    {
+    }
+
     /**
      * Default, empty pre dispatch
      *
@@ -73,7 +79,8 @@ abstract class Controller
      */
     final protected function isPost(): bool
     {
-        return ($_SERVER['REQUEST_METHOD'] === 'POST');
+        return $this->request->isPost();
+        // return ($_SERVER['REQUEST_METHOD'] === 'POST');
     }
 
     /**
@@ -89,16 +96,17 @@ abstract class Controller
      */
     protected function getHeaders(): array
     {
-        if (function_exists('getallheaders')) {
-            return getallheaders();
-        }
-        $headers = [];
-        foreach ($_SERVER as $key => $value) {
-            if (strpos($key, 'HTTP_') === 0) {
-                $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($key, 5)))))] = $value;
-            }
-        }
-        return $headers;
+        return $this->request->headers();
+        // if (function_exists('getallheaders')) {
+        //     return getallheaders();
+        // }
+        // $headers = [];
+        // foreach ($_SERVER as $key => $value) {
+        //     if (strpos($key, 'HTTP_') === 0) {
+        //         $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($key, 5)))))] = $value;
+        //     }
+        // }
+        // return $headers;
     }
 
     /**
@@ -106,11 +114,13 @@ abstract class Controller
      */
     protected function getBody(): ?string
     {
-        if ($this->requestBody === null) {
-            // We store this as prior to php5.6 this can only be read once
-            $this->requestBody = (string) file_get_contents('php://input');
-        }
-        return $this->requestBody;
+        return $this->request->body();
+
+        // if ($this->requestBody === null) {
+        //     // We store this as prior to php5.6 this can only be read once
+        //     $this->requestBody = (string) file_get_contents('php://input');
+        // }
+        // return $this->requestBody;
     }
 
     /**
@@ -131,14 +141,19 @@ abstract class Controller
      */
     protected function getParam(string $key, mixed $default = null, bool $checkJsonBody = false): mixed
     {
-        $query = $this->getQuery($key);
-        if (null !== $query) {
-            return $query;
+        $param = $this->request->param($key, $default);
+        if (null !== $param) {
+            return $param;
         }
-        $post = $this->getPost($key);
-        if (null !== $post) {
-            return $post;
-        }
+
+        // $query = $this->getQuery($key);
+        // if (null !== $query) {
+        //     return $query;
+        // }
+        // $post = $this->getPost($key);
+        // if (null !== $post) {
+        //     return $post;
+        // }
         // Optionally check Json in Body
         if ($checkJsonBody && isset($this->getJson()->$key)) {
             if (null !== $this->getJson()->$key) {
@@ -153,7 +168,8 @@ abstract class Controller
      */
     protected function getQuery(string $key, mixed $default = null): mixed
     {
-        return (isset($_GET[$key]) ? $_GET[$key] : $default);
+        return $this->request->queryParam($key, $default);
+        // return (isset($_GET[$key]) ? $_GET[$key] : $default);
     }
 
     /**
@@ -161,7 +177,8 @@ abstract class Controller
      */
     protected function getPost(string $key, mixed $default = null): mixed
     {
-        return (isset($_POST[$key]) ? $_POST[$key] : $default);
+        return $this->request->postParam($key, $default);
+        // return (isset($_POST[$key]) ? $_POST[$key] : $default);
     }
 
     /**

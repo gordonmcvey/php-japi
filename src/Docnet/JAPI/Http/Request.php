@@ -24,6 +24,18 @@ class Request implements RequestInterface
     private string|false|null $body = null;
 
     /**
+     * Class constructor
+     *
+     * For the BodyFactory argument, you can provide either a factory that will extract the body on first invokation
+     * (thus allowing lazy evaluation of the request body), the literal body string (as either a string or a Stringable
+     * object), or null (if you aren't going to be using the body for the request you're handling)
+     *
+     * If you pass in a bodyFactory value that is both Callable and Stringable, then it will be treated as a Callable
+     *
+     * Note that if you pass in a Stringable, it will be evaluated on instantiation, not on the first call to
+     * Request::body(), so it is recommended that you don't use Stringables that do a lot of heavy lifting, especially
+     * if you might not make use of the request body under some circumstances
+     *
      * @param array<string, mixed> $queryParams
      * @param array<string, mixed> $postParams
      * @param array<string, mixed> $cookieParams
@@ -34,8 +46,8 @@ class Request implements RequestInterface
      *     tmp_name: string,
      *     error_code: non-negative-int
      * }> $fileParams
-     * @param array<string, mixed> $server
-     * @param ?\Closure $bodyFactory Callback that will extract the message body
+     * @param array<string, mixed> $serverParams
+     * @param callable|string|null $bodyFactory Data source for the request body (if any)
      * @todo Handle Files
      */
     public function __construct(
@@ -43,9 +55,18 @@ class Request implements RequestInterface
         private readonly array $postParams,
         private readonly array $cookieParams,
         private readonly array $fileParams,
-        private readonly array $server,
-        private readonly ?\Closure $bodyFactory = null,
+        private readonly array $serverParams,
+        private readonly mixed $bodyFactory = null,
     ) {
+        // We can't enforce callables by type-hinting for some reason that I'm sure must make sense to somebody
+        $factoryIsCallable = is_callable($bodyFactory);
+        $factoryIsStringable = is_string($bodyFactory) || $bodyFactory instanceof \Stringable;
+
+        if (null !== $bodyFactory && !$factoryIsCallable && !$factoryIsStringable) {
+            throw new \TypeError("Body factory must be callable");
+        }
+
+        $factoryIsCallable || !$factoryIsStringable || $this->body = (string) $bodyFactory;
     }
 
     public function headers(): array
@@ -61,7 +82,7 @@ class Request implements RequestInterface
 
     public function verb(): Verbs
     {
-        null !== $this->verb || $this->verb = Verbs::from($this->header(self::REQUEST_METHOD));
+        null !== $this->verb || $this->verb = Verbs::from($this->serverParam(self::REQUEST_METHOD));
         return $this->verb;
     }
 
@@ -111,12 +132,12 @@ class Request implements RequestInterface
     public function body(): ?string
     {
         if (null === $this->body) {
-            $this->body = null !== $this->bodyFactory ?
+            $this->body = is_callable($this->bodyFactory) ?
                 ($this->bodyFactory)() :
                 false;
         }
 
-        return $this->body ?? null;
+        return $this->body ?: null;
     }
 
     /**
@@ -130,7 +151,7 @@ class Request implements RequestInterface
     {
         $headers = [];
 
-        foreach ($this->server as $key => $value) {
+        foreach ($this->serverParams as $key => $value) {
             if (0 === strpos($key, self::HEADER_PREFIX)) {
                 $headers[
                     str_replace(' ', '-', ucwords(
@@ -146,7 +167,7 @@ class Request implements RequestInterface
     /**
      * Factory method to populate a Request instance from the PHP request
      */
-    public static function fromSuperGlovals(): self
+    public static function fromSuperGlobals(): self
     {
         return new self(
             $_GET,

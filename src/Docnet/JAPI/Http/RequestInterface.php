@@ -22,7 +22,7 @@ interface RequestInterface
     public function param(string $name, mixed $default = null): mixed;
 
     public function queryParam(string $name, mixed $default = null): mixed;
-    
+
     public function postParam(string $name, mixed $default = null): mixed;
 
     public function cookieParam(string $name, mixed $default = null): mixed;

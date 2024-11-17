@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace Docnet\JAPI;
 
+use Docnet\JAPI\Http\Enum\Verbs;
 use Docnet\JAPI\Http\RequestInterface;
 
 /**
@@ -79,7 +80,7 @@ abstract class Controller
      */
     final protected function isPost(): bool
     {
-        return $this->request->isPost();
+        return Verbs::POST === $this->request->verb();
     }
 
     /**

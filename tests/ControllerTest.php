@@ -1,5 +1,6 @@
 <?php
 
+use Docnet\JAPI\Http\Enum\Verbs;
 use Docnet\JAPI\Http\Request;
 use Docnet\JAPI\Http\RequestInterface;
 use PHPUnit\Framework\TestCase;
@@ -105,7 +106,7 @@ class ControllerTest extends TestCase
     public function testIsPost() {
         // $_SERVER['REQUEST_METHOD'] = 'POST';
         $request = $this->createMock(RequestInterface::class);
-        $request->expects($this->once())->method('isPost')->willReturn(true);
+        $request->expects($this->once())->method('verb')->willReturn(Verbs::POST);
 
         $obj_controller = new ProtectedFunctions($request);
         $this->assertTrue($obj_controller->getIsPost());

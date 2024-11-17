@@ -17,8 +17,6 @@ interface RequestInterface
 
     public function verb(): Verbs;
 
-    public function isPost(): bool;
-
     public function param(string $name, mixed $default = null): mixed;
 
     public function queryParam(string $name, mixed $default = null): mixed;

@@ -86,11 +86,6 @@ class Request implements RequestInterface
         return $this->verb;
     }
 
-    public function isPost(): bool
-    {
-        return Verbs::POST === $this->verb();
-    }
-
     /**
      * @todo Respect the request_order/variables_order PHP config settings
      */

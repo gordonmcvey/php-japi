@@ -113,28 +113,6 @@ class RequestTest extends TestCase
     }
 
     #[Test]
-    public function itCanDetectPost(): void
-    {
-        $serverParams = [
-            "REQUEST_METHOD" => Verbs::POST->value,
-        ];
-
-        $request = new Request([], [], [], [], $serverParams, null);
-        $this->assertTrue($request->isPost());
-    }
-
-    #[Test]
-    public function itCanDetectNonPost(): void
-    {
-        $serverParams = [
-            "REQUEST_METHOD" => Verbs::HEAD->value,
-        ];
-
-        $request = new Request([], [], [], [], $serverParams, null);
-        $this->assertFalse($request->isPost());
-    }
-
-    #[Test]
     public function itCanGetParamFromQuery(): void
     {
         $queryParams = [

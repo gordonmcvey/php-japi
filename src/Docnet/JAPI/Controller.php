@@ -80,7 +80,6 @@ abstract class Controller
     final protected function isPost(): bool
     {
         return $this->request->isPost();
-        // return ($_SERVER['REQUEST_METHOD'] === 'POST');
     }
 
     /**
@@ -97,16 +96,6 @@ abstract class Controller
     protected function getHeaders(): array
     {
         return $this->request->headers();
-        // if (function_exists('getallheaders')) {
-        //     return getallheaders();
-        // }
-        // $headers = [];
-        // foreach ($_SERVER as $key => $value) {
-        //     if (strpos($key, 'HTTP_') === 0) {
-        //         $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($key, 5)))))] = $value;
-        //     }
-        // }
-        // return $headers;
     }
 
     /**
@@ -115,12 +104,6 @@ abstract class Controller
     protected function getBody(): ?string
     {
         return $this->request->body();
-
-        // if ($this->requestBody === null) {
-        //     // We store this as prior to php5.6 this can only be read once
-        //     $this->requestBody = (string) file_get_contents('php://input');
-        // }
-        // return $this->requestBody;
     }
 
     /**
@@ -146,14 +129,6 @@ abstract class Controller
             return $param;
         }
 
-        // $query = $this->getQuery($key);
-        // if (null !== $query) {
-        //     return $query;
-        // }
-        // $post = $this->getPost($key);
-        // if (null !== $post) {
-        //     return $post;
-        // }
         // Optionally check Json in Body
         if ($checkJsonBody && isset($this->getJson()->$key)) {
             if (null !== $this->getJson()->$key) {
@@ -169,7 +144,6 @@ abstract class Controller
     protected function getQuery(string $key, mixed $default = null): mixed
     {
         return $this->request->queryParam($key, $default);
-        // return (isset($_GET[$key]) ? $_GET[$key] : $default);
     }
 
     /**
@@ -178,7 +152,6 @@ abstract class Controller
     protected function getPost(string $key, mixed $default = null): mixed
     {
         return $this->request->postParam($key, $default);
-        // return (isset($_POST[$key]) ? $_POST[$key] : $default);
     }
 
     /**

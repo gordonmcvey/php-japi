@@ -1,4 +1,6 @@
 <?php
+
+use Docnet\JAPI\Http\Request;
 /**
  * Copyright 2015 Docnet
  *
@@ -33,6 +35,5 @@ require_once('Hello.php');
     $obj_router->route('/hello');
 
     $str_controller = $obj_router->getController();
-    return new $str_controller();
-
+    return new $str_controller(Request::fromSuperGlobals());
 });

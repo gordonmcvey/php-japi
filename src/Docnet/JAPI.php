@@ -43,8 +43,9 @@ class JAPI implements LoggerAwareInterface
      * Hook up the shutdown function so we always send nice JSON error responses
      *
      * @param bool $exposeErrors Set to true if you want to include more detailed debugging data in error output
+     * @param int $jsonFlags Flag mask for the encoded JSON output.  See the PHP manual for json_encode for valid flags
      */
-    public function __construct(private bool $exposeErrors = false)
+    public function __construct(private bool $exposeErrors = false, private readonly int $jsonFlags = 0)
     {
         register_shutdown_function($this->timeToDie(...));
     }
@@ -130,7 +131,7 @@ class JAPI implements LoggerAwareInterface
         $httpCode = min(max($httpCode, 100), 505);
         http_response_code($httpCode);
         header('Content-type: application/json');
-        echo json_encode($response);
+        echo json_encode($response, $this->jsonFlags);
     }
 
     /**

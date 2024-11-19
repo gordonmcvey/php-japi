@@ -6,7 +6,7 @@ namespace Docnet\JAPI\Http;
 
 use Docnet\JAPI\Http\Enum\Verbs;
 
-class Request implements RequestInterface
+class Request implements RequestInterface, \JsonSerializable
 {
     private const string REQUEST_BODY_SOURCE = "php://input";
     private const string HEADER_PREFIX = "HTTP_";
@@ -133,6 +133,26 @@ class Request implements RequestInterface
         }
 
         return $this->body ?: null;
+    }
+
+    /**
+     * @return array{
+     *     queryParams: array<string, mixed>,
+     *     postParams: array<string, mixed>,
+     *     cookieParams: array<string, mixed>,
+     *     fileParams: array<string, array<string, mixed>>,
+     *     serverParams: array<string, mixed>
+     * }
+     */
+    public function jsonSerialize(): array
+    {
+        return [
+            "queryParams"  => $this->queryParams,
+            "postParams"   => $this->postParams,
+            "cookieParams" => $this->cookieParams,
+            "fileParams"   => $this->fileParams,
+            "serverParams" => $this->serverParams,
+        ];
     }
 
     /**

@@ -51,7 +51,7 @@ abstract class Controller
      */
     protected mixed $requestBodyJson = null;
 
-    public function __construct(private readonly RequestInterface $request)
+    public function __construct(protected readonly RequestInterface $request)
     {
     }
 

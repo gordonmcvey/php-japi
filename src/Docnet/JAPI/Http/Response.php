@@ -138,7 +138,7 @@ class Response implements ResponseInterface, Stringable
         return $string;
     }
 
-    private function contentTypeHeader()
+    private function contentTypeHeader(): void
     {
         $contentTypeString = null !== $this->encoding ?
             sprintf(self::CONTENT_TYPE_FORMAT, $this->contentType, $this->encoding) :

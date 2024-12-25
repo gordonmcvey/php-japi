@@ -1,15 +1,15 @@
 <?php
 
 use Docnet\JAPI\Http\Enum\Verbs;
-use Docnet\JAPI\Http\Request;
 use Docnet\JAPI\Http\RequestInterface;
 use PHPUnit\Framework\TestCase;
 
-require_once('Controllers/Example.php');
-require_once('Controllers/Headers.php');
-require_once('Controllers/Exceptional.php');
-require_once('Controllers/JsonParams.php');
-require_once('Controllers/ProtectedFunctions.php');
+require_once 'Controllers/Example.php';
+require_once 'Controllers/Headers.php';
+require_once 'Controllers/Exceptional.php';
+require_once 'Controllers/JsonParams.php';
+require_once 'Controllers/ProtectedFunctions.php';
+require_once 'Controllers/World.php';
 
 class ControllerTest extends TestCase
 {
@@ -18,38 +18,36 @@ class ControllerTest extends TestCase
     {
         $obj_controller = new Example($this->createMock(RequestInterface::class));
         $obj_controller->dispatch();
-        $this->assertEquals($obj_controller->getResponse(), ['test' => TRUE]);
+        $response = $obj_controller->getResponse();
+
+        $this->assertEquals((object) ['test' => true], json_decode($response->body()));
     }
 
     public function testQuery()
     {
-        // $_GET['input1'] = 'value1';
         $request = $this->createMock(RequestInterface::class);
         $request->expects($this->once())->method("queryParam")->with("input1")->willReturn("value1");
 
         $obj_controller = new \Hello\World($request);
         $obj_controller->dispatch();
-        $obj_response = $obj_controller->getResponse();
-        $this->assertEquals($obj_response['input1'], 'value1');
+        $obj_response = json_decode($obj_controller->getResponse()->body());
+
+        $this->assertEquals('value1', $obj_response->input1);
     }
 
     public function testPost()
     {
-        // $_POST['input2'] = 'value2';
         $request = $this->createMock(RequestInterface::class);
         $request->expects($this->once())->method("postParam")->with("input2")->willReturn("value2");
 
         $obj_controller = new \Hello\World($request);
         $obj_controller->dispatch();
-        $obj_response = $obj_controller->getResponse();
-        $this->assertEquals($obj_response['input2'], 'value2');
+        $obj_response = json_decode($obj_controller->getResponse()->body());
+        $this->assertEquals('value2', $obj_response->input2);
     }
 
     public function testParam()
     {
-        // $_GET['input3'] = 'value3';
-        // $_POST['input4'] = 'value4';
-
         $request = $this->createMock(RequestInterface::class);
         $request->expects($this->exactly(2))->method("param")->willReturnMap([
             ["input3", null, "value3"],
@@ -58,10 +56,10 @@ class ControllerTest extends TestCase
 
         $obj_controller = new \Hello\World($request);
         $obj_controller->dispatch();
-        $obj_response = $obj_controller->getResponse();
+        $obj_response = json_decode(json: $obj_controller->getResponse()->body());
 
-        $this->assertEquals("value3", $obj_response['input3']);
-        $this->assertEquals("value4", $obj_response['input4']);
+        $this->assertEquals("value3", $obj_response->input3);
+        $this->assertEquals("value4", $obj_response->input4);
     }
 
     public function testMixedParam()
@@ -80,13 +78,14 @@ class ControllerTest extends TestCase
 
     public function testCliHeaders()
     {
-        // $_SERVER['HTTP_SOME_HEADER'] = TRUE;
         $request = $this->createMock(RequestInterface::class);
         $request->expects($this->once())->method('headers')->willReturn(['Some-Header' => true]);
 
         $obj_controller = new Headers($request);
         $obj_controller->dispatch();
-        $this->assertEquals($obj_controller->getResponse(), ['Some-Header' => TRUE]);
+        $obj_response = json_decode(json: $obj_controller->getResponse()->body());
+
+        $this->assertEquals(true, $obj_response->{'Some-Header'});
     }
 
     public function testJsonBodyParam()
@@ -96,11 +95,12 @@ class ControllerTest extends TestCase
         $request->expects($this->once())->method('body')->willReturn($str_json);
 
         $obj_controller = new \JsonParams($request);
-        $obj_controller->setBody($str_json);
+//        $obj_controller->setBody($str_json);
         $obj_controller->dispatch();
-        $obj_response = $obj_controller->getResponse();
-        $this->assertEquals('param_found', $obj_response['json_param']);
-        $this->assertEquals('default_value', $obj_response['missing_param']);
+        $obj_response = json_decode($obj_controller->getResponse()->body());
+
+        $this->assertEquals('param_found', $obj_response->json_param);
+        $this->assertEquals('default_value', $obj_response->missing_param);
     }
 
     public function testIsPost() {

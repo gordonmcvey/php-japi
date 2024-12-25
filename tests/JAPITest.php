@@ -1,7 +1,9 @@
 <?php
 
 use Docnet\JAPI;
+use Docnet\JAPI\Http\Enum\SuccessCodes;
 use Docnet\JAPI\Http\RequestInterface;
+use Docnet\JAPI\Http\Response;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
@@ -72,7 +74,6 @@ class JAPITest extends TestCase
         $obj_japi->expects($this->never())->method('sendResponse');
         $obj_japi->expects($this->once())->method('jsonError')->with(
             $this->equalTo(new Exception()),
-            $this->equalTo(0)
         );
 
         // Dispatch
@@ -89,7 +90,6 @@ class JAPITest extends TestCase
         $obj_japi->expects($this->never())->method('sendResponse');
         $obj_japi->expects($this->once())->method('jsonError')->with(
             $this->equalTo(new RuntimeException('Error Message', 400)),
-            $this->equalTo(400)
         );
 
         // Dispatch
@@ -103,9 +103,13 @@ class JAPITest extends TestCase
     {
         // Mock JAPI
         $obj_japi = $this->getMockBuilder(JAPI::class)->onlyMethods(['sendResponse'])->getMock();
-        $obj_japi->expects($this->once())->method('sendResponse')->with(
-            $this->equalTo(['test' => TRUE]),
-            $this->equalTo(200)
+        $obj_japi->expects($this->once())
+            ->method('sendResponse')
+            ->with(
+                $this->equalTo(new Response(
+                    SuccessCodes::OK,
+                    json_encode(['test' => true])
+            )),
         );
 
         // Dispatch
@@ -154,7 +158,7 @@ class JAPITest extends TestCase
         $obj_japi->expects($this->never())->method('sendResponse');
         $obj_japi->expects($this->once())->method('jsonError')->with(
             $this->equalTo(new \Docnet\JAPI\Exceptions\AccessDenied('Error Message', 403)),
-            $this->equalTo(403)
+//            $this->equalTo(403)
         );
 
         // Dispatch

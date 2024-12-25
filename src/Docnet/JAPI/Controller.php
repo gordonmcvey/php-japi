@@ -22,6 +22,7 @@ namespace Docnet\JAPI;
 
 use Docnet\JAPI\Http\Enum\Verbs;
 use Docnet\JAPI\Http\RequestInterface;
+use Docnet\JAPI\Http\ResponseInterface;
 
 /**
  * Base Controller
@@ -34,17 +35,7 @@ use Docnet\JAPI\Http\RequestInterface;
  */
 abstract class Controller
 {
-    /**
-     * Response data
-     *
-     * @var array<array-key, mixed>|object|null
-     */
-    protected object|array|null $response = null;
-
-    /**
-     * Request body
-     */
-    protected ?string $requestBody = null;
+    protected ?ResponseInterface $response = null;
 
     /**
      * Request body decoded as json
@@ -157,10 +148,8 @@ abstract class Controller
 
     /**
      * Set the response object
-     *
-     * @param array<array-key, mixed>|object|null $response
      */
-    protected function setResponse(object|array|null $response): void
+    protected function setResponse(ResponseInterface $response): void
     {
         $this->response = $response;
     }
@@ -168,9 +157,9 @@ abstract class Controller
     /**
      * Get the response data
      *
-     * @return array<array-key, mixed>|object|null
+     * @return ?ResponseInterface
      */
-    public function getResponse(): array|object|null
+    public function getResponse(): ?ResponseInterface
     {
         return $this->response;
     }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2018 Venditan Limited
  *
@@ -14,6 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+declare(strict_types=1);
+
 namespace Docnet\JAPI\Exceptions;
 
 /**

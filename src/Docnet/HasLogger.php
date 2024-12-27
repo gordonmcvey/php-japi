@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2015 Docnet
  *
@@ -14,6 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+declare(strict_types=1);
+
 namespace Docnet;
 
 use Psr\Log\LoggerInterface;
@@ -27,7 +31,7 @@ trait HasLogger
     /**
      * @var LoggerInterface
      */
-    protected $logger = NULL;
+    protected $logger = null;
 
     /**
      * Sets a logger.
@@ -44,9 +48,9 @@ trait HasLogger
      *
      * @return LoggerInterface
      */
-    protected function getLogger()
+    protected function getLogger(): ?LoggerInterface
     {
-        if(NULL === $this->logger) {
+        if (null === $this->logger) {
             $this->logger = new NullLogger();
         }
         return $this->logger;

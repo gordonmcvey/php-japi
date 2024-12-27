@@ -1,8 +1,11 @@
 <?php
 
+use Docnet\JAPI\Http\Enum\HttpCodes\SuccessCodes;
+use Docnet\JAPI\Http\Response;
+
 class Headers extends \Docnet\JAPI\Controller
 {
     public function dispatch(){
-        $this->setResponse($this->getHeaders());
+        $this->setResponse(new Response(SuccessCodes::OK, json_encode($this->getHeaders())));
     }
 }

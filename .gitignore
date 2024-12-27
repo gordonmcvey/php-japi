@@ -13,3 +13,6 @@ Thumbs.db
 .idea/
 
 build/
+vendor/
+.phplint.cache
+.phpunit.result.cache

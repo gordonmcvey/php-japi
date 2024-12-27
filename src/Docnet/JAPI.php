@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2015 Docnet
  *
@@ -14,12 +15,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+declare(strict_types=1);
+
 namespace Docnet;
 
 use Docnet\JAPI\Controller;
 use Docnet\JAPI\Exceptions\Routing as RoutingException;
 use Docnet\JAPI\Exceptions\Auth as AuthException;
 use Docnet\JAPI\Exceptions\AccessDenied as AccessDeniedException;
+use Docnet\JAPI\Http\Enum\HttpCodes\ClientErrorCodes;
+use Docnet\JAPI\Http\Enum\HttpCodes\Factory\HttpCodeFactory;
+use Docnet\JAPI\Http\Enum\HttpCodes\ServerErrorCodes;
+use Docnet\JAPI\Http\Enum\HttpCodes\SuccessCodes;
+use Docnet\JAPI\Http\Response;
+use Docnet\JAPI\Http\ResponseInterface;
 use Psr\Log\LoggerAwareInterface;
 
 /**
@@ -33,118 +43,113 @@ use Psr\Log\LoggerAwareInterface;
  */
 class JAPI implements LoggerAwareInterface
 {
-
     use HasLogger;
 
     /**
-     * Should we expose detailed error information in responses?
-     *
-     * @var bool
-     */
-    private $bol_expose_errors = false;
-
-    /**
      * Hook up the shutdown function so we always send nice JSON error responses
+     *
+     * @param bool $exposeErrors Set to true if you want to include more detailed debugging data in error output
+     * @param int $jsonFlags Flag mask for the encoded JSON output.  See the PHP manual for json_encode for valid flags
      */
-    public function __construct()
-    {
-        register_shutdown_function([$this, 'timeToDie']);
+    public function __construct(
+        private readonly HttpCodeFactory $codeFactory,
+        private bool $exposeErrors = false,
+        private readonly int $jsonFlags = 0
+    ) {
+        register_shutdown_function($this->timeToDie(...));
     }
 
     /**
      * Optionally, encapsulate the bootstrap in a try/catch
-     *
-     * @param $controller_source
      */
-    public function bootstrap($controller_source)
+    public function bootstrap(Controller|callable $controllerSource): void
     {
         try {
-            $obj_controller = is_callable($controller_source) ? $controller_source() : $controller_source;
-            if($obj_controller instanceof Controller) {
-                $this->dispatch($obj_controller);
+            $controller = is_callable($controllerSource) ? $controllerSource() : $controllerSource;
+            if ($controller instanceof Controller) {
+                $this->dispatch($controller);
             } else {
-                throw new \Exception('Unable to bootstrap', 500);
+                throw new \Exception('Unable to bootstrap', ServerErrorCodes::INTERNAL_SERVER_ERROR->value);
             }
-        } catch (RoutingException $obj_ex) {
-            $this->jsonError($obj_ex, 404);
-        } catch (AuthException $obj_ex) {
-            $this->jsonError($obj_ex, 401);
-        } catch (AccessDeniedException $obj_ex) {
-            $this->jsonError($obj_ex, 403);
-        } catch (\Exception $obj_ex) {
-            $this->jsonError($obj_ex, $obj_ex->getCode());
+        } catch (RoutingException $e) {
+            $this->jsonError($e, ClientErrorCodes::NOT_FOUND);
+        } catch (AuthException $e) {
+            $this->jsonError($e, ClientErrorCodes::UNAUTHORIZED);
+        } catch (AccessDeniedException $e) {
+            $this->jsonError($e, ClientErrorCodes::FORBIDDEN);
+        } catch (\Exception $e) {
+            $code = $this->codeFactory->fromThrowable($e);
+            $this->jsonError($e, $code);
         }
     }
 
     /**
      * Go, Johnny, Go!
      *
-     * @param Controller $obj_controller
+     * @param Controller $controller
      */
-    public function dispatch(Controller $obj_controller)
+    public function dispatch(Controller $controller): void
     {
-        $obj_controller->preDispatch();
-        $obj_controller->dispatch();
-        $obj_controller->postDispatch();
-        $this->sendResponse($obj_controller->getResponse());
+        $controller->preDispatch();
+        $controller->dispatch();
+        $controller->postDispatch();
+        $response = $controller->getResponse() ?? new Response(SuccessCodes::NO_CONTENT, '');
+
+        $this->sendResponse($response);
     }
 
     /**
      * Custom shutdown function
      */
-    public function timeToDie()
+    public function timeToDie(): void
     {
-        $arr_error = error_get_last();
-        if ($arr_error && in_array($arr_error['type'], [E_ERROR, E_USER_ERROR, E_COMPILE_ERROR])) {
-            $this->jsonError(new \ErrorException($arr_error['message'], 500, 0, $arr_error['file'], $arr_error['line']), 500);
+        $error = error_get_last();
+        if ($error && in_array($error['type'], [E_ERROR, E_USER_ERROR, E_COMPILE_ERROR])) {
+            $errorCode = ServerErrorCodes::INTERNAL_SERVER_ERROR;
+            $this->jsonError(new \ErrorException(
+                $error['message'],
+                $errorCode->value,
+                0,
+                $error['file'],
+                $error['line'],
+            ), $errorCode);
         }
     }
 
     /**
      * Whatever went wrong, let 'em have it in JSON over HTTP
-     *
-     * @param \Exception $obj_error
-     * @param int $int_code
      */
-    protected function jsonError(\Exception $obj_error, $int_code)
+    protected function jsonError(\Exception $error, ClientErrorCodes|ServerErrorCodes $code): void
     {
-        $arr_response = [
-            'code' => $int_code,
-            'msg' => ($obj_error instanceof \ErrorException ? 'Internal Error' : 'Exception')
+        $logMessage = sprintf("%s: %s", get_class($error), $error->getMessage());
+        $payload = [
+            'code' => $code->value,
+            'msg' => ($error instanceof \ErrorException ? 'Internal Error' : 'Exception')
         ];
-        $str_log_message = get_class($obj_error) . ': ' . $obj_error->getMessage();
-        if($this->bol_expose_errors) {
-            $arr_response['detail'] = $str_log_message;
+        if ($this->exposeErrors) {
+            $payload['detail'] = $logMessage;
         }
-        if($int_code < 400 || $int_code > 505) {
-            $int_code = 500;
-        }
-        $this->sendResponse($arr_response, $int_code);
-        $this->getLogger()->error("[JAPI] [{$int_code}] Error: {$str_log_message}");
+
+        $this->sendResponse(new Response($code, (string) json_encode($payload, $this->jsonFlags)));
+        $this->getLogger()->error("[JAPI] [{$code->value}] Error: {$logMessage}");
     }
 
     /**
      * Output the response as JSON with HTTP headers
      *
-     * @param array|object $response
-     * @param int $http_code
+     * @param ResponseInterface $response
      */
-    protected function sendResponse($response, $http_code = 200)
+    protected function sendResponse(ResponseInterface $response): void
     {
-        $http_code = min(max($http_code, 100), 505);
-        http_response_code($http_code);
-        header('Content-type: application/json');
-        echo json_encode($response);
+        $response->sendHeaders();
+        echo $response->body();
     }
 
     /**
      * Tell JAPI to expose error detail, or not!
-     *
-     * @param bool $bol_expose
      */
-    public function exposeErrorDetail($bol_expose = true)
+    public function exposeErrorDetail(bool $exposeErrors = true): void
     {
-        $this->bol_expose_errors = $bol_expose;
+        $this->exposeErrors = $exposeErrors;
     }
-
 }

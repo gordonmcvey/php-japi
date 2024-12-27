@@ -20,6 +20,10 @@ declare(strict_types=1);
 
 namespace Docnet\JAPI;
 
+use Docnet\JAPI\Http\Enum\Verbs;
+use Docnet\JAPI\Http\RequestInterface;
+use Docnet\JAPI\Http\ResponseInterface;
+
 /**
  * Base Controller
  *
@@ -31,22 +35,16 @@ namespace Docnet\JAPI;
  */
 abstract class Controller
 {
-    /**
-     * Response data
-     *
-     * @var array<array-key, mixed>|object|null
-     */
-    protected object|array|null $response = null;
-
-    /**
-     * Request body
-     */
-    protected ?string $requestBody = null;
+    protected ?ResponseInterface $response = null;
 
     /**
      * Request body decoded as json
      */
     protected mixed $requestBodyJson = null;
+
+    public function __construct(protected readonly RequestInterface $request)
+    {
+    }
 
     /**
      * Default, empty pre dispatch
@@ -73,7 +71,7 @@ abstract class Controller
      */
     final protected function isPost(): bool
     {
-        return ($_SERVER['REQUEST_METHOD'] === 'POST');
+        return Verbs::POST === $this->request->verb();
     }
 
     /**
@@ -89,16 +87,7 @@ abstract class Controller
      */
     protected function getHeaders(): array
     {
-        if (function_exists('getallheaders')) {
-            return getallheaders();
-        }
-        $headers = [];
-        foreach ($_SERVER as $key => $value) {
-            if (strpos($key, 'HTTP_') === 0) {
-                $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($key, 5)))))] = $value;
-            }
-        }
-        return $headers;
+        return $this->request->headers();
     }
 
     /**
@@ -106,11 +95,7 @@ abstract class Controller
      */
     protected function getBody(): ?string
     {
-        if ($this->requestBody === null) {
-            // We store this as prior to php5.6 this can only be read once
-            $this->requestBody = (string) file_get_contents('php://input');
-        }
-        return $this->requestBody;
+        return $this->request->body();
     }
 
     /**
@@ -131,14 +116,11 @@ abstract class Controller
      */
     protected function getParam(string $key, mixed $default = null, bool $checkJsonBody = false): mixed
     {
-        $query = $this->getQuery($key);
-        if (null !== $query) {
-            return $query;
+        $param = $this->request->param($key, $default);
+        if (null !== $param) {
+            return $param;
         }
-        $post = $this->getPost($key);
-        if (null !== $post) {
-            return $post;
-        }
+
         // Optionally check Json in Body
         if ($checkJsonBody && isset($this->getJson()->$key)) {
             if (null !== $this->getJson()->$key) {
@@ -153,7 +135,7 @@ abstract class Controller
      */
     protected function getQuery(string $key, mixed $default = null): mixed
     {
-        return (isset($_GET[$key]) ? $_GET[$key] : $default);
+        return $this->request->queryParam($key, $default);
     }
 
     /**
@@ -161,15 +143,13 @@ abstract class Controller
      */
     protected function getPost(string $key, mixed $default = null): mixed
     {
-        return (isset($_POST[$key]) ? $_POST[$key] : $default);
+        return $this->request->postParam($key, $default);
     }
 
     /**
      * Set the response object
-     *
-     * @param array<array-key, mixed>|object|null $response
      */
-    protected function setResponse(object|array|null $response): void
+    protected function setResponse(ResponseInterface $response): void
     {
         $this->response = $response;
     }
@@ -177,9 +157,9 @@ abstract class Controller
     /**
      * Get the response data
      *
-     * @return array<array-key, mixed>|object|null
+     * @return ?ResponseInterface
      */
-    public function getResponse(): array|object|null
+    public function getResponse(): ?ResponseInterface
     {
         return $this->response;
     }

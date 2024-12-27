@@ -24,6 +24,12 @@ use Docnet\JAPI\Controller;
 use Docnet\JAPI\Exceptions\Routing as RoutingException;
 use Docnet\JAPI\Exceptions\Auth as AuthException;
 use Docnet\JAPI\Exceptions\AccessDenied as AccessDeniedException;
+use Docnet\JAPI\Http\Enum\HttpCodes\ClientErrorCodes;
+use Docnet\JAPI\Http\Enum\HttpCodes\Factory\HttpCodeFactory;
+use Docnet\JAPI\Http\Enum\HttpCodes\ServerErrorCodes;
+use Docnet\JAPI\Http\Enum\HttpCodes\SuccessCodes;
+use Docnet\JAPI\Http\Response;
+use Docnet\JAPI\Http\ResponseInterface;
 use Psr\Log\LoggerAwareInterface;
 
 /**
@@ -43,9 +49,13 @@ class JAPI implements LoggerAwareInterface
      * Hook up the shutdown function so we always send nice JSON error responses
      *
      * @param bool $exposeErrors Set to true if you want to include more detailed debugging data in error output
+     * @param int $jsonFlags Flag mask for the encoded JSON output.  See the PHP manual for json_encode for valid flags
      */
-    public function __construct(private bool $exposeErrors = false)
-    {
+    public function __construct(
+        private readonly HttpCodeFactory $codeFactory,
+        private bool $exposeErrors = false,
+        private readonly int $jsonFlags = 0
+    ) {
         register_shutdown_function($this->timeToDie(...));
     }
 
@@ -59,16 +69,17 @@ class JAPI implements LoggerAwareInterface
             if ($controller instanceof Controller) {
                 $this->dispatch($controller);
             } else {
-                throw new \Exception('Unable to bootstrap', 500);
+                throw new \Exception('Unable to bootstrap', ServerErrorCodes::INTERNAL_SERVER_ERROR->value);
             }
         } catch (RoutingException $e) {
-            $this->jsonError($e, 404);
+            $this->jsonError($e, ClientErrorCodes::NOT_FOUND);
         } catch (AuthException $e) {
-            $this->jsonError($e, 401);
+            $this->jsonError($e, ClientErrorCodes::UNAUTHORIZED);
         } catch (AccessDeniedException $e) {
-            $this->jsonError($e, 403);
+            $this->jsonError($e, ClientErrorCodes::FORBIDDEN);
         } catch (\Exception $e) {
-            $this->jsonError($e, $e->getCode());
+            $code = $this->codeFactory->fromThrowable($e);
+            $this->jsonError($e, $code);
         }
     }
 
@@ -82,7 +93,9 @@ class JAPI implements LoggerAwareInterface
         $controller->preDispatch();
         $controller->dispatch();
         $controller->postDispatch();
-        $this->sendResponse($controller->getResponse());
+        $response = $controller->getResponse() ?? new Response(SuccessCodes::NO_CONTENT, '');
+
+        $this->sendResponse($response);
     }
 
     /**
@@ -92,45 +105,44 @@ class JAPI implements LoggerAwareInterface
     {
         $error = error_get_last();
         if ($error && in_array($error['type'], [E_ERROR, E_USER_ERROR, E_COMPILE_ERROR])) {
-            $this->jsonError(new \ErrorException($error['message'], 500, 0, $error['file'], $error['line']), 500);
+            $errorCode = ServerErrorCodes::INTERNAL_SERVER_ERROR;
+            $this->jsonError(new \ErrorException(
+                $error['message'],
+                $errorCode->value,
+                0,
+                $error['file'],
+                $error['line'],
+            ), $errorCode);
         }
     }
 
     /**
      * Whatever went wrong, let 'em have it in JSON over HTTP
-     *
-     * @param \Exception $error
-     * @param int $code
      */
-    protected function jsonError(\Exception $error, int $code): void
+    protected function jsonError(\Exception $error, ClientErrorCodes|ServerErrorCodes $code): void
     {
-        $response = [
-            'code' => $code,
+        $logMessage = sprintf("%s: %s", get_class($error), $error->getMessage());
+        $payload = [
+            'code' => $code->value,
             'msg' => ($error instanceof \ErrorException ? 'Internal Error' : 'Exception')
         ];
-        $logMessage = get_class($error) . ': ' . $error->getMessage();
         if ($this->exposeErrors) {
-            $response['detail'] = $logMessage;
+            $payload['detail'] = $logMessage;
         }
-        if ($code < 400 || $code > 505) {
-            $code = 500;
-        }
-        $this->sendResponse($response, $code);
-        $this->getLogger()->error("[JAPI] [{$code}] Error: {$logMessage}");
+
+        $this->sendResponse(new Response($code, (string) json_encode($payload, $this->jsonFlags)));
+        $this->getLogger()->error("[JAPI] [{$code->value}] Error: {$logMessage}");
     }
 
     /**
      * Output the response as JSON with HTTP headers
      *
-     * @param array<array-key, mixed>|object|null $response
-     * @param int $httpCode
+     * @param ResponseInterface $response
      */
-    protected function sendResponse(array|object|null $response, int $httpCode = 200): void
+    protected function sendResponse(ResponseInterface $response): void
     {
-        $httpCode = min(max($httpCode, 100), 505);
-        http_response_code($httpCode);
-        header('Content-type: application/json');
-        echo json_encode($response);
+        $response->sendHeaders();
+        echo $response->body();
     }
 
     /**

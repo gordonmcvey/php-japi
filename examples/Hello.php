@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Copyright 2015 Docnet
  *
@@ -15,6 +18,9 @@
  * limitations under the License.
  */
 
+use Docnet\JAPI\Http\Enum\SuccessCodes;
+use Docnet\JAPI\Http\Response;
+
 /**
  * Example controller class
  *
@@ -28,9 +34,9 @@ class Hello extends \Docnet\JAPI\Controller
      */
     public function dispatch()
     {
-        $this->setResponse(array(
-            'message' => 'Hello, World!'
+        $this->setResponse(new Response(
+            SuccessCodes::OK,
+            json_encode(['message' => 'Hello, World!']),
         ));
     }
-
 }

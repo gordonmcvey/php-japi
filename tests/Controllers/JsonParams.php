@@ -1,21 +1,18 @@
 <?php
 
+use Docnet\JAPI\Http\Enum\HttpCodes\SuccessCodes;
+use Docnet\JAPI\Http\Response;
+
 class JsonParams extends \Docnet\JAPI\Controller
 {
 
     public function dispatch(){
-        $this->setResponse([
-            'json_param' => $this->getParam('json_param', 'default_value', true),
-            'missing_param' => $this->getParam('missing_param', 'default_value', true)
-        ]);
-    }
-
-    /**
-     * Helper function to set the body
-     *
-     * @param string $str_body
-     */
-    public function setBody($str_body) {
-        $this->requestBody = $str_body;
+        $this->setResponse(new Response(
+            SuccessCodes::OK,
+            json_encode([
+                'json_param'    => $this->getParam('json_param', 'default_value', true),
+                'missing_param' => $this->getParam('missing_param', 'default_value', true)
+            ]),
+        ));
     }
 }

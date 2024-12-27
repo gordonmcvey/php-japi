@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\Http\Enum;
+namespace Docnet\JAPI\Http\Enum\HttpCodes;
 
 enum SuccessCodes: int
 {

@@ -24,9 +24,10 @@ use Docnet\JAPI\Controller;
 use Docnet\JAPI\Exceptions\Routing as RoutingException;
 use Docnet\JAPI\Exceptions\Auth as AuthException;
 use Docnet\JAPI\Exceptions\AccessDenied as AccessDeniedException;
-use Docnet\JAPI\Http\Enum\ClientErrorCodes;
-use Docnet\JAPI\Http\Enum\ServerErrorCodes;
-use Docnet\JAPI\Http\Enum\SuccessCodes;
+use Docnet\JAPI\Http\Enum\HttpCodes\ClientErrorCodes;
+use Docnet\JAPI\Http\Enum\HttpCodes\Factory\HttpCodeFactory;
+use Docnet\JAPI\Http\Enum\HttpCodes\ServerErrorCodes;
+use Docnet\JAPI\Http\Enum\HttpCodes\SuccessCodes;
 use Docnet\JAPI\Http\Response;
 use Docnet\JAPI\Http\ResponseInterface;
 use Psr\Log\LoggerAwareInterface;
@@ -50,8 +51,11 @@ class JAPI implements LoggerAwareInterface
      * @param bool $exposeErrors Set to true if you want to include more detailed debugging data in error output
      * @param int $jsonFlags Flag mask for the encoded JSON output.  See the PHP manual for json_encode for valid flags
      */
-    public function __construct(private bool $exposeErrors = false, private readonly int $jsonFlags = 0)
-    {
+    public function __construct(
+        private readonly HttpCodeFactory $codeFactory,
+        private bool $exposeErrors = false,
+        private readonly int $jsonFlags = 0
+    ) {
         register_shutdown_function($this->timeToDie(...));
     }
 
@@ -65,7 +69,7 @@ class JAPI implements LoggerAwareInterface
             if ($controller instanceof Controller) {
                 $this->dispatch($controller);
             } else {
-                throw new \Exception('Unable to bootstrap', 500);
+                throw new \Exception('Unable to bootstrap', ServerErrorCodes::INTERNAL_SERVER_ERROR->value);
             }
         } catch (RoutingException $e) {
             $this->jsonError($e, ClientErrorCodes::NOT_FOUND);
@@ -74,16 +78,8 @@ class JAPI implements LoggerAwareInterface
         } catch (AccessDeniedException $e) {
             $this->jsonError($e, ClientErrorCodes::FORBIDDEN);
         } catch (\Exception $e) {
-            $intCode = $e->getCode();
-            $code = match (true) {
-                $intCode >= 400 && $intCode <= 499 => ClientErrorCodes::tryFrom($intCode),
-                $intCode >= 500 && $intCode <= 599 => ServerErrorCodes::tryFrom($intCode),
-                default => ServerErrorCodes::INTERNAL_SERVER_ERROR,
-            };
-
-            // If the above match returned null (which can happen if the error code is 4xx or 5xx but not a value
-            // defined in the specs) then we need to use a default value
-            $this->jsonError($e, $code ?? ServerErrorCodes::INTERNAL_SERVER_ERROR);
+            $code = $this->codeFactory->fromThrowable($e);
+            $this->jsonError($e, $code);
         }
     }
 

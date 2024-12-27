@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Docnet\JAPI\Http;
 
-use Docnet\JAPI\Http\Enum\ClientErrorCodes;
-use Docnet\JAPI\Http\Enum\InfoCodes;
-use Docnet\JAPI\Http\Enum\RedirectCodes;
-use Docnet\JAPI\Http\Enum\ServerErrorCodes;
-use Docnet\JAPI\Http\Enum\SuccessCodes;
+use Docnet\JAPI\Http\Enum\HttpCodes\ClientErrorCodes;
+use Docnet\JAPI\Http\Enum\HttpCodes\InfoCodes;
+use Docnet\JAPI\Http\Enum\HttpCodes\RedirectCodes;
+use Docnet\JAPI\Http\Enum\HttpCodes\ServerErrorCodes;
+use Docnet\JAPI\Http\Enum\HttpCodes\SuccessCodes;
 use Stringable;
 
 class Response implements ResponseInterface, Stringable

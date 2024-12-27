@@ -1,6 +1,6 @@
 <?php
 
-use Docnet\JAPI\Http\Enum\SuccessCodes;
+use Docnet\JAPI\Http\Enum\HttpCodes\SuccessCodes;
 use Docnet\JAPI\Http\Response;
 
 class Example extends \Docnet\JAPI\Controller

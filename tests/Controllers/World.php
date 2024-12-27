@@ -1,8 +1,9 @@
 <?php
 namespace Hello;
 
-use Docnet\JAPI\Http\Enum\SuccessCodes;
+use Docnet\JAPI\Http\Enum\HttpCodes\SuccessCodes;
 use Docnet\JAPI\Http\Response;
+
 class World extends \Docnet\JAPI\Controller
 {
     public function dispatch(){

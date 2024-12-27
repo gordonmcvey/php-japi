@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Docnet\JAPI\Http\Enum\SuccessCodes;
+use Docnet\JAPI\Http\Enum\HttpCodes\SuccessCodes;
 use Docnet\JAPI\Http\Response;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

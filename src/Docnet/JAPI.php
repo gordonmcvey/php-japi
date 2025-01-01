@@ -24,12 +24,12 @@ use Docnet\JAPI\Controller;
 use Docnet\JAPI\Exceptions\Routing as RoutingException;
 use Docnet\JAPI\Exceptions\Auth as AuthException;
 use Docnet\JAPI\Exceptions\AccessDenied as AccessDeniedException;
-use Docnet\JAPI\Http\Enum\HttpCodes\ClientErrorCodes;
-use Docnet\JAPI\Http\Enum\HttpCodes\Factory\HttpCodeFactory;
-use Docnet\JAPI\Http\Enum\HttpCodes\ServerErrorCodes;
-use Docnet\JAPI\Http\Enum\HttpCodes\SuccessCodes;
-use Docnet\JAPI\Http\Response;
-use Docnet\JAPI\Http\ResponseInterface;
+use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
+use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
+use gordonmcvey\httpsupport\enum\statuscodes\ServerErrorCodes;
+use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
+use gordonmcvey\httpsupport\Response;
+use gordonmcvey\httpsupport\ResponseInterface;
 use Psr\Log\LoggerAwareInterface;
 
 /**
@@ -52,7 +52,7 @@ class JAPI implements LoggerAwareInterface
      * @param int $jsonFlags Flag mask for the encoded JSON output.  See the PHP manual for json_encode for valid flags
      */
     public function __construct(
-        private readonly HttpCodeFactory $codeFactory,
+        private readonly StatusCodeFactory $codeFactory,
         private bool $exposeErrors = false,
         private readonly int $jsonFlags = 0
     ) {
@@ -136,8 +136,6 @@ class JAPI implements LoggerAwareInterface
 
     /**
      * Output the response as JSON with HTTP headers
-     *
-     * @param ResponseInterface $response
      */
     protected function sendResponse(ResponseInterface $response): void
     {

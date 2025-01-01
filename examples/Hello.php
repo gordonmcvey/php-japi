@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * Copyright 2015 Docnet
  *
@@ -18,8 +16,10 @@ declare(strict_types=1);
  * limitations under the License.
  */
 
-use Docnet\JAPI\Http\Enum\SuccessCodes;
-use Docnet\JAPI\Http\Response;
+declare(strict_types=1);
+
+use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
+use gordonmcvey\httpsupport\Response;
 
 /**
  * Example controller class

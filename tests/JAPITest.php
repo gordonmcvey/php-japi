@@ -1,10 +1,10 @@
 <?php
 
 use Docnet\JAPI;
-use Docnet\JAPI\Http\Enum\HttpCodes\Factory\HttpCodeFactory;
-use Docnet\JAPI\Http\Enum\HttpCodes\SuccessCodes;
-use Docnet\JAPI\Http\RequestInterface;
-use Docnet\JAPI\Http\Response;
+use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
+use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
+use gordonmcvey\httpsupport\RequestInterface;
+use gordonmcvey\httpsupport\Response;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
@@ -79,7 +79,7 @@ class JAPITest extends TestCase
     {
         // Mock JAPI
         $obj_japi = $this->getMockBuilder(JAPI::class)
-            ->setConstructorArgs([new HttpCodeFactory()])
+            ->setConstructorArgs([new StatusCodeFactory()])
             ->onlyMethods(['sendResponse', 'jsonError'])
             ->getMock();
 
@@ -99,7 +99,7 @@ class JAPITest extends TestCase
     {
         // Mock JAPI
         $obj_japi = $this->getMockBuilder(JAPI::class)
-            ->setConstructorArgs([new HttpCodeFactory()])
+            ->setConstructorArgs([new StatusCodeFactory()])
             ->onlyMethods(['sendResponse', 'jsonError'])
             ->getMock();
 
@@ -147,7 +147,7 @@ class JAPITest extends TestCase
 
         // Mock JAPI
         $obj_japi = $this->getMockBuilder(JAPI::class)
-            ->setConstructorArgs([new HttpCodeFactory()])
+            ->setConstructorArgs([new StatusCodeFactory()])
             ->onlyMethods(['sendResponse'])
             ->getMock();
 
@@ -164,7 +164,7 @@ class JAPITest extends TestCase
     {
         // Mock JAPI
         $obj_japi = $this->getMockBuilder(JAPI::class)
-            ->setConstructorArgs([new HttpCodeFactory()])
+            ->setConstructorArgs([new StatusCodeFactory()])
             ->onlyMethods(['sendResponse'])
             ->getMock();
 

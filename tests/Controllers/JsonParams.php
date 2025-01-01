@@ -1,7 +1,7 @@
 <?php
 
-use Docnet\JAPI\Http\Enum\HttpCodes\SuccessCodes;
-use Docnet\JAPI\Http\Response;
+use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
+use gordonmcvey\httpsupport\Response;
 
 class JsonParams extends \Docnet\JAPI\Controller
 {

@@ -20,9 +20,9 @@ declare(strict_types=1);
 
 namespace Docnet\JAPI;
 
-use Docnet\JAPI\Http\Enum\Verbs;
-use Docnet\JAPI\Http\RequestInterface;
-use Docnet\JAPI\Http\ResponseInterface;
+use gordonmcvey\httpsupport\enum\Verbs;
+use gordonmcvey\httpsupport\RequestInterface;
+use gordonmcvey\httpsupport\ResponseInterface;
 
 /**
  * Base Controller

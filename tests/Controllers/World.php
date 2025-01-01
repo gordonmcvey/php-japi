@@ -1,8 +1,8 @@
 <?php
 namespace Hello;
 
-use Docnet\JAPI\Http\Enum\HttpCodes\SuccessCodes;
-use Docnet\JAPI\Http\Response;
+use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
+use gordonmcvey\httpsupport\Response;
 
 class World extends \Docnet\JAPI\Controller
 {

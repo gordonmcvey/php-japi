@@ -1,6 +1,5 @@
 <?php
 
-use Docnet\JAPI\Http\Request;
 /**
  * Copyright 2015 Docnet
  *
@@ -17,6 +16,9 @@ use Docnet\JAPI\Http\Request;
  * limitations under the License.
  */
 
+use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
+use gordonmcvey\httpsupport\Request;
+
 /**
  * Trivial JAPI bootstrap
  *
@@ -29,7 +31,7 @@ require_once(BASE_PATH . '/vendor/autoload.php');
 require_once('Hello.php');
 
 // Demo
-(new \Docnet\JAPI())->bootstrap(function(){
+(new \Docnet\JAPI(new StatusCodeFactory()))->bootstrap(function(){
 
     $obj_router = new \Docnet\JAPI\SolidRouter();
     $obj_router->route('/hello');

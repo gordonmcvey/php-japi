@@ -1,7 +1,7 @@
 <?php
 
-use Docnet\JAPI\Http\Enum\Verbs;
-use Docnet\JAPI\Http\RequestInterface;
+use gordonmcvey\httpsupport\enum\Verbs;
+use gordonmcvey\httpsupport\RequestInterface;
 use PHPUnit\Framework\TestCase;
 
 require_once 'Controllers/Example.php';

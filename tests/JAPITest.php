@@ -24,9 +24,9 @@ class JAPITest extends TestCase
         // Mocked controller & expectations
         $obj_controller = $this->getMockBuilder(Example::class)->disableOriginalConstructor()->getMock();
         
-        $obj_controller->expects($this->once())->method('preDispatch');
+        // $obj_controller->expects($this->once())->method('preDispatch');
         $obj_controller->expects($this->once())->method('dispatch');
-        $obj_controller->expects($this->once())->method('postDispatch');
+        // $obj_controller->expects($this->once())->method('postDispatch');
 
         // Mock JAPI (just replace the sendResponse method to avoid output errors)
         $obj_japi = $this->getMockBuilder(JAPI::class)
@@ -46,9 +46,9 @@ class JAPITest extends TestCase
         // Mocked controller & expectations
         $obj_controller = $this->getMockBuilder(Example::class)->disableOriginalConstructor()->getMock();
 
-        $obj_controller->expects($this->once())->method('preDispatch');
+        // $obj_controller->expects($this->once())->method('preDispatch');
         $obj_controller->expects($this->once())->method('dispatch');
-        $obj_controller->expects($this->once())->method('postDispatch');
+        // $obj_controller->expects($this->once())->method('postDispatch');
 
         // Mock JAPI (just replace the sendResponse method to avoid output errors)
         $obj_japi = $this->getMockBuilder(JAPI::class)

@@ -18,25 +18,26 @@
 
 declare(strict_types=1);
 
+use Docnet\JAPI\controller\Controller;
 use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
 use gordonmcvey\httpsupport\Response;
+use gordonmcvey\httpsupport\ResponseInterface;
 
 /**
  * Example controller class
  *
  * @author Tom Walder <tom@docnet.nu>
  */
-class Hello extends \Docnet\JAPI\Controller
+class Hello extends Controller
 {
-
     /**
      * Hello, World!
      */
-    public function dispatch()
+    public function dispatch(): ?ResponseInterface
     {
-        $this->setResponse(new Response(
+        return new Response(
             SuccessCodes::OK,
             json_encode(['message' => 'Hello, World!']),
-        ));
+        );
     }
 }

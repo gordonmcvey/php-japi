@@ -90,11 +90,7 @@ class JAPI implements LoggerAwareInterface
      */
     public function dispatch(Controller $controller): void
     {
-        $controller->preDispatch();
-        $controller->dispatch();
-        $controller->postDispatch();
-        $response = $controller->getResponse() ?? new Response(SuccessCodes::NO_CONTENT, '');
-
+        $response = $controller->dispatch() ?? new Response(SuccessCodes::NO_CONTENT, '');
         $this->sendResponse($response);
     }
 

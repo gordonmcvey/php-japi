@@ -17,8 +17,7 @@ class ControllerTest extends TestCase
     public function testBasicResponse()
     {
         $obj_controller = new Example($this->createMock(RequestInterface::class));
-        $obj_controller->dispatch();
-        $response = $obj_controller->getResponse();
+        $response = $obj_controller->dispatch();
 
         $this->assertEquals((object) ['test' => true], json_decode($response->body()));
     }
@@ -29,8 +28,7 @@ class ControllerTest extends TestCase
         $request->expects($this->once())->method("queryParam")->with("input1")->willReturn("value1");
 
         $obj_controller = new \Hello\World($request);
-        $obj_controller->dispatch();
-        $obj_response = json_decode($obj_controller->getResponse()->body());
+        $obj_response = json_decode($obj_controller->dispatch()->body());
 
         $this->assertEquals('value1', $obj_response->input1);
     }
@@ -41,8 +39,8 @@ class ControllerTest extends TestCase
         $request->expects($this->once())->method("postParam")->with("input2")->willReturn("value2");
 
         $obj_controller = new \Hello\World($request);
-        $obj_controller->dispatch();
-        $obj_response = json_decode($obj_controller->getResponse()->body());
+        $obj_response = json_decode($obj_controller->dispatch()->body());
+
         $this->assertEquals('value2', $obj_response->input2);
     }
 
@@ -55,8 +53,7 @@ class ControllerTest extends TestCase
         ]);
 
         $obj_controller = new \Hello\World($request);
-        $obj_controller->dispatch();
-        $obj_response = json_decode(json: $obj_controller->getResponse()->body());
+        $obj_response = json_decode(json: $obj_controller->dispatch()->body());
 
         $this->assertEquals("value3", $obj_response->input3);
         $this->assertEquals("value4", $obj_response->input4);
@@ -82,8 +79,7 @@ class ControllerTest extends TestCase
         $request->expects($this->once())->method('headers')->willReturn(['Some-Header' => true]);
 
         $obj_controller = new Headers($request);
-        $obj_controller->dispatch();
-        $obj_response = json_decode(json: $obj_controller->getResponse()->body());
+        $obj_response = json_decode(json: $obj_controller->dispatch()->body());
 
         $this->assertEquals(true, $obj_response->{'Some-Header'});
     }
@@ -95,9 +91,7 @@ class ControllerTest extends TestCase
         $request->expects($this->once())->method('body')->willReturn($str_json);
 
         $obj_controller = new \JsonParams($request);
-//        $obj_controller->setBody($str_json);
-        $obj_controller->dispatch();
-        $obj_response = json_decode($obj_controller->getResponse()->body());
+        $obj_response = json_decode($obj_controller->dispatch()->body());
 
         $this->assertEquals('param_found', $obj_response->json_param);
         $this->assertEquals('default_value', $obj_response->missing_param);

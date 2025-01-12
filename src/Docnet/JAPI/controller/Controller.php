@@ -33,7 +33,7 @@ use gordonmcvey\httpsupport\ResponseInterface;
  * @author Tom Walder <tom@docnet.nu>
  * @abstract
  */
-abstract class Controller
+abstract class Controller implements ControllerInterface
 {
     protected ?ResponseInterface $response = null;
 
@@ -43,24 +43,6 @@ abstract class Controller
     protected mixed $requestBodyJson = null;
 
     public function __construct(protected readonly RequestInterface $request)
-    {
-    }
-
-    /**
-     * Default, empty pre dispatch
-     *
-     * Usually overridden for authentication
-     */
-    public function preDispatch(): void
-    {
-    }
-
-    /**
-     * Default, empty post dispatch
-     *
-     * Available for override - perhaps for UOW DB writes?
-     */
-    public function postDispatch(): void
     {
     }
 
@@ -145,29 +127,4 @@ abstract class Controller
     {
         return $this->request->postParam($key, $default);
     }
-
-    /**
-     * Set the response object
-     */
-    protected function setResponse(ResponseInterface $response): void
-    {
-        $this->response = $response;
-    }
-
-    /**
-     * Get the response data
-     *
-     * @return ?ResponseInterface
-     */
-    public function getResponse(): ?ResponseInterface
-    {
-        return $this->response;
-    }
-
-    /**
-     * Main dispatch method
-     *
-     * @return mixed
-     */
-    abstract public function dispatch();
 }

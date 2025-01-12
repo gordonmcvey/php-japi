@@ -1,6 +1,10 @@
 <?php
+
 namespace One\Two;
-class Three extends \Docnet\JAPI\Controller
+
+use Docnet\JAPI\Controller\Controller;
+
+class Three extends Controller
 {
     public function dispatch(){}
 }

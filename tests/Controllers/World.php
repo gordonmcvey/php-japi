@@ -1,10 +1,13 @@
 <?php
+
 namespace Hello;
+
+use Docnet\JAPI\Controller\Controller;
 
 use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
 use gordonmcvey\httpsupport\Response;
 
-class World extends \Docnet\JAPI\Controller
+class World extends Controller
 {
     public function dispatch(){
         $this->setResponse(new Response(

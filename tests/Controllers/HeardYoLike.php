@@ -1,6 +1,10 @@
 <?php
+
 namespace YoDawg;
-class HeardYoLike extends \Docnet\JAPI\Controller
+
+use Docnet\JAPI\Controller\Controller;
+
+class HeardYoLike extends Controller
 {
     public function dispatch(){}
 }

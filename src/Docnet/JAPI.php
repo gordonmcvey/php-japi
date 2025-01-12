@@ -20,7 +20,7 @@ declare(strict_types=1);
 
 namespace Docnet;
 
-use Docnet\JAPI\Controller;
+use Docnet\JAPI\controller\Controller;
 use Docnet\JAPI\Exceptions\Routing as RoutingException;
 use Docnet\JAPI\Exceptions\Auth as AuthException;
 use Docnet\JAPI\Exceptions\AccessDenied as AccessDeniedException;

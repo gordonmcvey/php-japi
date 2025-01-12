@@ -1,9 +1,10 @@
 <?php
 
+use Docnet\JAPI\Controller\Controller;
 use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
 use gordonmcvey\httpsupport\Response;
 
-class JsonParams extends \Docnet\JAPI\Controller
+class JsonParams extends Controller
 {
 
     public function dispatch(){

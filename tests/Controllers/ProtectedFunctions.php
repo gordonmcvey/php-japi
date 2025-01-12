@@ -1,6 +1,8 @@
 <?php
 
-class ProtectedFunctions extends \Docnet\JAPI\Controller
+use Docnet\JAPI\Controller\Controller;
+
+class ProtectedFunctions extends Controller
 {
 
     public function dispatch(){

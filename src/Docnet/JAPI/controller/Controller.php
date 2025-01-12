@@ -18,7 +18,7 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI;
+namespace Docnet\JAPI\controller;
 
 use gordonmcvey\httpsupport\enum\Verbs;
 use gordonmcvey\httpsupport\RequestInterface;

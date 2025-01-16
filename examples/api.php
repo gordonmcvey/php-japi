@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 
+use Docnet\JAPI;
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\Request;
 
@@ -31,11 +32,12 @@ require_once(BASE_PATH . '/vendor/autoload.php');
 require_once('Hello.php');
 
 // Demo
-(new \Docnet\JAPI(new StatusCodeFactory()))->bootstrap(function(){
+$request = Request::fromSuperGlobals();
+(new JAPI(new StatusCodeFactory()))->bootstrap(function() use ($request){
 
     $obj_router = new \Docnet\JAPI\SolidRouter();
     $obj_router->route('/hello');
 
     $str_controller = $obj_router->getController();
-    return new $str_controller(Request::fromSuperGlobals());
-});
+    return new $str_controller($request);
+}, $request);

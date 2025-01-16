@@ -20,7 +20,6 @@ declare(strict_types=1);
 
 namespace Docnet\JAPI\controller;
 
-use gordonmcvey\httpsupport\enum\Verbs;
 use gordonmcvey\httpsupport\RequestInterface;
 use gordonmcvey\httpsupport\ResponseInterface;
 
@@ -33,7 +32,7 @@ use gordonmcvey\httpsupport\ResponseInterface;
  * @author Tom Walder <tom@docnet.nu>
  * @abstract
  */
-abstract class Controller implements ControllerInterface
+abstract class Controller implements RequestHandlerInterface
 {
     protected ?ResponseInterface $response = null;
 
@@ -42,38 +41,17 @@ abstract class Controller implements ControllerInterface
      */
     protected mixed $requestBodyJson = null;
 
+    /**
+     * @todo Remove request object from constructor
+     */
     public function __construct(protected readonly RequestInterface $request)
     {
     }
 
     /**
-     * Was there an HTTP POST?
-     *
-     * Realistically, we're probably not going to use PUT, DELETE (for now)
-     */
-    final protected function isPost(): bool
-    {
-        return Verbs::POST === $this->request->verb();
-    }
-
-    /**
-     * Get the HTTP request headers
-     *
-     * getallheaders() available for CGI (in addition to Apache) from PHP 5.4
-     *
-     * Fall back to manual processing of $_SERVER if needed
-     *
-     * @todo Test on Google App Engine
-     *
-     * @return array<string, mixed>
-     */
-    protected function getHeaders(): array
-    {
-        return $this->request->headers();
-    }
-
-    /**
      * Get the request body
+     *
+     * @deprecated message Will be removed the request-on-construct logic is completely removed
      */
     protected function getBody(): ?string
     {
@@ -84,6 +62,7 @@ abstract class Controller implements ControllerInterface
      * Get the request body as a JSON object
      *
      * @return mixed
+     * @deprecated message Will be removed the request-on-construct logic is completely removed
      */
     protected function getJson(): mixed
     {
@@ -95,6 +74,7 @@ abstract class Controller implements ControllerInterface
 
     /**
      * Get a request parameter. Check GET then POST data, then optionally any json body data.
+     * @deprecated message Will be removed the request-on-construct logic is completely removed
      */
     protected function getParam(string $key, mixed $default = null, bool $checkJsonBody = false): mixed
     {
@@ -104,27 +84,13 @@ abstract class Controller implements ControllerInterface
         }
 
         // Optionally check Json in Body
+        // @todo Refactor into the Request class param() method
         if ($checkJsonBody && isset($this->getJson()->$key)) {
             if (null !== $this->getJson()->$key) {
                 return $this->getJson()->$key;
             }
         }
+
         return $default;
-    }
-
-    /**
-     * Get a Query/GET input parameter
-     */
-    protected function getQuery(string $key, mixed $default = null): mixed
-    {
-        return $this->request->queryParam($key, $default);
-    }
-
-    /**
-     * Get a POST parameter
-     */
-    protected function getPost(string $key, mixed $default = null): mixed
-    {
-        return $this->request->postParam($key, $default);
     }
 }

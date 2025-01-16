@@ -28,6 +28,7 @@ use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
 use gordonmcvey\httpsupport\enum\statuscodes\ServerErrorCodes;
 use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
+use gordonmcvey\httpsupport\RequestInterface;
 use gordonmcvey\httpsupport\Response;
 use gordonmcvey\httpsupport\ResponseInterface;
 use Psr\Log\LoggerAwareInterface;
@@ -62,12 +63,12 @@ class JAPI implements LoggerAwareInterface
     /**
      * Optionally, encapsulate the bootstrap in a try/catch
      */
-    public function bootstrap(Controller|callable $controllerSource): void
+    public function bootstrap(Controller|callable $controllerSource, RequestInterface $request): void
     {
         try {
             $controller = is_callable($controllerSource) ? $controllerSource() : $controllerSource;
             if ($controller instanceof Controller) {
-                $this->dispatch($controller);
+                $this->dispatch($controller, $request);
             } else {
                 throw new \Exception('Unable to bootstrap', ServerErrorCodes::INTERNAL_SERVER_ERROR->value);
             }
@@ -88,9 +89,9 @@ class JAPI implements LoggerAwareInterface
      *
      * @param Controller $controller
      */
-    public function dispatch(Controller $controller): void
+    public function dispatch(Controller $controller, RequestInterface $request): void
     {
-        $response = $controller->dispatch() ?? new Response(SuccessCodes::NO_CONTENT, '');
+        $response = $controller->dispatch($request) ?? new Response(SuccessCodes::NO_CONTENT, '');
         $this->sendResponse($response);
     }
 

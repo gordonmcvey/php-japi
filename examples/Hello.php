@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 use Docnet\JAPI\controller\Controller;
 use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
+use gordonmcvey\httpsupport\RequestInterface;
 use gordonmcvey\httpsupport\Response;
 use gordonmcvey\httpsupport\ResponseInterface;
 
@@ -33,7 +34,7 @@ class Hello extends Controller
     /**
      * Hello, World!
      */
-    public function dispatch(): ?ResponseInterface
+    public function dispatch(RequestInterface $request): ?ResponseInterface
     {
         return new Response(
             SuccessCodes::OK,

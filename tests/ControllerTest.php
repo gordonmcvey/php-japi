@@ -1,6 +1,7 @@
 <?php
 
 use gordonmcvey\httpsupport\enum\Verbs;
+use gordonmcvey\httpsupport\JsonRequestInterface;
 use gordonmcvey\httpsupport\RequestInterface;
 use PHPUnit\Framework\TestCase;
 
@@ -87,9 +88,13 @@ class ControllerTest extends TestCase
 
     public function testJsonBodyParam()
     {
-        $str_json = '{"json_param": "param_found"}';
-        $request = $this->createMock(RequestInterface::class);
-        $request->expects($this->once())->method('body')->willReturn($str_json);
+        $request = $this->createMock(JsonRequestInterface::class);
+        $request->expects($this->exactly(2))
+            ->method("param")
+            ->willReturnMap([
+                ["json_param", "default_value", "param_found"],
+                ["missing_param", "default_value", "default_value"],
+            ]);
 
         $obj_controller = new \JsonParams($request);
         $obj_response = json_decode($obj_controller->dispatch($request)->body());

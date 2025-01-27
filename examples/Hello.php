@@ -18,7 +18,7 @@
 
 declare(strict_types=1);
 
-use Docnet\JAPI\controller\Controller;
+use Docnet\JAPI\controller\RequestHandlerInterface;
 use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
 use gordonmcvey\httpsupport\RequestInterface;
 use gordonmcvey\httpsupport\Response;
@@ -29,7 +29,7 @@ use gordonmcvey\httpsupport\ResponseInterface;
  *
  * @author Tom Walder <tom@docnet.nu>
  */
-class Hello extends Controller
+class Hello implements RequestHandlerInterface
 {
     /**
      * Hello, World!

@@ -1,12 +1,12 @@
 <?php
 
-use Docnet\JAPI\Controller\Controller;
+use Docnet\JAPI\controller\RequestHandlerInterface;
 use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
 use gordonmcvey\httpsupport\RequestInterface;
 use gordonmcvey\httpsupport\Response;
 use gordonmcvey\httpsupport\ResponseInterface;
 
-class Headers extends Controller
+class Headers implements RequestHandlerInterface
 {
     public function dispatch(RequestInterface $request): ?ResponseInterface
     {

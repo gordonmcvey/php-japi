@@ -17,6 +17,7 @@
  */
 
 use Docnet\JAPI;
+use Docnet\JAPI\controller\RequestHandlerInterface;
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\Request;
 
@@ -33,11 +34,14 @@ require_once('Hello.php');
 
 // Demo
 $request = Request::fromSuperGlobals();
-(new JAPI(new StatusCodeFactory()))->bootstrap(function() use ($request){
+(new JAPI(new StatusCodeFactory()))
+    ->bootstrap(
+            function(): RequestHandlerInterface {
+            $obj_router = new \Docnet\JAPI\SolidRouter();
+            $obj_router->route('/hello');
 
-    $obj_router = new \Docnet\JAPI\SolidRouter();
-    $obj_router->route('/hello');
-
-    $str_controller = $obj_router->getController();
-    return new $str_controller($request);
-}, $request);
+            $str_controller = $obj_router->getController();
+            return new $str_controller();
+        },
+        $request
+    );

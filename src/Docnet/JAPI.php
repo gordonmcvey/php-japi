@@ -20,7 +20,7 @@ declare(strict_types=1);
 
 namespace Docnet;
 
-use Docnet\JAPI\controller\Controller;
+use Docnet\JAPI\controller\RequestHandlerInterface;
 use Docnet\JAPI\Exceptions\Routing as RoutingException;
 use Docnet\JAPI\Exceptions\Auth as AuthException;
 use Docnet\JAPI\Exceptions\AccessDenied as AccessDeniedException;
@@ -63,11 +63,11 @@ class JAPI implements LoggerAwareInterface
     /**
      * Optionally, encapsulate the bootstrap in a try/catch
      */
-    public function bootstrap(Controller|callable $controllerSource, RequestInterface $request): void
+    public function bootstrap(RequestHandlerInterface|callable $controllerSource, RequestInterface $request): void
     {
         try {
             $controller = is_callable($controllerSource) ? $controllerSource() : $controllerSource;
-            if ($controller instanceof Controller) {
+            if ($controller instanceof RequestHandlerInterface) {
                 $this->dispatch($controller, $request);
             } else {
                 throw new \Exception('Unable to bootstrap', ServerErrorCodes::INTERNAL_SERVER_ERROR->value);
@@ -86,10 +86,8 @@ class JAPI implements LoggerAwareInterface
 
     /**
      * Go, Johnny, Go!
-     *
-     * @param Controller $controller
      */
-    public function dispatch(Controller $controller, RequestInterface $request): void
+    public function dispatch(RequestHandlerInterface $controller, RequestInterface $request): void
     {
         $response = $controller->dispatch($request) ?? new Response(SuccessCodes::NO_CONTENT, '');
         $this->sendResponse($response);

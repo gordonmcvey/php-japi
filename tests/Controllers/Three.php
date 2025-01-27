@@ -2,11 +2,11 @@
 
 namespace One\Two;
 
-use Docnet\JAPI\Controller\Controller;
+use Docnet\JAPI\controller\RequestHandlerInterface;
 use gordonmcvey\httpsupport\RequestInterface;
 use gordonmcvey\httpsupport\ResponseInterface;
 
-class Three extends Controller
+class Three implements RequestHandlerInterface
 {
     public function dispatch(RequestInterface $request): ?ResponseInterface
     {

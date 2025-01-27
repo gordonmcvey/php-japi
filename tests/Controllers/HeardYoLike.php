@@ -2,11 +2,11 @@
 
 namespace YoDawg;
 
-use Docnet\JAPI\Controller\Controller;
+use Docnet\JAPI\controller\RequestHandlerInterface;
 use gordonmcvey\httpsupport\RequestInterface;
 use gordonmcvey\httpsupport\ResponseInterface;
 
-class HeardYoLike extends Controller
+class HeardYoLike implements RequestHandlerInterface
 {
     public function dispatch(RequestInterface $requestInterface): ?ResponseInterface
     {

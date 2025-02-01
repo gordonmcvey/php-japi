@@ -28,9 +28,10 @@ use gordonmcvey\httpsupport\Request;
  */
 
 // Includes or Auto-loader
-define('BASE_PATH', dirname(dirname(__FILE__)));
-require_once(BASE_PATH . '/vendor/autoload.php');
-require_once('Hello.php');
+define('BASE_PATH', dirname( __DIR__, 2));
+
+require_once BASE_PATH . '/vendor/autoload.php';
+require_once 'Hello.php';
 
 // Demo
 $request = Request::fromSuperGlobals();

@@ -40,7 +40,12 @@ class Hello implements MiddlewareProviderInterface, RequestHandlerInterface
      */
     public function dispatch(RequestInterface $request): ?ResponseInterface
     {
-        error_log(message: sprintf("%s", __METHOD__));
+        error_log(message: sprintf(
+            "%s: handling request %s",
+            __METHOD__,
+            $request->header("X-Middleware-Profile-Request-Id"),
+        ));
+
         return new Response(
             SuccessCodes::OK,
             json_encode(new stdClass),

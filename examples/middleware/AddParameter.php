@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 use Docnet\JAPI\controller\RequestHandlerInterface;
 use Docnet\JAPI\middleware\MiddlewareInterface;
-use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
 use gordonmcvey\httpsupport\RequestInterface;
-use gordonmcvey\httpsupport\Response;
 use gordonmcvey\httpsupport\ResponseInterface;
 
 class AddParameter implements MiddlewareInterface
@@ -20,6 +18,6 @@ class AddParameter implements MiddlewareInterface
         $payload = json_decode($response->body());
         $payload->{$this->key} = $this->value;
 
-        return new Response(SuccessCodes::OK, (string) json_encode($payload, JSON_PRETTY_PRINT));
+        return $response->setBody(json_encode($payload, JSON_PRETTY_PRINT));
     }
 }

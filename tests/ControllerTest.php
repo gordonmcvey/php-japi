@@ -1,6 +1,5 @@
 <?php
 
-use gordonmcvey\httpsupport\enum\Verbs;
 use gordonmcvey\httpsupport\JsonRequestInterface;
 use gordonmcvey\httpsupport\RequestInterface;
 use PHPUnit\Framework\TestCase;

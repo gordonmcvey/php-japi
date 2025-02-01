@@ -20,14 +20,18 @@ declare(strict_types=1);
 
 namespace Docnet;
 
-use Docnet\JAPI\Controller;
+use Docnet\JAPI\controller\RequestHandlerInterface;
 use Docnet\JAPI\Exceptions\Routing as RoutingException;
 use Docnet\JAPI\Exceptions\Auth as AuthException;
 use Docnet\JAPI\Exceptions\AccessDenied as AccessDeniedException;
+use Docnet\JAPI\middleware\CallStack;
+use Docnet\JAPI\middleware\MiddlewareProviderInterface;
+use Docnet\JAPI\middleware\MiddlewareProviderTrait;
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
 use gordonmcvey\httpsupport\enum\statuscodes\ServerErrorCodes;
 use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
+use gordonmcvey\httpsupport\RequestInterface;
 use gordonmcvey\httpsupport\Response;
 use gordonmcvey\httpsupport\ResponseInterface;
 use Psr\Log\LoggerAwareInterface;
@@ -41,8 +45,9 @@ use Psr\Log\LoggerAwareInterface;
  *
  * @author Tom Walder <tom@docnet.nu>
  */
-class JAPI implements LoggerAwareInterface
+class JAPI implements MiddlewareProviderInterface, LoggerAwareInterface
 {
+    use MiddlewareProviderTrait;
     use HasLogger;
 
     /**
@@ -62,12 +67,12 @@ class JAPI implements LoggerAwareInterface
     /**
      * Optionally, encapsulate the bootstrap in a try/catch
      */
-    public function bootstrap(Controller|callable $controllerSource): void
+    public function bootstrap(RequestHandlerInterface|callable $controllerSource, RequestInterface $request): void
     {
         try {
             $controller = is_callable($controllerSource) ? $controllerSource() : $controllerSource;
-            if ($controller instanceof Controller) {
-                $this->dispatch($controller);
+            if ($controller instanceof RequestHandlerInterface) {
+                $this->dispatch($controller, $request);
             } else {
                 throw new \Exception('Unable to bootstrap', ServerErrorCodes::INTERNAL_SERVER_ERROR->value);
             }
@@ -85,16 +90,19 @@ class JAPI implements LoggerAwareInterface
 
     /**
      * Go, Johnny, Go!
-     *
-     * @param Controller $controller
      */
-    public function dispatch(Controller $controller): void
+    public function dispatch(RequestHandlerInterface $controller, RequestInterface $request): void
     {
-        $controller->preDispatch();
-        $controller->dispatch();
-        $controller->postDispatch();
-        $response = $controller->getResponse() ?? new Response(SuccessCodes::NO_CONTENT, '');
+        // @todo Make the coupling looser here, maybe with a factory?
+        $callStack = new CallStack($controller);
 
+        if ($controller instanceof MiddlewareProviderInterface) {
+            $callStack->fromProvider($controller);
+        }
+
+        $callStack->fromProvider($this);
+
+        $response = $callStack->dispatch($request) ?? new Response(SuccessCodes::NO_CONTENT, '');
         $this->sendResponse($response);
     }
 

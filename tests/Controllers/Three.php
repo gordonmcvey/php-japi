@@ -1,6 +1,15 @@
 <?php
+
 namespace One\Two;
-class Three extends \Docnet\JAPI\Controller
+
+use Docnet\JAPI\controller\RequestHandlerInterface;
+use gordonmcvey\httpsupport\RequestInterface;
+use gordonmcvey\httpsupport\ResponseInterface;
+
+class Three implements RequestHandlerInterface
 {
-    public function dispatch(){}
+    public function dispatch(RequestInterface $request): ?ResponseInterface
+    {
+        return null;
+    }
 }

@@ -18,25 +18,32 @@
 
 declare(strict_types=1);
 
+use Docnet\JAPI\controller\RequestHandlerInterface;
+use Docnet\JAPI\middleware\MiddlewareProviderInterface;
+use Docnet\JAPI\middleware\MiddlewareProviderTrait;
 use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
+use gordonmcvey\httpsupport\RequestInterface;
 use gordonmcvey\httpsupport\Response;
+use gordonmcvey\httpsupport\ResponseInterface;
 
 /**
  * Example controller class
  *
  * @author Tom Walder <tom@docnet.nu>
  */
-class Hello extends \Docnet\JAPI\Controller
+class Hello implements MiddlewareProviderInterface, RequestHandlerInterface
 {
+    use MiddlewareProviderTrait;
 
     /**
      * Hello, World!
      */
-    public function dispatch()
+    public function dispatch(RequestInterface $request): ?ResponseInterface
     {
-        $this->setResponse(new Response(
+        error_log(message: sprintf("%s", __METHOD__));
+        return new Response(
             SuccessCodes::OK,
-            json_encode(['message' => 'Hello, World!']),
-        ));
+            json_encode(new stdClass),
+        );
     }
 }

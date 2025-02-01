@@ -7,6 +7,8 @@ namespace Docnet\JAPI\test\integration\middleware;
 use Docnet\JAPI\controller\RequestHandlerInterface;
 use Docnet\JAPI\middleware\CallStack;
 use Docnet\JAPI\middleware\MiddlewareInterface;
+use Docnet\JAPI\middleware\MiddlewareProviderInterface;
+use Docnet\JAPI\middleware\MiddlewareProviderTrait;
 use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
 use gordonmcvey\httpsupport\Request;
 use gordonmcvey\httpsupport\RequestInterface;
@@ -158,5 +160,49 @@ class CallStackTest extends TestCase
         $this->assertSame("<p>I'm the controller</p>\n" 
             . "<p>The inner middleware was triggered</p>\n" 
             . "<p>The outer middleware was triggered</p>\n", $response->body());
+    }
+
+    #[Test]
+    public function itSupportsMiddlewareFromAProvider(): void
+    {
+        $controller = new class implements RequestHandlerInterface
+        {
+            public function dispatch(RequestInterface $request): ResponseInterface {
+                return new Response(SuccessCodes::OK, "<p>I'm the controller</p>\n");
+            }
+        };
+
+        $outer = new class implements MiddlewareInterface
+        {
+            public function handle(RequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
+                $response = $handler->dispatch($request);
+                return new Response(SuccessCodes::OK, $response->body() . "<p>I'm the outer middleware</p>\n");
+            }
+        };
+
+        $inner = new class implements MiddlewareInterface
+        {
+            public function handle(RequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
+                $response = $handler->dispatch($request);
+                return new Response(SuccessCodes::OK, $response->body() . "<p>I'm the inner middleware</p>\n");
+            }
+        };
+
+        $provider = new class implements MiddlewareProviderInterface
+        {
+            use MiddlewareProviderTrait;
+        };
+
+        $request = new Request([],[], [], [], []);
+
+        $callstack = new CallStack($controller);
+        $callstack->fromProvider($provider->addMiddleware($inner)->addMiddleware($outer));
+        $response = $callstack->dispatch($request);
+
+        // The stack should be called in the order outer -> inner -> controller 
+        // and should return in the order controller -> inner -> outer
+        $this->assertSame("<p>I'm the controller</p>\n" 
+            . "<p>I'm the inner middleware</p>\n" 
+            . "<p>I'm the outer middleware</p>\n", $response->body());
     }
 }

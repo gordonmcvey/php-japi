@@ -23,6 +23,7 @@ namespace Docnet\JAPI\test\unit\middleware;
 use Docnet\JAPI\controller\RequestHandlerInterface;
 use Docnet\JAPI\middleware\CallStack;
 use Docnet\JAPI\middleware\MiddlewareInterface;
+use Docnet\JAPI\middleware\MiddlewareProviderInterface;
 use gordonmcvey\httpsupport\RequestInterface;
 use gordonmcvey\httpsupport\ResponseInterface;
 use PHPUnit\Framework\Attributes\Test;
@@ -122,5 +123,34 @@ class CallStackTest extends TestCase
 
         $this->assertSame($response, $callStack->dispatch($request));
 
+    }
+
+    #[Test]
+    public function itAllowsMiddlewareProviders(): void
+    {
+        $request = $this->createMock(RequestInterface::class);
+        $response = $this->createMock(ResponseInterface::class);
+        $controller = $this->createMock(RequestHandlerInterface::class);
+        $middleware = $this->createMock(MiddlewareInterface::class);
+        $provider = $this->createMock(MiddlewareProviderInterface::class);
+
+        $middleware->expects($this->once())
+            ->method("handle")
+            ->with($request, $controller)
+            ->willReturnCallback(fn(RequestInterface $request): ?ResponseInterface => $controller->dispatch($request));
+
+        $controller->expects($this->once())
+            ->method("dispatch")
+            ->with($request)
+            ->willReturn($response);
+
+        $provider->expects($this->once())
+            ->method("getAllMiddleware")
+            ->willReturn([$middleware]);
+
+        $callStack = new CallStack($controller);
+        $callStack->fromProvider($provider);
+
+        $this->assertSame($response, $callStack->dispatch($request));
     }
 }

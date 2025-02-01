@@ -60,6 +60,15 @@ class CallStack implements RequestHandlerInterface
         return $this->reset()->add($middleware);
     }
 
+    public function fromProvider(MiddlewareProviderInterface $provider): self
+    {
+        foreach ($provider->getAllMiddleware() as $middleware) {
+            $this->add($middleware);
+        }
+
+        return $this;
+    }
+
     public function dispatch(RequestInterface $request): ?ResponseInterface
     {
         return $this->entryPoint->dispatch($request);

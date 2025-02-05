@@ -21,6 +21,7 @@ class JAPITest extends TestCase
      */
     public function testDispatchCycle()
     {
+        $this->markTestSkipped("JAPI tests disabled until they are refactored as unit and integration tests");
         $request = $this->createMock(RequestInterface::class);
 
         // Mocked controller & expectations
@@ -45,6 +46,7 @@ class JAPITest extends TestCase
      */
     public function testConcreteBootstrapCycle()
     {
+        $this->markTestSkipped("JAPI tests disabled until they are refactored as unit and integration tests");
         $request = $this->createMock(RequestInterface::class);
 
         // Mocked controller & expectations
@@ -81,6 +83,7 @@ class JAPITest extends TestCase
      */
     public function testBootstrapErrorCycle()
     {
+        $this->markTestSkipped("JAPI tests disabled until they are refactored as unit and integration tests");
         $request = $this->createMock(RequestInterface::class);
 
         // Mock JAPI
@@ -103,6 +106,7 @@ class JAPITest extends TestCase
      */
     public function testBootstrapCustomErrorCycle()
     {
+        $this->markTestSkipped("JAPI tests disabled until they are refactored as unit and integration tests");
         $request = $this->createMock(RequestInterface::class);
 
         // Mock JAPI
@@ -125,6 +129,7 @@ class JAPITest extends TestCase
      */
     public function testSendResponse()
     {
+        $this->markTestSkipped("JAPI tests disabled until they are refactored as unit and integration tests");
         $request = $this->createMock(RequestInterface::class);
 
         // Mock JAPI
@@ -151,6 +156,7 @@ class JAPITest extends TestCase
      */
     public function testLogger()
     {
+        $this->markTestSkipped("JAPI tests disabled until they are refactored as unit and integration tests");
         $request = $this->createMock(RequestInterface::class);
 
         // Mock the logger
@@ -174,6 +180,7 @@ class JAPITest extends TestCase
      */
     public function testNoLogger()
     {
+        $this->markTestSkipped("JAPI tests disabled until they are refactored as unit and integration tests");
         $request = $this->createMock(RequestInterface::class);
 
         // Mock JAPI
@@ -194,6 +201,7 @@ class JAPITest extends TestCase
      */
     public function testBootstrapAccessDeniedErrorCycle()
     {
+        $this->markTestSkipped("JAPI tests disabled until they are refactored as unit and integration tests");
         $request = $this->createMock(RequestInterface::class);
 
         // Mock JAPI

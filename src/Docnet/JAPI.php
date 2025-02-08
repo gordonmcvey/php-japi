@@ -24,7 +24,7 @@ use Docnet\JAPI\controller\RequestHandlerInterface;
 use Docnet\JAPI\Exceptions\Routing as RoutingException;
 use Docnet\JAPI\Exceptions\Auth as AuthException;
 use Docnet\JAPI\Exceptions\AccessDenied as AccessDeniedException;
-use Docnet\JAPI\middleware\CallStack;
+use Docnet\JAPI\middleware\CallStackFactory;
 use Docnet\JAPI\middleware\MiddlewareProviderInterface;
 use Docnet\JAPI\middleware\MiddlewareProviderTrait;
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
@@ -58,6 +58,7 @@ class JAPI implements MiddlewareProviderInterface, LoggerAwareInterface
      */
     public function __construct(
         private readonly StatusCodeFactory $codeFactory,
+        private readonly CallStackFactory $callStackFactory,
         private bool $exposeErrors = false,
         private readonly int $jsonFlags = 0
     ) {
@@ -90,18 +91,14 @@ class JAPI implements MiddlewareProviderInterface, LoggerAwareInterface
 
     /**
      * Go, Johnny, Go!
+     *
+     * If the controller to be dispatched implements MiddlewareProviderInterface, then its middleware will be added to
+     * the call stack on creation, then the JAPI middleware will be added.  Otherwise, only the JAPI middleware is
+     * added to the call stack.
      */
     public function dispatch(RequestHandlerInterface $controller, RequestInterface $request): void
     {
-        // @todo Make the coupling looser here, maybe with a factory?
-        $callStack = new CallStack($controller);
-
-        if ($controller instanceof MiddlewareProviderInterface) {
-            $callStack->fromProvider($controller);
-        }
-
-        $callStack->fromProvider($this);
-
+        $callStack = $this->callStackFactory->make($controller, $this);
         $response = $callStack->dispatch($request) ?? new Response(SuccessCodes::NO_CONTENT, '');
         $this->sendResponse($response);
     }

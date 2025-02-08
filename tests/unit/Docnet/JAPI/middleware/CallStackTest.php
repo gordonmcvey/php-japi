@@ -27,6 +27,7 @@ use Docnet\JAPI\middleware\MiddlewareProviderInterface;
 use gordonmcvey\httpsupport\RequestInterface;
 use gordonmcvey\httpsupport\ResponseInterface;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class CallStackTest extends TestCase
@@ -68,6 +69,40 @@ class CallStackTest extends TestCase
 
         $callStack = new CallStack($controller);
         $callStack->add($middleware);
+
+        $this->assertSame($response, $callStack->dispatch($request));
+    }
+
+    #[Test]
+    public function itRunsAControllerAndItsProvidedMiddleware(): void
+    {
+        /** @var RequestHandlerInterface&MiddlewareProviderInterface&MockObject $controller */
+        $controller = $this->createMockForIntersectionOfInterfaces([
+            RequestHandlerInterface::class,
+            MiddlewareProviderInterface::class,
+        ]);
+        $request = $this->createMock(RequestInterface::class);
+        $response = $this->createMock(ResponseInterface::class);
+        $middleware = $this->createMock(MiddlewareInterface::class);
+
+        $middleware->expects($this->once())
+            ->method("handle")
+            ->with($request, $controller)
+            ->willReturnCallback(fn(RequestInterface $request): ?ResponseInterface => $controller->dispatch($request))
+        ;
+
+        $controller->expects($this->once())
+            ->method("getAllMiddleware")
+            ->willReturn([$middleware])
+        ;
+        
+        $controller->expects($this->once())
+            ->method("dispatch")
+            ->with($request)
+            ->willReturn($response)
+        ;
+
+        $callStack = new CallStack($controller);
 
         $this->assertSame($response, $callStack->dispatch($request));
     }
@@ -150,6 +185,30 @@ class CallStackTest extends TestCase
 
         $callStack = new CallStack($controller);
         $callStack->fromProvider($provider);
+
+        $this->assertSame($response, $callStack->dispatch($request));
+    }
+
+    #[Test]
+    public function itAllowsAddMulti(): void
+    {
+        $request = $this->createMock(RequestInterface::class);
+        $response = $this->createMock(ResponseInterface::class);
+        $controller = $this->createMock(RequestHandlerInterface::class);
+        $middleware = $this->createMock(MiddlewareInterface::class);
+
+        $middleware->expects($this->once())
+            ->method("handle")
+            ->with($request, $controller)
+            ->willReturnCallback(fn(RequestInterface $request): ?ResponseInterface => $controller->dispatch($request));
+
+        $controller->expects($this->once())
+            ->method("dispatch")
+            ->with($request)
+            ->willReturn($response);
+
+        $callStack = new CallStack($controller);
+        $callStack->addMulti($middleware);
 
         $this->assertSame($response, $callStack->dispatch($request));
     }

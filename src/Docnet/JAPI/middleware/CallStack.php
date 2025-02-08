@@ -31,6 +31,10 @@ class CallStack implements RequestHandlerInterface
     public function __construct(private readonly RequestHandlerInterface $root)
     {
         $this->entryPoint = $this->root;
+
+        if ($this->root instanceof MiddlewareProviderInterface) {
+            $this->fromProvider($this->root);
+        }
     }
 
     /**
@@ -39,6 +43,15 @@ class CallStack implements RequestHandlerInterface
     public function add(MiddlewareInterface $newMiddleware): self
     {
         $this->entryPoint = new Slot($newMiddleware, $this->entryPoint);
+
+        return $this;
+    }
+
+    public function addMulti(MiddlewareInterface ...$middleware): self
+    {
+        foreach ($middleware as $newMiddleware) {
+            $this->add($newMiddleware);
+        }
 
         return $this;
     }
@@ -62,10 +75,7 @@ class CallStack implements RequestHandlerInterface
 
     public function fromProvider(MiddlewareProviderInterface $provider): self
     {
-        foreach ($provider->getAllMiddleware() as $middleware) {
-            $this->add($middleware);
-        }
-
+        $this->addMulti(...$provider->getAllMiddleware());
         return $this;
     }
 

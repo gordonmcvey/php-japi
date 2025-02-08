@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright 2015 Docnet
+ * Copyright 2025 Gordon McVey
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,25 +18,20 @@
 
 declare(strict_types=1);
 
-use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
-use gordonmcvey\httpsupport\Response;
+namespace Docnet\JAPI\middleware;
 
-/**
- * Example controller class
- *
- * @author Tom Walder <tom@docnet.nu>
- */
-class Hello extends \Docnet\JAPI\Controller
+use Docnet\JAPI\controller\RequestHandlerInterface;
+
+class CallStackFactory
 {
-
-    /**
-     * Hello, World!
-     */
-    public function dispatch()
+    public function make(RequestHandlerInterface $root, MiddlewareProviderInterface ...$additionalProviders): CallStack
     {
-        $this->setResponse(new Response(
-            SuccessCodes::OK,
-            json_encode(['message' => 'Hello, World!']),
-        ));
+        $callStack = new CallStack($root);
+
+        foreach ($additionalProviders as $provider) {
+            $callStack->fromProvider($provider);
+        }
+
+        return $callStack;
     }
 }

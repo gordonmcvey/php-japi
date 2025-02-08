@@ -1,9 +1,7 @@
 <?php
 
-declare(strict_types=1);
-
 /**
- * Copyright 2025 Gordon McVey
+ * Copyright © 2025 Gordon McVey
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

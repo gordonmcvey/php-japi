@@ -32,7 +32,7 @@ class CallStack implements RequestHandlerInterface
     {
         $this->entryPoint = $this->root;
 
-        if ($root instanceof MiddlewareProviderInterface) {
+        if ($this->root instanceof MiddlewareProviderInterface) {
             $this->fromProvider($this->root);
         }
     }

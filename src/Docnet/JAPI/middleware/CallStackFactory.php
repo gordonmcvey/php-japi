@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright 2025 Gordon McVey
  *
@@ -17,12 +16,12 @@
  * limitations under the License.
  */
 
- declare(strict_types=1);
+declare(strict_types=1);
 
- namespace Docnet\JAPI\middleware;
+namespace Docnet\JAPI\middleware;
 
- use Docnet\JAPI\controller\RequestHandlerInterface;
- 
+use Docnet\JAPI\controller\RequestHandlerInterface;
+
 class CallStackFactory
 {
     public function make(RequestHandlerInterface $root, MiddlewareProviderInterface ...$additionalProviders): CallStack

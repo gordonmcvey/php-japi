@@ -30,6 +30,11 @@
         ],
         "psr-4": {"Docnet\\": "src/Docnet/"}
     },
+    "autoload-dev": {
+        "classmap": [
+            "tests/Controllers/"
+        ]
+    },
     "include-path": ["src/"],
     "repositories": [
         {

@@ -4,13 +4,6 @@ use gordonmcvey\httpsupport\JsonRequestInterface;
 use gordonmcvey\httpsupport\RequestInterface;
 use PHPUnit\Framework\TestCase;
 
-require_once 'Controllers/Example.php';
-require_once 'Controllers/Headers.php';
-require_once 'Controllers/Exceptional.php';
-require_once 'Controllers/JsonParams.php';
-require_once 'Controllers/ProtectedFunctions.php';
-require_once 'Controllers/World.php';
-
 class ControllerTest extends TestCase
 {
 

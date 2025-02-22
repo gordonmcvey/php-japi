@@ -26,8 +26,11 @@ use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
 
 class ControllerFactory implements ControllerFactoryInterface
 {
+    /**
+     * @var array<mixed> $arguments
+     */
     private array $arguments = [];
-    
+
     public function make(string $controllerClass): RequestHandlerInterface
     {
         $controller = new $controllerClass(...$this->arguments);

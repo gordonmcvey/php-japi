@@ -26,5 +26,8 @@ interface ControllerFactoryInterface
 {
     public function make(string $path): RequestHandlerInterface;
 
+    /**
+     * @param array<mixed> $arguments
+     */
     public function withArguments(...$arguments): self;
 }

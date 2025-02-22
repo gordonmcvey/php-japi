@@ -16,9 +16,12 @@
  * limitations under the License.
  */
 
+use Docnet\Bootstrap;
 use Docnet\JAPI;
-use Docnet\JAPI\controller\RequestHandlerInterface;
+use Docnet\JAPI\controller\ControllerFactory;
 use Docnet\JAPI\middleware\CallStackFactory;
+use Docnet\JAPI\routing\Router;
+use Docnet\JAPI\routing\SingleControllerStrategy;
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\Request;
 
@@ -38,12 +41,10 @@ require_once 'Hello.php';
 $request = Request::fromSuperGlobals();
 (new JAPI(new StatusCodeFactory(), new CallStackFactory()))
     ->bootstrap(
-        function(): RequestHandlerInterface {
-            $obj_router = new \Docnet\JAPI\SolidRouter();
-            $obj_router->route('/hello');
-
-            $str_controller = $obj_router->getController();
-            return new $str_controller();
-        },
-        $request
-    );
+        new Bootstrap(
+            new Router(new SingleControllerStrategy(Hello::class)),
+            new ControllerFactory(),
+        ),
+        $request,
+    )
+;

@@ -20,13 +20,13 @@ declare(strict_types=1);
 
 namespace Docnet\JAPI\test\unit\factory;
 
+use Docnet\JAPI\controller\ControllerFactory;
 use Docnet\JAPI\controller\RequestHandlerInterface;
 use Docnet\JAPI\Exceptions\Routing;
 use Docnet\JAPI\test\Controllers\FactoryInstantiated;
 use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Src\Docnet\JAPI\Controller\ControllerFactory;
 
 class ControllerFactoryTest extends TestCase
 {

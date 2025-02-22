@@ -32,7 +32,7 @@ use gordonmcvey\httpsupport\RequestInterface;
  * does this by applying routing strategies until one finds an approporiate class to handle the request.  This can then
  * be used by a factory to instantiate the actual request handler.
  */
-class Router
+readonly class Router implements RouterInterface
 {
     /**
      * Regex that URI paths are validated against
@@ -52,7 +52,7 @@ class Router
      * @var array<array-key, RoutingStrategyInterface>
      * @throws Routing
      */
-    private readonly array $routers;
+    private array $routers;
 
     public function __construct(RoutingStrategyInterface ...$routers)
     {

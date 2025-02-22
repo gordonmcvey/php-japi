@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © 2025 Gordon McVey
+ * Copyright 2015 Docnet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,15 +18,27 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\controller;
-
+use Docnet\JAPI\controller\RequestHandlerInterface;
+use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
 use gordonmcvey\httpsupport\RequestInterface;
+use gordonmcvey\httpsupport\Response;
 use gordonmcvey\httpsupport\ResponseInterface;
 
-interface RequestHandlerInterface
+/**
+ * Example controller class
+ *
+ * @author Tom Walder <tom@docnet.nu>
+ */
+class Hello implements RequestHandlerInterface
 {
     /**
-     * Main dispatch method
+     * Hello, World!
      */
-    public function dispatch(RequestInterface $request): ?ResponseInterface;
+    public function dispatch(RequestInterface $request): ?ResponseInterface
+    {
+        return new Response(
+            SuccessCodes::OK,
+            json_encode(['message' => 'Hello, World!']),
+        );
+    }
 }

@@ -18,15 +18,11 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\controller;
+namespace Docnet\JAPI\routing;
 
 use gordonmcvey\httpsupport\RequestInterface;
-use gordonmcvey\httpsupport\ResponseInterface;
 
-interface RequestHandlerInterface
+interface RouterInterface
 {
-    /**
-     * Main dispatch method
-     */
-    public function dispatch(RequestInterface $request): ?ResponseInterface;
+    public function route(RequestInterface $request): string;
 }

@@ -18,15 +18,25 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\controller;
+namespace Docnet\JAPI\routing;
 
-use gordonmcvey\httpsupport\RequestInterface;
-use gordonmcvey\httpsupport\ResponseInterface;
-
-interface RequestHandlerInterface
+class StaticStrategy implements RoutingStrategyInterface
 {
     /**
-     * Main dispatch method
+     * @param array<string, string> $routes
      */
-    public function dispatch(RequestInterface $request): ?ResponseInterface;
+    public function __construct(private array $routes = [])
+    {
+    }
+
+    public function route(string $path): ?string
+    {
+        return $this->routes[$path] ?? null;
+    }
+
+    public function addRoute(string $route, string $controllerClass): self
+    {
+        $this->routes[$route] = $controllerClass;
+        return $this;
+    }
 }

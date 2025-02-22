@@ -18,15 +18,21 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\controller;
+namespace Docnet\JAPI\test\unit\routing;
 
-use gordonmcvey\httpsupport\RequestInterface;
-use gordonmcvey\httpsupport\ResponseInterface;
+use Docnet\JAPI\routing\SingleControllerStrategy;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
 
-interface RequestHandlerInterface
+class SingleControllerStrategyTest extends TestCase
 {
-    /**
-     * Main dispatch method
-     */
-    public function dispatch(RequestInterface $request): ?ResponseInterface;
+    #[Test]
+    public function itReturnsValidRoutes(): void
+    {
+        $strategy = new SingleControllerStrategy("RoutedController");
+
+        $this->assertSame("RoutedController", $strategy->route("/foo"));
+        $this->assertSame("RoutedController", $strategy->route("/foo/bar"));
+        $this->assertSame("RoutedController", $strategy->route("/foo/bar/baz"));
+    }
 }

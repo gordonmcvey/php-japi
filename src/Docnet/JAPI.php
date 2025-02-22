@@ -71,7 +71,7 @@ class JAPI implements MiddlewareProviderInterface, LoggerAwareInterface
     public function bootstrap(RequestHandlerInterface|callable $controllerSource, RequestInterface $request): void
     {
         try {
-            $controller = is_callable($controllerSource) ? $controllerSource() : $controllerSource;
+            $controller = is_callable($controllerSource) ? $controllerSource($request) : $controllerSource;
             if ($controller instanceof RequestHandlerInterface) {
                 $this->dispatch($controller, $request);
             } else {

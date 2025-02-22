@@ -18,15 +18,13 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\controller;
+namespace Docnet\JAPI\routing;
 
-use gordonmcvey\httpsupport\RequestInterface;
-use gordonmcvey\httpsupport\ResponseInterface;
-
-interface RequestHandlerInterface
+interface RoutingStrategyInterface
 {
     /**
-     * Main dispatch method
+     * Determine the request handler to use for the given request.  It should return null if an appropriate request
+     * handler cannot be found
      */
-    public function dispatch(RequestInterface $request): ?ResponseInterface;
+    public function route(string $path): ?string;
 }

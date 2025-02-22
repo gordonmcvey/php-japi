@@ -20,13 +20,14 @@ declare(strict_types=1);
 
 namespace Docnet\JAPI\controller;
 
-use gordonmcvey\httpsupport\RequestInterface;
-use gordonmcvey\httpsupport\ResponseInterface;
+use Docnet\JAPI\controller\RequestHandlerInterface;
 
-interface RequestHandlerInterface
+interface ControllerFactoryInterface
 {
+    public function make(string $path): RequestHandlerInterface;
+
     /**
-     * Main dispatch method
+     * @param array<mixed> $arguments
      */
-    public function dispatch(RequestInterface $request): ?ResponseInterface;
+    public function withArguments(...$arguments): self;
 }

@@ -19,6 +19,7 @@
 use Docnet\Bootstrap;
 use Docnet\JAPI;
 use Docnet\JAPI\controller\ControllerFactory;
+use Docnet\JAPI\error\JsonErrorHandler;
 use Docnet\JAPI\middleware\CallStackFactory;
 use Docnet\JAPI\routing\Router;
 use Docnet\JAPI\routing\SingleControllerStrategy;
@@ -39,7 +40,7 @@ require_once 'Hello.php';
 
 // Demo
 $request = Request::fromSuperGlobals();
-(new JAPI(new StatusCodeFactory(), new CallStackFactory()))
+(new JAPI(new CallStackFactory(), new JsonErrorHandler(new StatusCodeFactory())))
     ->bootstrap(
         new Bootstrap(
             new Router(new SingleControllerStrategy(Hello::class)),

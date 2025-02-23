@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 use Docnet\JAPI;
 use Docnet\JAPI\controller\RequestHandlerInterface;
+use Docnet\JAPI\error\JsonErrorHandler;
 use Docnet\JAPI\middleware\CallStackFactory;
 use Docnet\JAPI\SolidRouter;
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
@@ -42,7 +43,7 @@ require_once "RandomDelay.php";
 
 // Demo
 $request = Request::fromSuperGlobals();
-(new JAPI(new StatusCodeFactory(), new CallStackFactory()))
+(new JAPI(new CallStackFactory(), new JsonErrorHandler(new StatusCodeFactory())))
     ->addMiddleware(new AddParameter("globalMessage1", "Hello"))
     ->addMiddleware(new AddParameter("globalMessage2", "World"))
     ->addMiddleware(new AddParameter("globalMessage3", "Hello, World!"))

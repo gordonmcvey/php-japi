@@ -21,14 +21,10 @@ declare(strict_types=1);
 namespace Docnet;
 
 use Docnet\JAPI\controller\RequestHandlerInterface;
-use Docnet\JAPI\Exceptions\Routing as RoutingException;
-use Docnet\JAPI\Exceptions\Auth as AuthException;
-use Docnet\JAPI\Exceptions\AccessDenied as AccessDeniedException;
+use Docnet\JAPI\error\ErrorHandlerInterface;
 use Docnet\JAPI\middleware\CallStackFactory;
 use Docnet\JAPI\middleware\MiddlewareProviderInterface;
 use Docnet\JAPI\middleware\MiddlewareProviderTrait;
-use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
-use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
 use gordonmcvey\httpsupport\enum\statuscodes\ServerErrorCodes;
 use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
 use gordonmcvey\httpsupport\RequestInterface;
@@ -52,15 +48,10 @@ class JAPI implements MiddlewareProviderInterface, LoggerAwareInterface
 
     /**
      * Hook up the shutdown function so we always send nice JSON error responses
-     *
-     * @param bool $exposeErrors Set to true if you want to include more detailed debugging data in error output
-     * @param int $jsonFlags Flag mask for the encoded JSON output.  See the PHP manual for json_encode for valid flags
      */
     public function __construct(
-        private readonly StatusCodeFactory $codeFactory,
         private readonly CallStackFactory $callStackFactory,
-        private bool $exposeErrors = false,
-        private readonly int $jsonFlags = 0
+        private readonly ErrorHandlerInterface $errorHandler,
     ) {
         register_shutdown_function($this->timeToDie(...));
     }
@@ -77,15 +68,9 @@ class JAPI implements MiddlewareProviderInterface, LoggerAwareInterface
             } else {
                 throw new \Exception('Unable to bootstrap', ServerErrorCodes::INTERNAL_SERVER_ERROR->value);
             }
-        } catch (RoutingException $e) {
-            $this->jsonError($e, ClientErrorCodes::NOT_FOUND);
-        } catch (AuthException $e) {
-            $this->jsonError($e, ClientErrorCodes::UNAUTHORIZED);
-        } catch (AccessDeniedException $e) {
-            $this->jsonError($e, ClientErrorCodes::FORBIDDEN);
-        } catch (\Exception $e) {
-            $code = $this->codeFactory->fromThrowable($e);
-            $this->jsonError($e, $code);
+        } catch (\Throwable $e) {
+            $this->getLogger()->error("[JAPI] [{$e->getCode()}] Error: {$e->getMessage()}");
+            $this->sendResponse($this->errorHandler->handle($e));
         }
     }
 
@@ -111,32 +96,14 @@ class JAPI implements MiddlewareProviderInterface, LoggerAwareInterface
         $error = error_get_last();
         if ($error && in_array($error['type'], [E_ERROR, E_USER_ERROR, E_COMPILE_ERROR])) {
             $errorCode = ServerErrorCodes::INTERNAL_SERVER_ERROR;
-            $this->jsonError(new \ErrorException(
+            $this->sendResponse($this->errorHandler->handle(new \ErrorException(
                 $error['message'],
                 $errorCode->value,
                 0,
                 $error['file'],
                 $error['line'],
-            ), $errorCode);
+            )));
         }
-    }
-
-    /**
-     * Whatever went wrong, let 'em have it in JSON over HTTP
-     */
-    protected function jsonError(\Exception $error, ClientErrorCodes|ServerErrorCodes $code): void
-    {
-        $logMessage = sprintf("%s: %s", get_class($error), $error->getMessage());
-        $payload = [
-            'code' => $code->value,
-            'msg' => ($error instanceof \ErrorException ? 'Internal Error' : 'Exception')
-        ];
-        if ($this->exposeErrors) {
-            $payload['detail'] = $logMessage;
-        }
-
-        $this->sendResponse(new Response($code, (string) json_encode($payload, $this->jsonFlags)));
-        $this->getLogger()->error("[JAPI] [{$code->value}] Error: {$logMessage}");
     }
 
     /**
@@ -146,13 +113,5 @@ class JAPI implements MiddlewareProviderInterface, LoggerAwareInterface
     {
         $response->sendHeaders();
         echo $response->body();
-    }
-
-    /**
-     * Tell JAPI to expose error detail, or not!
-     */
-    public function exposeErrorDetail(bool $exposeErrors = true): void
-    {
-        $this->exposeErrors = $exposeErrors;
     }
 }

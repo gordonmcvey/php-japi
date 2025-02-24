@@ -63,14 +63,15 @@ class JAPI implements MiddlewareProviderInterface, LoggerAwareInterface
     {
         try {
             $controller = is_callable($controllerSource) ? $controllerSource($request) : $controllerSource;
-            if ($controller instanceof RequestHandlerInterface) {
-                $this->dispatch($controller, $request);
-            } else {
+            if (!$controller instanceof RequestHandlerInterface) {
                 throw new \Exception('Unable to bootstrap', ServerErrorCodes::INTERNAL_SERVER_ERROR->value);
             }
+            $response = $this->dispatch($controller, $request);
         } catch (\Throwable $e) {
             $this->getLogger()->error("[JAPI] [{$e->getCode()}] Error: {$e->getMessage()}");
-            $this->sendResponse($this->errorHandler->handle($e));
+            $response = $this->errorHandler->handle($e);
+        } finally {
+            $this->sendResponse($response);
         }
     }
 
@@ -81,11 +82,12 @@ class JAPI implements MiddlewareProviderInterface, LoggerAwareInterface
      * the call stack on creation, then the JAPI middleware will be added.  Otherwise, only the JAPI middleware is
      * added to the call stack.
      */
-    public function dispatch(RequestHandlerInterface $controller, RequestInterface $request): void
+    private function dispatch(RequestHandlerInterface $controller, RequestInterface $request): ResponseInterface
     {
         $callStack = $this->callStackFactory->make($controller, $this);
         $response = $callStack->dispatch($request) ?? new Response(SuccessCodes::NO_CONTENT, '');
-        $this->sendResponse($response);
+
+        return $response;
     }
 
     /**

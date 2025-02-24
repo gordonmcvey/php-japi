@@ -20,8 +20,11 @@ use Docnet\JAPI;
 use Docnet\JAPI\controller\RequestHandlerInterface;
 use Docnet\JAPI\error\JsonErrorHandler;
 use Docnet\JAPI\middleware\CallStackFactory;
+use Docnet\JAPI\routing\Router;
+use Docnet\JAPI\routing\SingleControllerStrategy;
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\Request;
+use gordonmcvey\httpsupport\RequestInterface;
 
 /**
  * Trivial JAPI bootstrap
@@ -39,12 +42,12 @@ require_once 'Hello.php';
 $request = Request::fromSuperGlobals();
 (new JAPI(new CallStackFactory(), new JsonErrorHandler(new StatusCodeFactory())))
     ->bootstrap(
-        function(): RequestHandlerInterface {
-            $obj_router = new \Docnet\JAPI\SolidRouter();
-            $obj_router->route('/hello');
+        function(RequestInterface $request): RequestHandlerInterface {
+            $obj_router = new Router(new SingleControllerStrategy(Hello::class));
+            $str_controller = $obj_router->route($request);
 
-            $str_controller = $obj_router->getController();
             return new $str_controller();
         },
         $request
-    );
+    )
+;

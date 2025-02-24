@@ -22,9 +22,11 @@ use Docnet\JAPI;
 use Docnet\JAPI\controller\RequestHandlerInterface;
 use Docnet\JAPI\error\JsonErrorHandler;
 use Docnet\JAPI\middleware\CallStackFactory;
-use Docnet\JAPI\SolidRouter;
+use Docnet\JAPI\routing\Router;
+use Docnet\JAPI\routing\SingleControllerStrategy;
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\Request;
+use gordonmcvey\httpsupport\RequestInterface;
 
 /**
  * Trivial JAPI bootstrap
@@ -50,11 +52,10 @@ $request = Request::fromSuperGlobals();
     ->addMiddleware(new RandomDelay)
     ->addMiddleware(new Profiler)
     ->bootstrap(
-            function(): RequestHandlerInterface {
-            $router = new SolidRouter();
-            $router->route('/hello');
+            function(RequestInterface $request): RequestHandlerInterface {
+            $router = new Router(new SingleControllerStrategy(Hello::class));
+            $controllerClass = $router->route($request);
 
-            $controllerClass = $router->getController();
             return (new $controllerClass)
                 ->addMiddleware(new AddParameter("controllerMessage1", "Hello"))
                 ->addMiddleware(new AddParameter("controllerMessage2", "World"))

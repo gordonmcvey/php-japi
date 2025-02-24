@@ -71,7 +71,7 @@ class JAPI implements MiddlewareProviderInterface, LoggerAwareInterface
             $this->getLogger()->error("[JAPI] [{$e->getCode()}] Error: {$e->getMessage()}");
             $response = $this->errorHandler->handle($e);
         } finally {
-            $this->sendResponse($response);
+            isset($response) && $this->sendResponse($response);
         }
     }
 

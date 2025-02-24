@@ -46,10 +46,10 @@ readonly class JsonErrorHandler implements ErrorHandlerInterface
         ];
 
         if ($this->exposeDetails) {
-            $payload["detail"] = sprintf("%s: %s", get_class($e), $e->getMessage());;
+            $payload["detail"] = sprintf("%s: %s", get_class($e), $e->getMessage());
         }
 
-        return new Response (
+        return new Response(
             responseCode: $code,
             body: (string) json_encode($payload, $this->jsonFlags),
             contentType: self::CONTENT_TYPE,

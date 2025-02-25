@@ -22,8 +22,14 @@ namespace Docnet\JAPI\middleware;
 
 use Docnet\JAPI\controller\RequestHandlerInterface;
 
+/**
+ * Callstack Factory
+ */
 class CallStackFactory
 {
+    /**
+     * Make a call stack and populate it with the given providers
+     */
     public function make(RequestHandlerInterface $root, MiddlewareProviderInterface ...$additionalProviders): CallStack
     {
         $callStack = new CallStack($root);

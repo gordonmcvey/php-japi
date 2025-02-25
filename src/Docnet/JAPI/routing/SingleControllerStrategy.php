@@ -20,6 +20,12 @@ declare(strict_types=1);
 
 namespace Docnet\JAPI\routing;
 
+/**
+ * Single Controller Strategy
+ *
+ * This basically routes any request to the same controller regardless of its value.  This can be handy for very simple
+ * applications, or as a "last resort" strategy when all the usual routing approaches have failed to find a controller.
+ */
 readonly class SingleControllerStrategy implements RoutingStrategyInterface
 {
     public function __construct(private string $controllerClass)

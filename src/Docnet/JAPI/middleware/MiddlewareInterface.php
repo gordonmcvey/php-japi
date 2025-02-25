@@ -24,6 +24,11 @@ use Docnet\JAPI\controller\RequestHandlerInterface;
 use gordonmcvey\httpsupport\RequestInterface;
 use gordonmcvey\httpsupport\ResponseInterface;
 
+/**
+ * Middleware interface
+ *
+ * To be used as middleware, a class must implement this interface
+ */
 interface MiddlewareInterface
 {
     public function handle(RequestInterface $request, RequestHandlerInterface $handler): ResponseInterface;

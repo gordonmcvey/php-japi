@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright 2025 Gordon McVey
+ * Copyright © 2025 Gordon McVey
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,25 +20,22 @@ declare(strict_types=1);
 
 namespace Docnet;
 
-use Docnet\JAPI\controller\ControllerFactory;
+use Docnet\JAPI\controller\ControllerFactoryInterface;
 use Docnet\JAPI\controller\RequestHandlerInterface;
 use Docnet\JAPI\routing\RouterInterface;
 use gordonmcvey\httpsupport\RequestInterface;
 
 /**
- * Front controller for our JSON APIs
+ * Simple bootstrap implementation
  *
- * I'm conflicted about whether or not this class adheres to PSR-1 "symbols or
- * side-effects" rule, as one or more of the methods generated output or have
- * side effects (like register_shutdown_function()).
- *
- * @author Tom Walder <tom@docnet.nu>
+ * Developers are free to use any method of bootstrapping they like, so long as they return a class that implements
+ * RequestHandlerInterface, but in most cases this basic bootstrap class should suffice.
  */
 readonly class Bootstrap
 {
     public function __construct(
         private RouterInterface $router,
-        private ControllerFactory $controllerFactory,
+        private ControllerFactoryInterface $controllerFactory,
     ) {
     }
 

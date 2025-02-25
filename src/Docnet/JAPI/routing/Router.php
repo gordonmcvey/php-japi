@@ -29,8 +29,8 @@ use gordonmcvey\httpsupport\RequestInterface;
  * Router class
  *
  * The Router class is responsible for determining the correct request handler (controller) for a given request.  It
- * does this by applying routing strategies until one finds an approporiate class to handle the request.  This can then
- * be used by a factory to instantiate the actual request handler.
+ * does this by applying routing strategies until a strategy finds the name of an approporiate class to handle the
+ * request.  This can then be used by a factory to instantiate the actual request handler.
  */
 readonly class Router implements RouterInterface
 {
@@ -50,7 +50,6 @@ readonly class Router implements RouterInterface
 
     /**
      * @var array<array-key, RoutingStrategyInterface>
-     * @throws Routing
      */
     private array $routers;
 
@@ -82,6 +81,8 @@ readonly class Router implements RouterInterface
     }
 
     /**
+     * Extract the path portion of the given URI
+     *
      * @throws Routing
      */
     private function extractPath(string $uri): string

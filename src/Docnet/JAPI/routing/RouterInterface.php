@@ -22,6 +22,12 @@ namespace Docnet\JAPI\routing;
 
 use gordonmcvey\httpsupport\RequestInterface;
 
+/**
+ * Interface for Router implementations
+ *
+ * The standard Router is flexible enough for most typical use cases but if you have more specific needs you can
+ * implement this class to make a drop-in replacement router.
+ */
 interface RouterInterface
 {
     public function route(RequestInterface $request): string;

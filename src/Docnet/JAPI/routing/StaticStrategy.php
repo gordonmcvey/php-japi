@@ -20,6 +20,15 @@ declare(strict_types=1);
 
 namespace Docnet\JAPI\routing;
 
+/**
+ * Static routing strategy
+ *
+ * This routing strategy maps a path to a controller via a simple static array.  If the path matches an array key then
+ * the controller name associated with that key is returned, otherwise the strategy returns null.
+ *
+ * This approach is limited to the paths you specify matches for, but is also potentially faster than more traditional
+ * strategies.
+ */
 class StaticStrategy implements RoutingStrategyInterface
 {
     /**

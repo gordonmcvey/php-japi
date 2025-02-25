@@ -40,6 +40,7 @@ use Psr\Log\LoggerAwareInterface;
  * side effects (like register_shutdown_function()).
  *
  * @author Tom Walder <tom@docnet.nu>
+ * @todo Deal with register_shutdown_function in a nicer way
  */
 class JAPI implements MiddlewareProviderInterface, LoggerAwareInterface
 {
@@ -57,7 +58,7 @@ class JAPI implements MiddlewareProviderInterface, LoggerAwareInterface
     }
 
     /**
-     * Optionally, encapsulate the bootstrap in a try/catch
+     * Bootstrap and dispatch a controller from the given request
      */
     public function bootstrap(RequestHandlerInterface|callable $controllerSource, RequestInterface $request): void
     {
@@ -73,21 +74,6 @@ class JAPI implements MiddlewareProviderInterface, LoggerAwareInterface
         } finally {
             isset($response) && $this->sendResponse($response);
         }
-    }
-
-    /**
-     * Go, Johnny, Go!
-     *
-     * If the controller to be dispatched implements MiddlewareProviderInterface, then its middleware will be added to
-     * the call stack on creation, then the JAPI middleware will be added.  Otherwise, only the JAPI middleware is
-     * added to the call stack.
-     */
-    private function dispatch(RequestHandlerInterface $controller, RequestInterface $request): ResponseInterface
-    {
-        $callStack = $this->callStackFactory->make($controller, $this);
-        $response = $callStack->dispatch($request) ?? new Response(SuccessCodes::NO_CONTENT, '');
-
-        return $response;
     }
 
     /**
@@ -110,10 +96,27 @@ class JAPI implements MiddlewareProviderInterface, LoggerAwareInterface
 
     /**
      * Output the response as JSON with HTTP headers
+     *
+     * @todo Maybe this should be part of the Response itself?
      */
     protected function sendResponse(ResponseInterface $response): void
     {
         $response->sendHeaders();
         echo $response->body();
+    }
+
+    /**
+     * Go, Johnny, Go!
+     *
+     * If the controller to be dispatched implements MiddlewareProviderInterface, then its middleware will be added to
+     * the call stack on creation, then the JAPI middleware will be added.  Otherwise, only the JAPI middleware is
+     * added to the call stack.
+     */
+    private function dispatch(RequestHandlerInterface $controller, RequestInterface $request): ResponseInterface
+    {
+        $callStack = $this->callStackFactory->make($controller, $this);
+        $response = $callStack->dispatch($request) ?? new Response(SuccessCodes::NO_CONTENT, '');
+
+        return $response;
     }
 }

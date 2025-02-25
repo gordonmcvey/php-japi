@@ -23,6 +23,12 @@ namespace Docnet\JAPI\controller;
 use gordonmcvey\httpsupport\RequestInterface;
 use gordonmcvey\httpsupport\ResponseInterface;
 
+/**
+ * Interface for request handlers
+ *
+ * Any class that returns a response for the given request is required to implement this method, this includes but is
+ * not limited to controllers.  For example, the Middlware callstack implements it.
+ */
 interface RequestHandlerInterface
 {
     /**

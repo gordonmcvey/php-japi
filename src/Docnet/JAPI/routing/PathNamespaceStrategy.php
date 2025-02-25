@@ -20,6 +20,25 @@ declare(strict_types=1);
 
 namespace Docnet\JAPI\routing;
 
+/**
+ * Path to namespace routing strategy
+ *
+ * This class works on the assumption that a path has a direct mapping to a controller in a corresponding namespace.
+ * For example, the path /foo/bar/baz would map to a Baz controller in the \Foo\Bar namespace.
+ *
+ * You can also (and are strongly encouraged to), specify a prefix, so for example the /foo/bar/baz path could be made
+ * to map to \Vendor\Application\Controllers\Foo\Bar\Baz by specifying \Vendor\Application\Controllers as the root
+ * namespace for controller classes.
+ *
+ * The mapping is done according to CamelCasing rules, with the /, - and _ characters treated as word delimiters, so
+ * /foo/bar/baz will map to \Foo\Bar\Baz
+ *
+ * This strategy can theoretically return a valid controller for any path so long as that path fits the criteria for
+ * your application's namespace without having to specify an explicit mapping, hence why defining a root namespace is
+ * so strongly recommended (whilst unlikely, you wouldn't want to make it possible to expose non-controller classes to
+ * the user!).  It also has to do a bit of string processing, so for smaller applications static routing may be
+ * preferable.
+ */
 class PathNamespaceStrategy implements RoutingStrategyInterface
 {
     /**

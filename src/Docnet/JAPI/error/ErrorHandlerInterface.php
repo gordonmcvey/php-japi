@@ -23,7 +23,13 @@ namespace Docnet\JAPI\error;
 use gordonmcvey\httpsupport\ResponseInterface;
 use Throwable;
 
+/**
+ * Error handler interface
+ */
 interface ErrorHandlerInterface
 {
+    /**
+     * Generate a suitable response for the given error condition
+     */
     public function handle(Throwable $e): ResponseInterface;
 }

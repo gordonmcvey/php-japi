@@ -24,9 +24,14 @@ use Docnet\JAPI\controller\RequestHandlerInterface;
 use Docnet\JAPI\Exceptions\Routing;
 use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
 
+/**
+ * Simple Controller factory
+ */
 class ControllerFactory implements ControllerFactoryInterface
 {
     /**
+     * Arguments that will be passed to the controller's constructor
+     *
      * @var array<mixed> $arguments
      */
     private array $arguments = [];

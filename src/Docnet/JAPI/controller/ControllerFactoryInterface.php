@@ -24,9 +24,14 @@ use Docnet\JAPI\controller\RequestHandlerInterface;
 
 interface ControllerFactoryInterface
 {
+    /**
+     * Return the handler to handle a request to the given path
+     */
     public function make(string $path): RequestHandlerInterface;
 
     /**
+     * Set the arguments that will be passed to the request handler's constructor, if any are needed
+     *
      * @param array<mixed> $arguments
      */
     public function withArguments(...$arguments): self;

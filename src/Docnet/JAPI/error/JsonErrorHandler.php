@@ -25,10 +25,19 @@ use gordonmcvey\httpsupport\Response;
 use gordonmcvey\httpsupport\ResponseInterface;
 use Throwable;
 
+/**
+ * JSON error handler
+ *
+ * This class generates a suitable JSON payload in response to errors passed to it
+ */
 readonly class JsonErrorHandler implements ErrorHandlerInterface
 {
     private const string CONTENT_TYPE = "text/json";
 
+    /**
+     * @param int $jsonFlags Bitmask affecting the JSON output.  Takes the same flags as the json_encode() method
+     * @param bool $exposeDetails If true then additional debugging information is included in the payload
+     */
     public function __construct(
         private StatusCodeFactory $statusCodeFactory,
         private int $jsonFlags = 0,

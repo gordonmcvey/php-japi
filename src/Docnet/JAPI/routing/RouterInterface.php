@@ -18,18 +18,17 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\middleware;
+namespace Docnet\JAPI\routing;
 
-use Docnet\JAPI\controller\RequestHandlerInterface;
 use gordonmcvey\httpsupport\RequestInterface;
-use gordonmcvey\httpsupport\ResponseInterface;
 
 /**
- * Middleware interface
+ * Interface for Router implementations
  *
- * To be used as middleware, a class must implement this interface
+ * The standard Router is flexible enough for most typical use cases but if you have more specific needs you can
+ * implement this class to make a drop-in replacement router.
  */
-interface MiddlewareInterface
+interface RouterInterface
 {
-    public function handle(RequestInterface $request, RequestHandlerInterface $handler): ResponseInterface;
+    public function route(RequestInterface $request): string;
 }

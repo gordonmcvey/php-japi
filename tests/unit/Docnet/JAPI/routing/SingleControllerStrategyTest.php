@@ -18,18 +18,21 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\middleware;
+namespace Docnet\JAPI\test\unit\routing;
 
-use Docnet\JAPI\controller\RequestHandlerInterface;
-use gordonmcvey\httpsupport\RequestInterface;
-use gordonmcvey\httpsupport\ResponseInterface;
+use Docnet\JAPI\routing\SingleControllerStrategy;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
 
-/**
- * Middleware interface
- *
- * To be used as middleware, a class must implement this interface
- */
-interface MiddlewareInterface
+class SingleControllerStrategyTest extends TestCase
 {
-    public function handle(RequestInterface $request, RequestHandlerInterface $handler): ResponseInterface;
+    #[Test]
+    public function itReturnsValidRoutes(): void
+    {
+        $strategy = new SingleControllerStrategy("RoutedController");
+
+        $this->assertSame("RoutedController", $strategy->route("/foo"));
+        $this->assertSame("RoutedController", $strategy->route("/foo/bar"));
+        $this->assertSame("RoutedController", $strategy->route("/foo/bar/baz"));
+    }
 }

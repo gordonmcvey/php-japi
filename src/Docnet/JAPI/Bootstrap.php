@@ -18,18 +18,29 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\middleware;
+namespace Docnet\JAPI;
 
+use Docnet\JAPI\controller\ControllerFactoryInterface;
 use Docnet\JAPI\controller\RequestHandlerInterface;
+use Docnet\JAPI\routing\RouterInterface;
 use gordonmcvey\httpsupport\RequestInterface;
-use gordonmcvey\httpsupport\ResponseInterface;
 
 /**
- * Middleware interface
+ * Simple bootstrap implementation
  *
- * To be used as middleware, a class must implement this interface
+ * Developers are free to use any method of bootstrapping they like, so long as they return a class that implements
+ * RequestHandlerInterface, but in most cases this basic bootstrap class should suffice.
  */
-interface MiddlewareInterface
+readonly class Bootstrap
 {
-    public function handle(RequestInterface $request, RequestHandlerInterface $handler): ResponseInterface;
+    public function __construct(
+        private RouterInterface $router,
+        private ControllerFactoryInterface $controllerFactory,
+    ) {
+    }
+
+    public function __invoke(RequestInterface $request): RequestHandlerInterface
+    {
+        return $this->controllerFactory->make($this->router->route($request));
+    }
 }

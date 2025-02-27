@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright 2025 Gordon McVey
+ * Copyright © 2025 Gordon McVey
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,17 @@ use Docnet\JAPI\controller\RequestHandlerInterface;
 use gordonmcvey\httpsupport\RequestInterface;
 use gordonmcvey\httpsupport\ResponseInterface;
 
+/**
+ * Middleware call stack
+ *
+ * As middleware processing is handled in a stack, it is run in the reverse order in which it was added and returns in
+ * the opposite order from that.  The upshot of this is that middleware that processes the request does the processing
+ * in last-to-first order, and middleware that processes the response is run in first-to-last order (which makes sense
+ * if you think about it, though it's not immideately obvious).  You can think of it as a request going from the
+ * "outside" (The entry point) to the "inside" (the root of the stack) during the request phase, then back to the
+ * "outside" during the response phase.  Bear this in mind when deciding on the order in which you add middleware to
+ * the stack (eg, middleware that handles authentication should be added last as we'd want it to run first)
+ */
 class CallStack implements RequestHandlerInterface
 {
     private RequestHandlerInterface $entryPoint;
@@ -47,6 +58,9 @@ class CallStack implements RequestHandlerInterface
         return $this;
     }
 
+    /**
+     * Add multiple middlewares to the call stack in one go
+     */
     public function addMulti(MiddlewareInterface ...$middleware): self
     {
         foreach ($middleware as $newMiddleware) {
@@ -73,12 +87,18 @@ class CallStack implements RequestHandlerInterface
         return $this->reset()->add($middleware);
     }
 
+    /**
+     * Add all middleware from a provider to the call stack
+     */
     public function fromProvider(MiddlewareProviderInterface $provider): self
     {
         $this->addMulti(...$provider->getAllMiddleware());
         return $this;
     }
 
+    /**
+     * Dispatch a request via the call stack and return a response
+     */
     public function dispatch(RequestInterface $request): ?ResponseInterface
     {
         return $this->entryPoint->dispatch($request);

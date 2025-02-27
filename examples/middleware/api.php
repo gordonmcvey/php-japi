@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Copyright 2025 Gordon McVey
+ * Copyright © 2025 Gordon McVey
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,15 @@ declare(strict_types=1);
  * limitations under the License.
  */
 
-use Docnet\JAPI;
 use Docnet\JAPI\controller\RequestHandlerInterface;
+use Docnet\JAPI\error\JsonErrorHandler;
+use Docnet\JAPI\JAPI;
 use Docnet\JAPI\middleware\CallStackFactory;
-use Docnet\JAPI\SolidRouter;
+use Docnet\JAPI\routing\Router;
+use Docnet\JAPI\routing\SingleControllerStrategy;
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\Request;
+use gordonmcvey\httpsupport\RequestInterface;
 
 /**
  * Trivial JAPI bootstrap
@@ -42,18 +45,17 @@ require_once "RandomDelay.php";
 
 // Demo
 $request = Request::fromSuperGlobals();
-(new JAPI(new StatusCodeFactory(), new CallStackFactory()))
+(new JAPI(new CallStackFactory(), new JsonErrorHandler(new StatusCodeFactory())))
     ->addMiddleware(new AddParameter("globalMessage1", "Hello"))
     ->addMiddleware(new AddParameter("globalMessage2", "World"))
     ->addMiddleware(new AddParameter("globalMessage3", "Hello, World!"))
     ->addMiddleware(new RandomDelay)
     ->addMiddleware(new Profiler)
     ->bootstrap(
-            function(): RequestHandlerInterface {
-            $router = new SolidRouter();
-            $router->route('/hello');
+            function(RequestInterface $request): RequestHandlerInterface {
+            $router = new Router(new SingleControllerStrategy(Hello::class));
+            $controllerClass = $router->route($request);
 
-            $controllerClass = $router->getController();
             return (new $controllerClass)
                 ->addMiddleware(new AddParameter("controllerMessage1", "Hello"))
                 ->addMiddleware(new AddParameter("controllerMessage2", "World"))

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright 2025 Gordon McVey
+ * Copyright © 2025 Gordon McVey
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,13 @@ declare(strict_types=1);
 
 namespace Docnet\JAPI\middleware;
 
+/**
+ * Standard MiddlewareProvider implementation
+ *
+ * This trait exists to eliminate the need to implement the same logic for middleware providers over and over.  You are
+ * of course free to ignore it and make your own implementations if you need more than standard functionality, but in
+ * most cases this implementation should suffice.
+ */
 trait MiddlewareProviderTrait
 {
     /**

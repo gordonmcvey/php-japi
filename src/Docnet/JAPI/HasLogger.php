@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © 2025 Gordon McVey
+ * Copyright 2015 Docnet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,26 +18,41 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\middleware;
+namespace Docnet\JAPI;
 
-use Docnet\JAPI\controller\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
- * Callstack Factory
+ * HasLogger Trait
  */
-class CallStackFactory
+trait HasLogger
 {
     /**
-     * Make a call stack and populate it with the given providers
+     * @var LoggerInterface
      */
-    public function make(RequestHandlerInterface $root, MiddlewareProviderInterface ...$additionalProviders): CallStack
+    protected $logger = null;
+
+    /**
+     * Sets a logger.
+     *
+     * @param LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger)
     {
-        $callStack = new CallStack($root);
+        $this->logger = $logger;
+    }
 
-        foreach ($additionalProviders as $provider) {
-            $callStack->fromProvider($provider);
+    /**
+     * Gets a logger.
+     *
+     * @return LoggerInterface
+     */
+    protected function getLogger(): ?LoggerInterface
+    {
+        if (null === $this->logger) {
+            $this->logger = new NullLogger();
         }
-
-        return $callStack;
+        return $this->logger;
     }
 }

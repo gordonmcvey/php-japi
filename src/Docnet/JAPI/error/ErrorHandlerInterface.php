@@ -18,18 +18,18 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\middleware;
+namespace Docnet\JAPI\error;
 
-use Docnet\JAPI\controller\RequestHandlerInterface;
-use gordonmcvey\httpsupport\RequestInterface;
 use gordonmcvey\httpsupport\ResponseInterface;
+use Throwable;
 
 /**
- * Middleware interface
- *
- * To be used as middleware, a class must implement this interface
+ * Error handler interface
  */
-interface MiddlewareInterface
+interface ErrorHandlerInterface
 {
-    public function handle(RequestInterface $request, RequestHandlerInterface $handler): ResponseInterface;
+    /**
+     * Generate a suitable response for the given error condition
+     */
+    public function handle(Throwable $e): ResponseInterface;
 }

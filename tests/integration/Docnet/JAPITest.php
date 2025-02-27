@@ -1,9 +1,7 @@
 <?php
 
-declare(strict_types=1);
-
 /**
- * Copyright 2025 Gordon McVey
+ * Copyright © 2025 Gordon McVey
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,17 +20,16 @@ declare(strict_types=1);
 
 namespace Docnet\JAPI\test\integration;
 
-use Docnet\JAPI;
 use Docnet\JAPI\controller\RequestHandlerInterface;
+use Docnet\JAPI\error\ErrorHandlerInterface;
 use Docnet\JAPI\Exceptions\AccessDenied;
 use Docnet\JAPI\Exceptions\Auth;
 use Docnet\JAPI\Exceptions\Routing;
+use Docnet\JAPI\JAPI;
 use Docnet\JAPI\middleware\CallStackFactory;
 use Docnet\JAPI\middleware\MiddlewareInterface;
 use Docnet\JAPI\middleware\MiddlewareProviderInterface;
-use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
-use gordonmcvey\httpsupport\enum\statuscodes\ServerErrorCodes;
 use gordonmcvey\httpsupport\RequestInterface;
 use gordonmcvey\httpsupport\ResponseInterface;
 use PHPUnit\Framework\Attributes\Test;
@@ -46,6 +43,7 @@ class JAPITest extends TestCase
         $mockController = $this->createMock(RequestHandlerInterface::class);
         $mockRequest = $this->createMock(RequestInterface::class);
         $mockResponse = $this->createMock(ResponseInterface::class);
+        $mockErrorHandler = $this->createMock(ErrorHandlerInterface::class);
 
         $mockController->expects($this->once())
             ->method("dispatch")
@@ -53,10 +51,14 @@ class JAPITest extends TestCase
             ->willReturn($mockResponse)
         ;
 
+        $mockErrorHandler->expects($this->never())
+            ->method("handle")
+        ;
+
         // Use a partial mock so we can check behaviour via the mocked output methods
         $japi = $this->getMockBuilder(JAPI::class)
-            ->setConstructorArgs([new StatusCodeFactory(), new CallStackFactory()])
-            ->onlyMethods(['sendResponse', 'jsonError'])
+            ->setConstructorArgs([new CallStackFactory(), $mockErrorHandler])
+            ->onlyMethods(['sendResponse'])
             ->getMock()
         ;
  
@@ -64,10 +66,6 @@ class JAPITest extends TestCase
         $japi->expects($this->once())
             ->method("sendResponse")
             ->with($mockResponse)
-        ;
-
-        $japi->expects($this->never())
-            ->method("jsonError")
         ;
 
         $japi->bootstrap($mockController, $mockRequest);
@@ -79,6 +77,7 @@ class JAPITest extends TestCase
         $mockController = $this->createMock(RequestHandlerInterface::class);
         $mockRequest = $this->createMock(RequestInterface::class);
         $mockResponse = $this->createMock(ResponseInterface::class);
+        $mockErrorHandler = $this->createMock(ErrorHandlerInterface::class);
 
         $mockController->expects($this->once())
             ->method("dispatch")
@@ -86,10 +85,14 @@ class JAPITest extends TestCase
             ->willReturn($mockResponse)
         ;
 
+        $mockErrorHandler->expects($this->never())
+            ->method("handle")
+        ;
+
         // Use a partial mock so we can check behaviour via the mocked output methods
         $japi = $this->getMockBuilder(JAPI::class)
-            ->setConstructorArgs([new StatusCodeFactory(), new CallStackFactory()])
-            ->onlyMethods(['sendResponse', 'jsonError'])
+            ->setConstructorArgs([new CallStackFactory(), $mockErrorHandler])
+            ->onlyMethods(['sendResponse'])
             ->getMock()
         ;
  
@@ -97,10 +100,6 @@ class JAPITest extends TestCase
         $japi->expects($this->once())
             ->method("sendResponse")
             ->with($mockResponse)
-        ;
-
-        $japi->expects($this->never())
-            ->method("jsonError")
         ;
 
         $japi->bootstrap(fn() => $mockController, $mockRequest);
@@ -112,6 +111,7 @@ class JAPITest extends TestCase
         $mockController = $this->createMock(RequestHandlerInterface::class);
         $mockRequest = $this->createMock(RequestInterface::class);
         $mockResponse = $this->createMock(ResponseInterface::class);
+        $mockErrorHandler = $this->createMock(ErrorHandlerInterface::class);
 
         $mockController->expects($this->once())
             ->method("dispatch")
@@ -119,10 +119,14 @@ class JAPITest extends TestCase
             ->willReturn($mockResponse)
         ;
 
+        $mockErrorHandler->expects($this->never())
+            ->method("handle")
+        ;
+
         // Use a partial mock so we can check behaviour via the mocked output methods
         $japi = $this->getMockBuilder(JAPI::class)
-            ->setConstructorArgs([new StatusCodeFactory(), new CallStackFactory()])
-            ->onlyMethods(['sendResponse', 'jsonError'])
+            ->setConstructorArgs([new CallStackFactory(), $mockErrorHandler])
+            ->onlyMethods(['sendResponse'])
             ->getMock()
         ;
  
@@ -130,10 +134,6 @@ class JAPITest extends TestCase
         $japi->expects($this->once())
             ->method("sendResponse")
             ->with($mockResponse)
-        ;
-
-        $japi->expects($this->never())
-            ->method("jsonError")
         ;
 
         $japi->bootstrap(
@@ -153,6 +153,7 @@ class JAPITest extends TestCase
         $mockController = $this->createMock(RequestHandlerInterface::class);
         $mockRequest = $this->createMock(RequestInterface::class);
         $mockResponse = $this->createMock(ResponseInterface::class);
+        $mockErrorHandler = $this->createMock(ErrorHandlerInterface::class);
 
         $mockController->expects($this->once())
             ->method("dispatch")
@@ -172,6 +173,10 @@ class JAPITest extends TestCase
             ->willReturnSelf()
         ;
 
+        $mockErrorHandler->expects($this->never())
+            ->method("handle")
+        ;
+
         $middleware = new class implements MiddlewareInterface
         {
             public function handle(RequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
@@ -185,8 +190,8 @@ class JAPITest extends TestCase
 
         // Use a partial mock so we can check behaviour via the mocked output methods
         $japi = $this->getMockBuilder(JAPI::class)
-            ->setConstructorArgs([new StatusCodeFactory(), new CallStackFactory()])
-            ->onlyMethods(['sendResponse', 'jsonError'])
+            ->setConstructorArgs([new CallStackFactory(), $mockErrorHandler])
+            ->onlyMethods(['sendResponse'])
             ->getMock()
         ;
  
@@ -196,9 +201,6 @@ class JAPITest extends TestCase
             ->with($mockResponse)
         ;
 
-        $japi->expects($this->never())
-            ->method("jsonError")
-        ;
 
         $japi->addMiddleware($middleware)->bootstrap($mockController, $mockRequest);
     }
@@ -212,6 +214,7 @@ class JAPITest extends TestCase
         ]);
         $mockRequest = $this->createMock(RequestInterface::class);
         $mockResponse = $this->createMock(ResponseInterface::class);
+        $mockErrorHandler = $this->createMock(ErrorHandlerInterface::class);
 
         $mockRequest->expects($this->once())
             ->method("setHeader")
@@ -247,10 +250,14 @@ class JAPITest extends TestCase
             ->willReturn($mockResponse)
         ;
 
+        $mockErrorHandler->expects($this->never())
+            ->method("handle")
+        ;
+
         // Use a partial mock so we can check behaviour via the mocked output methods
         $japi = $this->getMockBuilder(JAPI::class)
-            ->setConstructorArgs([new StatusCodeFactory(), new CallStackFactory()])
-            ->onlyMethods(['sendResponse', 'jsonError'])
+            ->setConstructorArgs([new CallStackFactory(), $mockErrorHandler])
+            ->onlyMethods(['sendResponse'])
             ->getMock()
         ;
  
@@ -260,10 +267,6 @@ class JAPITest extends TestCase
             ->with($mockResponse)
         ;
 
-        $japi->expects($this->never())
-            ->method("jsonError")
-        ;
-
         $japi->bootstrap($mockController, $mockRequest);
     }
 
@@ -271,22 +274,26 @@ class JAPITest extends TestCase
     public function itHandlesABootStrappingError(): void
     {
         $mockRequest = $this->createMock(RequestInterface::class);
+        $mockResponse = $this->createMock(ResponseInterface::class);
+        $mockErrorHandler = $this->createMock(ErrorHandlerInterface::class);
 
         // Use a partial mock so we can check behaviour via the mocked output methods
         $japi = $this->getMockBuilder(JAPI::class)
-            ->setConstructorArgs([new StatusCodeFactory(), new CallStackFactory()])
-            ->onlyMethods(['sendResponse', 'jsonError'])
+            ->setConstructorArgs([new CallStackFactory(), $mockErrorHandler])
+            ->onlyMethods(['sendResponse'])
             ->getMock()
         ;
  
         // JAPI expectatations
-        $japi->expects($this->never())
+        $japi->expects($this->once())
             ->method("sendResponse")
+            ->with($mockResponse)
         ;
 
-        $japi->expects($this->once())
-            ->method("jsonError")
-            ->with($this->isInstanceOf(\Exception::class), ServerErrorCodes::INTERNAL_SERVER_ERROR)
+        $mockErrorHandler->expects($this->once())
+            ->method("handle")
+            ->with($this->isInstanceOf(\Exception::class))
+            ->willReturn($mockResponse)
         ;
 
         $japi->bootstrap(fn() => "Hello", $mockRequest);
@@ -296,22 +303,26 @@ class JAPITest extends TestCase
     public function itHandlesARoutingError(): void
     {
         $mockRequest = $this->createMock(RequestInterface::class);
+        $mockResponse = $this->createMock(ResponseInterface::class);
+        $mockErrorHandler = $this->createMock(ErrorHandlerInterface::class);
 
         // Use a partial mock so we can check behaviour via the mocked output methods
         $japi = $this->getMockBuilder(JAPI::class)
-            ->setConstructorArgs([new StatusCodeFactory(), new CallStackFactory()])
-            ->onlyMethods(['sendResponse', 'jsonError'])
+            ->setConstructorArgs([new CallStackFactory(), $mockErrorHandler,])
+            ->onlyMethods(['sendResponse'])
             ->getMock()
         ;
  
         // JAPI expectatations
-        $japi->expects($this->never())
+        $japi->expects($this->once())
             ->method("sendResponse")
+            ->with($mockResponse)
         ;
 
-        $japi->expects($this->once())
-            ->method("jsonError")
-            ->with($this->isInstanceOf(Routing::class), ClientErrorCodes::NOT_FOUND)
+        $mockErrorHandler->expects($this->once())
+            ->method("handle")
+            ->with($this->isInstanceOf(Routing::class))
+            ->willReturn($mockResponse)
         ;
 
         $japi->bootstrap(fn() => throw new Routing(), $mockRequest);
@@ -322,6 +333,8 @@ class JAPITest extends TestCase
     {
         $mockController = $this->createMock(RequestHandlerInterface::class);
         $mockRequest = $this->createMock(RequestInterface::class);
+        $mockResponse = $this->createMock(ResponseInterface::class);
+        $mockErrorHandler = $this->createMock(ErrorHandlerInterface::class);
 
         $mockController->expects($this->once())
             ->method("dispatch")
@@ -331,19 +344,21 @@ class JAPITest extends TestCase
 
         // Use a partial mock so we can check behaviour via the mocked output methods
         $japi = $this->getMockBuilder(JAPI::class)
-            ->setConstructorArgs([new StatusCodeFactory(), new CallStackFactory()])
-            ->onlyMethods(['sendResponse', 'jsonError'])
+            ->setConstructorArgs([new CallStackFactory(), $mockErrorHandler])
+            ->onlyMethods(['sendResponse'])
             ->getMock()
         ;
  
         // JAPI expectatations
-        $japi->expects($this->never())
+        $japi->expects($this->once())
             ->method("sendResponse")
+            ->with($mockResponse)
         ;
 
-        $japi->expects($this->once())
-            ->method("jsonError")
-            ->with($this->isInstanceOf(Auth::class), ClientErrorCodes::UNAUTHORIZED)
+        $mockErrorHandler->expects($this->once())
+            ->method("handle")
+            ->with($this->isInstanceOf(Auth::class))
+            ->willReturn($mockResponse)
         ;
 
         $japi->bootstrap($mockController, $mockRequest);
@@ -354,6 +369,8 @@ class JAPITest extends TestCase
     {
         $mockController = $this->createMock(RequestHandlerInterface::class);
         $mockRequest = $this->createMock(RequestInterface::class);
+        $mockResponse = $this->createMock(ResponseInterface::class);
+        $mockErrorHandler = $this->createMock(ErrorHandlerInterface::class);
 
         $mockController->expects($this->once())
             ->method("dispatch")
@@ -363,19 +380,21 @@ class JAPITest extends TestCase
 
         // Use a partial mock so we can check behaviour via the mocked output methods
         $japi = $this->getMockBuilder(JAPI::class)
-            ->setConstructorArgs([new StatusCodeFactory(), new CallStackFactory()])
-            ->onlyMethods(['sendResponse', 'jsonError'])
+            ->setConstructorArgs([new CallStackFactory(), $mockErrorHandler])
+            ->onlyMethods(['sendResponse'])
             ->getMock()
         ;
  
         // JAPI expectatations
-        $japi->expects($this->never())
+        $japi->expects($this->once())
             ->method("sendResponse")
+            ->with($mockResponse)
         ;
 
-        $japi->expects($this->once())
-            ->method("jsonError")
-            ->with($this->isInstanceOf(AccessDenied::class), ClientErrorCodes::FORBIDDEN)
+        $mockErrorHandler->expects($this->once())
+            ->method("handle")
+            ->with($this->isInstanceOf(AccessDenied::class))
+            ->willReturn($mockResponse)
         ;
 
         $japi->bootstrap($mockController, $mockRequest);
@@ -386,6 +405,8 @@ class JAPITest extends TestCase
     {
         $mockController = $this->createMock(RequestHandlerInterface::class);
         $mockRequest = $this->createMock(RequestInterface::class);
+        $mockResponse = $this->createMock(ResponseInterface::class);
+        $mockErrorHandler = $this->createMock(ErrorHandlerInterface::class);
 
         $mockController->expects($this->once())
             ->method("dispatch")
@@ -395,19 +416,21 @@ class JAPITest extends TestCase
 
         // Use a partial mock so we can check behaviour via the mocked output methods
         $japi = $this->getMockBuilder(JAPI::class)
-            ->setConstructorArgs([new StatusCodeFactory(), new CallStackFactory()])
-            ->onlyMethods(['sendResponse', 'jsonError'])
+            ->setConstructorArgs([new CallStackFactory(), $mockErrorHandler])
+            ->onlyMethods(['sendResponse'])
             ->getMock()
         ;
  
         // JAPI expectatations
-        $japi->expects($this->never())
+        $japi->expects($this->once())
             ->method("sendResponse")
+            ->with($mockResponse)
         ;
 
-        $japi->expects($this->once())
-            ->method("jsonError")
-            ->with($this->isInstanceOf(\RuntimeException::class), ServerErrorCodes::INTERNAL_SERVER_ERROR)
+        $mockErrorHandler->expects($this->once())
+            ->method("handle")
+            ->with($this->isInstanceOf(\RuntimeException::class))
+            ->willReturn($mockResponse)
         ;
 
         $japi->bootstrap($mockController, $mockRequest);
@@ -418,6 +441,8 @@ class JAPITest extends TestCase
     {
         $mockController = $this->createMock(RequestHandlerInterface::class);
         $mockRequest = $this->createMock(RequestInterface::class);
+        $mockResponse = $this->createMock(ResponseInterface::class);
+        $mockErrorHandler = $this->createMock(ErrorHandlerInterface::class);
 
         $mockController->expects($this->once())
             ->method("dispatch")
@@ -427,19 +452,21 @@ class JAPITest extends TestCase
 
         // Use a partial mock so we can check behaviour via the mocked output methods
         $japi = $this->getMockBuilder(JAPI::class)
-            ->setConstructorArgs([new StatusCodeFactory(), new CallStackFactory()])
-            ->onlyMethods(['sendResponse', 'jsonError'])
+            ->setConstructorArgs([new CallStackFactory(), $mockErrorHandler])
+            ->onlyMethods(['sendResponse'])
             ->getMock()
         ;
  
         // JAPI expectatations
-        $japi->expects($this->never())
+        $japi->expects($this->once())
             ->method("sendResponse")
+            ->with($mockResponse)
         ;
 
-        $japi->expects($this->once())
-            ->method("jsonError")
-            ->with($this->isInstanceOf(\RuntimeException::class), ClientErrorCodes::UNAVAILABLE_FOR_LEGAL_REASONS)
+        $mockErrorHandler->expects($this->once())
+            ->method("handle")
+            ->with($this->isInstanceOf(\RuntimeException::class))
+            ->willReturn($mockResponse)
         ;
 
         $japi->bootstrap($mockController, $mockRequest);

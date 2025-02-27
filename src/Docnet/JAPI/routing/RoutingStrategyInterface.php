@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright 2025 Gordon McVey
+ * Copyright © 2025 Gordon McVey
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,14 +18,18 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\Middleware;
+namespace Docnet\JAPI\routing;
 
-use Docnet\JAPI\controller\RequestHandlerInterface;
-use Docnet\JAPI\middleware\MiddlewareInterface;
-
-abstract class AbstractMiddleware implements MiddlewareInterface
+/**
+ * Routing stragegy interface
+ *
+ * Strategies for the Router must implement this interface.
+ */
+interface RoutingStrategyInterface
 {
-    public function __construct(protected RequestHandlerInterface $handler)
-    {
-    }
+    /**
+     * Determine the request handler to use for the given request.  It should return null if an appropriate request
+     * handler cannot be found
+     */
+    public function route(string $path): ?string;
 }

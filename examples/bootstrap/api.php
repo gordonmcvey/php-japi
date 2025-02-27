@@ -16,7 +16,8 @@
  * limitations under the License.
  */
 
-use Docnet\JAPI\controller\RequestHandlerInterface;
+use Docnet\JAPI\Bootstrap;
+use Docnet\JAPI\controller\ControllerFactory;
 use Docnet\JAPI\error\JsonErrorHandler;
 use Docnet\JAPI\JAPI;
 use Docnet\JAPI\middleware\CallStackFactory;
@@ -24,7 +25,6 @@ use Docnet\JAPI\routing\Router;
 use Docnet\JAPI\routing\SingleControllerStrategy;
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\Request;
-use gordonmcvey\httpsupport\RequestInterface;
 
 /**
  * Trivial JAPI bootstrap
@@ -42,12 +42,10 @@ require_once 'Hello.php';
 $request = Request::fromSuperGlobals();
 (new JAPI(new CallStackFactory(), new JsonErrorHandler(new StatusCodeFactory())))
     ->bootstrap(
-        function(RequestInterface $request): RequestHandlerInterface {
-            $obj_router = new Router(new SingleControllerStrategy(Hello::class));
-            $str_controller = $obj_router->route($request);
-
-            return new $str_controller();
-        },
-        $request
+        new Bootstrap(
+            new Router(new SingleControllerStrategy(Hello::class)),
+            new ControllerFactory(),
+        ),
+        $request,
     )
 ;

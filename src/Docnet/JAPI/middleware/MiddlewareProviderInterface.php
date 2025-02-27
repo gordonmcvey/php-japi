@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright 2025 Gordon McVey
+ * Copyright © 2025 Gordon McVey
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,15 +20,35 @@ declare(strict_types=1);
 
 namespace Docnet\JAPI\middleware;
 
+/**
+ * Middleware Provider Interface
+ *
+ * This interface allows the implementing class to provide a bundle of middleware that will be added to the call stack
+ * when passed in.  The expected use case for this is if you want a controller to specify what middleware gets run when
+ * it's invoked independant of any other middleware that may already be present in the stack.
+ *
+ * The usual rules on execution order apply to providers as apply to the middleware stack as a whole.
+ */
 interface MiddlewareProviderInterface
 {
+    /**
+     * Add a middleware to the provider
+     */
     public function addMiddleware(MiddlewareInterface $newMiddleware): self;
 
+    /**
+     * Clear all middleware from the provider
+     */
     public function resetMiddleware(): self;
 
+    /**
+     * Clear all middleware and replace it with the specified middleware
+     */
     public function replaceMiddlewareWith(MiddlewareInterface $middleware): self;
 
     /**
+     * Get the middleware that will be provided
+     *
      * @return array<array-key, MiddlewareInterface>
      */
     public function getAllMiddleware(): array;

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright 2015 Docnet
+ * Copyright © 2025 Gordon McVey
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,41 +18,22 @@
 
 declare(strict_types=1);
 
-namespace Docnet;
-
-use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
+namespace Docnet\JAPI\routing;
 
 /**
- * HasLogger Trait
+ * Single Controller Strategy
+ *
+ * This basically routes any request to the same controller regardless of its value.  This can be handy for very simple
+ * applications, or as a "last resort" strategy when all the usual routing approaches have failed to find a controller.
  */
-trait HasLogger
+readonly class SingleControllerStrategy implements RoutingStrategyInterface
 {
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger = null;
-
-    /**
-     * Sets a logger.
-     *
-     * @param LoggerInterface $logger
-     */
-    public function setLogger(LoggerInterface $logger)
+    public function __construct(private string $controllerClass)
     {
-        $this->logger = $logger;
     }
 
-    /**
-     * Gets a logger.
-     *
-     * @return LoggerInterface
-     */
-    protected function getLogger(): ?LoggerInterface
+    public function route(string $path): ?string
     {
-        if (null === $this->logger) {
-            $this->logger = new NullLogger();
-        }
-        return $this->logger;
+        return $this->controllerClass;
     }
 }

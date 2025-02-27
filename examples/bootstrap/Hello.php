@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © 2025 Gordon McVey
+ * Copyright 2015 Docnet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,18 +18,27 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\middleware;
-
 use Docnet\JAPI\controller\RequestHandlerInterface;
+use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
 use gordonmcvey\httpsupport\RequestInterface;
+use gordonmcvey\httpsupport\Response;
 use gordonmcvey\httpsupport\ResponseInterface;
 
 /**
- * Middleware interface
+ * Example controller class
  *
- * To be used as middleware, a class must implement this interface
+ * @author Tom Walder <tom@docnet.nu>
  */
-interface MiddlewareInterface
+class Hello implements RequestHandlerInterface
 {
-    public function handle(RequestInterface $request, RequestHandlerInterface $handler): ResponseInterface;
+    /**
+     * Hello, World!
+     */
+    public function dispatch(RequestInterface $request): ?ResponseInterface
+    {
+        return new Response(
+            SuccessCodes::OK,
+            json_encode(['message' => 'Hello, World!']),
+        );
+    }
 }

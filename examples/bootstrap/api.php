@@ -16,10 +16,10 @@
  * limitations under the License.
  */
 
-use Docnet\Bootstrap;
-use Docnet\JAPI;
+use Docnet\JAPI\Bootstrap;
 use Docnet\JAPI\controller\ControllerFactory;
 use Docnet\JAPI\error\JsonErrorHandler;
+use Docnet\JAPI\JAPI;
 use Docnet\JAPI\middleware\CallStackFactory;
 use Docnet\JAPI\routing\Router;
 use Docnet\JAPI\routing\SingleControllerStrategy;

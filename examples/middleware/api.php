@@ -18,9 +18,9 @@ declare(strict_types=1);
  * limitations under the License.
  */
 
-use Docnet\JAPI;
 use Docnet\JAPI\controller\RequestHandlerInterface;
 use Docnet\JAPI\error\JsonErrorHandler;
+use Docnet\JAPI\JAPI;
 use Docnet\JAPI\middleware\CallStackFactory;
 use Docnet\JAPI\routing\Router;
 use Docnet\JAPI\routing\SingleControllerStrategy;

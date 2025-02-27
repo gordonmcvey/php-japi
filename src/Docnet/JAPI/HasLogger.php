@@ -18,7 +18,7 @@
 
 declare(strict_types=1);
 
-namespace Docnet;
+namespace Docnet\JAPI;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;

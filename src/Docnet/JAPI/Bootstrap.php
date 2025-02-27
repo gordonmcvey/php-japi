@@ -18,7 +18,7 @@
 
 declare(strict_types=1);
 
-namespace Docnet;
+namespace Docnet\JAPI;
 
 use Docnet\JAPI\controller\ControllerFactoryInterface;
 use Docnet\JAPI\controller\RequestHandlerInterface;

@@ -20,17 +20,15 @@ declare(strict_types=1);
 
 namespace Docnet\JAPI\test\unit;
 
-use Docnet\JAPI;
 use Docnet\JAPI\controller\RequestHandlerInterface;
 use Docnet\JAPI\error\ErrorHandlerInterface;
 use Docnet\JAPI\Exceptions\AccessDenied;
 use Docnet\JAPI\Exceptions\Auth;
 use Docnet\JAPI\Exceptions\Routing;
+use Docnet\JAPI\JAPI;
 use Docnet\JAPI\middleware\CallStack;
 use Docnet\JAPI\middleware\CallStackFactory;
-use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
-use gordonmcvey\httpsupport\enum\statuscodes\ServerErrorCodes;
 use gordonmcvey\httpsupport\RequestInterface;
 use gordonmcvey\httpsupport\ResponseInterface;
 use PHPUnit\Framework\Attributes\Test;

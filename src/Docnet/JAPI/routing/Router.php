@@ -21,9 +21,8 @@ declare(strict_types=1);
 namespace Docnet\JAPI\routing;
 
 use Docnet\JAPI\Exceptions\Routing;
-use Docnet\JAPI\routing\RoutingStrategyInterface;
 use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
-use gordonmcvey\httpsupport\RequestInterface;
+use gordonmcvey\httpsupport\request\RequestInterface;
 
 /**
  * Router class
@@ -101,7 +100,7 @@ readonly class Router implements RouterInterface
     /**
      * Validate that the path is safe
      *
-     * As the path is user-supplied it can't be trusted, so we'll check it for anything that looks nefarious and bail
+     * As the path is user-supplied, it can't be trusted, so we'll check it for anything that looks nefarious and bail
      * out if anything looks like it may be problematic
      *
      * @throws Routing

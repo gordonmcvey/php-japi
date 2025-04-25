@@ -24,13 +24,18 @@ use Docnet\JAPI\Exceptions\Routing;
 use Docnet\JAPI\routing\Router;
 use Docnet\JAPI\routing\RoutingStrategyInterface;
 use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
-use gordonmcvey\httpsupport\RequestInterface;
+use gordonmcvey\httpsupport\request\RequestInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 
 class RouterTest extends TestCase
 {
+    /**
+     * @throws Exception
+     * @throws Routing
+     */
     #[Test]
     #[DataProvider("provideValidPaths")]
     public function itRoutesForValidPaths(string $path, string $controller): void
@@ -39,7 +44,8 @@ class RouterTest extends TestCase
         $request = $this->createMock(RequestInterface::class);
 
         $request->expects($this->once())->method("uri")->willReturn($path);
-        $strategy->expects($this->once())
+        $strategy
+            ->expects($this->once())
             ->method("route")
             ->with($path)
             ->willReturn($controller)
@@ -50,6 +56,12 @@ class RouterTest extends TestCase
         $this->assertSame($controller, $router->route($request));
     }
 
+    /**
+     * @return iterable<string, array{
+     *     path: string,
+     *     controller: string,
+     * }>
+     */
     public static function provideValidPaths(): iterable
     {
         yield "Typical routing" => [
@@ -78,6 +90,10 @@ class RouterTest extends TestCase
         ];
     }
 
+    /**
+     * @throws Exception
+     * @throws Routing
+     */
     #[Test]
     public function itStopsRoutingWhenItFindsAResult(): void
     {
@@ -86,11 +102,13 @@ class RouterTest extends TestCase
         $request = $this->createMock(RequestInterface::class);
 
         $request->expects($this->once())->method("uri")->willReturn("/foo/bar");
-        $strategy1->expects($this->once())
+        $strategy1
+            ->expects($this->once())
             ->method("route")
             ->with("/foo/bar")
             ->willReturn("RoutedController")
         ;
+
         $strategy2->expects($this->never())->method("route");
 
         $router = new Router($strategy1, $strategy2);
@@ -98,6 +116,9 @@ class RouterTest extends TestCase
         $this->assertSame("RoutedController", $router->route($request));
     }
 
+    /**
+     * @throws Exception
+     */
     #[Test]
     #[DataProvider("provideInvalidPaths")]
     public function itThrowsBadRequestForInvalidPaths(string $path, int $code): void
@@ -116,6 +137,12 @@ class RouterTest extends TestCase
         $router->route($request);
     }
 
+    /**
+     * @return iterable<string, array{
+     *     path: string,
+     *     code: int,
+     * }>
+     */
     public static function provideInvalidPaths(): iterable
     {
         yield "Invalid characters" => [
@@ -154,6 +181,9 @@ class RouterTest extends TestCase
         ];
     }
 
+    /**
+     * @throws Exception
+     */
     #[Test]
     public function itThrowsNotFoundForPathThatDoesntRoute(): void
     {

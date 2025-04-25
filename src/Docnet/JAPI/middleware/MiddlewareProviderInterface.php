@@ -25,14 +25,14 @@ namespace Docnet\JAPI\middleware;
  *
  * This interface allows the implementing class to provide a bundle of middleware that will be added to the call stack
  * when passed in.  The expected use case for this is if you want a controller to specify what middleware gets run when
- * it's invoked independant of any other middleware that may already be present in the stack.
+ * it's invoked independent of any other middleware that may already be present in the stack.
  *
  * The usual rules on execution order apply to providers as apply to the middleware stack as a whole.
  */
 interface MiddlewareProviderInterface
 {
     /**
-     * Add a middleware to the provider
+     * Add middleware to the provider
      */
     public function addMiddleware(MiddlewareInterface $newMiddleware): self;
 

@@ -24,14 +24,18 @@ use Docnet\JAPI\controller\RequestHandlerInterface;
 use Docnet\JAPI\middleware\CallStackFactory;
 use Docnet\JAPI\middleware\MiddlewareInterface;
 use Docnet\JAPI\middleware\MiddlewareProviderInterface;
-use gordonmcvey\httpsupport\RequestInterface;
-use gordonmcvey\httpsupport\ResponseInterface;
+use gordonmcvey\httpsupport\request\RequestInterface;
+use gordonmcvey\httpsupport\response\ResponseInterface;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class CallStackFactoryTest extends TestCase
 {
+    /**
+     * @throws Exception
+     */
     #[Test]
     public function itMakesACallStack(): void
     {
@@ -39,8 +43,9 @@ class CallStackFactoryTest extends TestCase
         $request = $this->createMock(RequestInterface::class);
         $response = $this->createMock(ResponseInterface::class);
 
-        $controller->expects($this->once())
-            ->method(constraint: "dispatch")
+        $controller
+            ->expects($this->once())
+            ->method("dispatch")
             ->with($request)
             ->willReturn($response)
         ;
@@ -51,6 +56,9 @@ class CallStackFactoryTest extends TestCase
         $this->assertSame($response, $callStack->dispatch($request));
     }
 
+    /**
+     * @throws Exception
+     */
     #[Test]
     public function itMakesACallStackAndPopulatesItFromController(): void
     {
@@ -63,18 +71,21 @@ class CallStackFactoryTest extends TestCase
         $response = $this->createMock(ResponseInterface::class);
         $middleware = $this->createMock(MiddlewareInterface::class);
 
-        $middleware->expects($this->once())
+        $middleware
+            ->expects($this->once())
             ->method("handle")
             ->with($request, $controller)
             ->willReturnCallback(fn(RequestInterface $request): ?ResponseInterface => $controller->dispatch($request))
         ;
 
-        $controller->expects($this->once())
+        $controller
+            ->expects($this->once())
             ->method("getAllMiddleware")
             ->willReturn([$middleware])
         ;
-        
-        $controller->expects($this->once())
+
+        $controller
+            ->expects($this->once())
             ->method("dispatch")
             ->with($request)
             ->willReturn($response)
@@ -83,9 +94,12 @@ class CallStackFactoryTest extends TestCase
         $factory = new CallStackFactory();
         $callStack = $factory->make($controller);
 
-        $this->assertSame($response, $callStack->dispatch($request));        
+        $this->assertSame($response, $callStack->dispatch($request));
     }
 
+    /**
+     * @throws Exception
+     */
     #[Test]
     public function itMakesACallStackAndPopulatesItFromProvider(): void
     {
@@ -96,7 +110,8 @@ class CallStackFactoryTest extends TestCase
         $middleware = $this->createMock(MiddlewareInterface::class);
         $provider = $this->createMock(MiddlewareProviderInterface::class);
 
-        $middleware->expects($this->once())
+        $middleware
+            ->expects($this->once())
             ->method("handle")
             ->with($request, $controller)
             ->willReturnCallback(fn(RequestInterface $request): ?ResponseInterface => $controller->dispatch($request))
@@ -106,8 +121,9 @@ class CallStackFactoryTest extends TestCase
             ->method("getAllMiddleware")
             ->willReturn([$middleware])
         ;
-        
-        $controller->expects($this->once())
+
+        $controller
+            ->expects($this->once())
             ->method("dispatch")
             ->with($request)
             ->willReturn($response)
@@ -116,6 +132,6 @@ class CallStackFactoryTest extends TestCase
         $factory = new CallStackFactory();
         $callStack = $factory->make($controller, $provider);
 
-        $this->assertSame($response, $callStack->dispatch($request));        
+        $this->assertSame($response, $callStack->dispatch($request));
     }
 }

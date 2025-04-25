@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace Docnet\JAPI\test\unit\factory;
 
+use Controller;
 use Docnet\JAPI\controller\ControllerFactory;
 use Docnet\JAPI\controller\RequestHandlerInterface;
 use Docnet\JAPI\Exceptions\Routing;
@@ -30,30 +31,36 @@ use PHPUnit\Framework\TestCase;
 
 class ControllerFactoryTest extends TestCase
 {
-    
+    /**
+     * @throws Routing
+     */
     #[Test]
     public function itMakesAController(): void
     {
-        $factory = new ControllerFactory;
+        $factory = new ControllerFactory();
 
         $controller = $factory->make(FactoryInstantiated::class);
 
-        $this->assertInstanceOf(RequestHandlerInterface::class, $controller);
+        $this->assertInstanceOf(FactoryInstantiated::class, $controller);
         $this->assertNull($controller->arg1);
         $this->assertNull($controller->arg2);
         $this->assertNull($controller->arg3);
     }
 
+    /**
+     * @throws Routing
+     */
     #[Test]
     public function itMakesAControllerWithArguments(): void
     {
-        $factory = new ControllerFactory;
+        $factory = new ControllerFactory();
 
-        $controller = $factory->withArguments("String argument", 42, true)
+        $controller = $factory
+            ->withArguments("String argument", 42, true)
             ->make(FactoryInstantiated::class)
         ;
 
-        $this->assertInstanceOf(RequestHandlerInterface::class, $controller);
+        $this->assertInstanceOf(FactoryInstantiated::class, $controller);
         $this->assertSame("String argument", $controller->arg1);
         $this->assertSame(42, $controller->arg2);
         $this->assertTrue($controller->arg3);
@@ -62,7 +69,7 @@ class ControllerFactoryTest extends TestCase
     #[Test]
     public function itDoesntMakeANonController(): void
     {
-        $factory = new ControllerFactory;
+        $factory = new ControllerFactory();
 
         $this->expectException(Routing::class);
         $this->expectExceptionCode(ClientErrorCodes::BAD_REQUEST->value);

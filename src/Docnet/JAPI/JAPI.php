@@ -27,9 +27,9 @@ use Docnet\JAPI\middleware\MiddlewareProviderInterface;
 use Docnet\JAPI\middleware\MiddlewareProviderTrait;
 use gordonmcvey\httpsupport\enum\statuscodes\ServerErrorCodes;
 use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
-use gordonmcvey\httpsupport\RequestInterface;
-use gordonmcvey\httpsupport\Response;
-use gordonmcvey\httpsupport\ResponseInterface;
+use gordonmcvey\httpsupport\request\RequestInterface;
+use gordonmcvey\httpsupport\response\Response;
+use gordonmcvey\httpsupport\response\ResponseInterface;
 use Psr\Log\LoggerAwareInterface;
 
 /**

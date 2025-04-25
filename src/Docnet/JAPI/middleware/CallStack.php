@@ -21,8 +21,8 @@ declare(strict_types=1);
 namespace Docnet\JAPI\middleware;
 
 use Docnet\JAPI\controller\RequestHandlerInterface;
-use gordonmcvey\httpsupport\RequestInterface;
-use gordonmcvey\httpsupport\ResponseInterface;
+use gordonmcvey\httpsupport\request\RequestInterface;
+use gordonmcvey\httpsupport\response\ResponseInterface;
 
 /**
  * Middleware call stack
@@ -71,7 +71,7 @@ class CallStack implements RequestHandlerInterface
     }
 
     /**
-     * Clear the middleware stack with the exception of the root item
+     * Clear the middleware stack except for the root item
      */
     public function reset(): self
     {

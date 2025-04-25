@@ -36,6 +36,13 @@ class PathNamespaceStrategyTest extends TestCase
         $this->assertSame($expectation, $strategy->route($path));
     }
 
+    /**
+     * @return iterable<string, array{
+     *     namespace: string,
+     *     path: string,
+     *     expectation: string,
+     * }>
+     */
     public static function providePaths(): iterable
     {
         yield "Simple path without a namespace" => [

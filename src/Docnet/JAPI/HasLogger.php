@@ -28,25 +28,15 @@ use Psr\Log\NullLogger;
  */
 trait HasLogger
 {
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger = null;
+    protected ?LoggerInterface $logger = null;
 
-    /**
-     * Sets a logger.
-     *
-     * @param LoggerInterface $logger
-     */
-    public function setLogger(LoggerInterface $logger)
+    public function setLogger(LoggerInterface $logger): void
     {
         $this->logger = $logger;
     }
 
     /**
      * Gets a logger.
-     *
-     * @return LoggerInterface
      */
     protected function getLogger(): ?LoggerInterface
     {

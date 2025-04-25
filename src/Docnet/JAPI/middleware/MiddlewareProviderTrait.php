@@ -23,9 +23,9 @@ namespace Docnet\JAPI\middleware;
 /**
  * Standard MiddlewareProvider implementation
  *
- * This trait exists to eliminate the need to implement the same logic for middleware providers over and over.  You are
- * of course free to ignore it and make your own implementations if you need more than standard functionality, but in
- * most cases this implementation should suffice.
+ * This trait exists to eliminate the need to implement the same logic for middleware providers over and over.  You are,
+ * of course, free to ignore it and make your own implementations if you need more than standard functionality, but in
+ * most cases, this implementation should suffice.
  */
 trait MiddlewareProviderTrait
 {

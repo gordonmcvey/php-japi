@@ -20,7 +20,7 @@ declare(strict_types=1);
 
 namespace Docnet\JAPI\routing;
 
-use gordonmcvey\httpsupport\RequestInterface;
+use gordonmcvey\httpsupport\request\RequestInterface;
 
 /**
  * Interface for Router implementations

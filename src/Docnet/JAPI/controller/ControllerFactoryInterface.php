@@ -20,8 +20,6 @@ declare(strict_types=1);
 
 namespace Docnet\JAPI\controller;
 
-use Docnet\JAPI\controller\RequestHandlerInterface;
-
 interface ControllerFactoryInterface
 {
     /**
@@ -30,7 +28,7 @@ interface ControllerFactoryInterface
     public function make(string $path): RequestHandlerInterface;
 
     /**
-     * Set the arguments that will be passed to the request handler's constructor, if any are needed
+     * Set the arguments that will be passed to the request handler's constructor if any are needed
      *
      * @param array<mixed> $arguments
      */

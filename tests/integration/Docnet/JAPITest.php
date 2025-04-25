@@ -30,13 +30,18 @@ use Docnet\JAPI\middleware\CallStackFactory;
 use Docnet\JAPI\middleware\MiddlewareInterface;
 use Docnet\JAPI\middleware\MiddlewareProviderInterface;
 use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
-use gordonmcvey\httpsupport\RequestInterface;
-use gordonmcvey\httpsupport\ResponseInterface;
+use gordonmcvey\httpsupport\request\RequestInterface;
+use gordonmcvey\httpsupport\response\ResponseInterface;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class JAPITest extends TestCase
 {
+    /**
+     * @throws Exception
+     */
     #[Test]
     public function itHandlesATypicalDispatchCycle(): void
     {
@@ -61,7 +66,7 @@ class JAPITest extends TestCase
             ->onlyMethods(['sendResponse'])
             ->getMock()
         ;
- 
+
         // JAPI expectatations
         $japi->expects($this->once())
             ->method("sendResponse")
@@ -71,6 +76,9 @@ class JAPITest extends TestCase
         $japi->bootstrap($mockController, $mockRequest);
     }
 
+    /**
+     * @throws Exception
+     */
     #[Test]
     public function itHandlesATypicalDispatchCycleWithFactoryFunction(): void
     {
@@ -95,7 +103,7 @@ class JAPITest extends TestCase
             ->onlyMethods(['sendResponse'])
             ->getMock()
         ;
- 
+
         // JAPI expectatations
         $japi->expects($this->once())
             ->method("sendResponse")
@@ -129,7 +137,7 @@ class JAPITest extends TestCase
             ->onlyMethods(['sendResponse'])
             ->getMock()
         ;
- 
+
         // JAPI expectatations
         $japi->expects($this->once())
             ->method("sendResponse")
@@ -137,9 +145,12 @@ class JAPITest extends TestCase
         ;
 
         $japi->bootstrap(
-            new class($mockController) {
-                public function __construct(private readonly RequestHandlerInterface $controller) {}
-                public function __invoke(): RequestHandlerInterface {
+            new readonly class ($mockController) {
+                public function __construct(private RequestHandlerInterface $controller)
+                {
+                }
+                public function __invoke(): RequestHandlerInterface
+                {
                     return $this->controller;
                 }
             },
@@ -147,6 +158,9 @@ class JAPITest extends TestCase
         );
     }
 
+    /**
+     * @throws Exception
+     */
     #[Test]
     public function itHandlesATypicalDispatchCycleWithGlobalMiddleware(): void
     {
@@ -179,7 +193,8 @@ class JAPITest extends TestCase
 
         $middleware = new class implements MiddlewareInterface
         {
-            public function handle(RequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
+            public function handle(RequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+            {
                 $request->setHeader("foo", "bar");
                 $response = $handler->dispatch($request);
                 $response->setHeader("baz", "quux");
@@ -194,20 +209,23 @@ class JAPITest extends TestCase
             ->onlyMethods(['sendResponse'])
             ->getMock()
         ;
- 
+
         // JAPI expectatations
         $japi->expects($this->once())
             ->method("sendResponse")
             ->with($mockResponse)
         ;
 
-
         $japi->addMiddleware($middleware)->bootstrap($mockController, $mockRequest);
     }
 
+    /**
+     * @throws Exception
+     */
     #[Test]
     public function itHandlesATypicalDispatchCycleWithControllerMiddleware(): void
     {
+        /** @var RequestHandlerInterface&MiddlewareProviderInterface&MockObject $mockController */
         $mockController = $this->createMockForIntersectionOfInterfaces([
             RequestHandlerInterface::class,
             MiddlewareProviderInterface::class,
@@ -230,7 +248,8 @@ class JAPITest extends TestCase
 
         $middleware = new class implements MiddlewareInterface
         {
-            public function handle(RequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
+            public function handle(RequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+            {
                 $request->setHeader("foo", "bar");
                 $response = $handler->dispatch($request);
                 $response->setHeader("baz", "quux");
@@ -260,7 +279,7 @@ class JAPITest extends TestCase
             ->onlyMethods(['sendResponse'])
             ->getMock()
         ;
- 
+
         // JAPI expectatations
         $japi->expects($this->once())
             ->method("sendResponse")
@@ -270,6 +289,9 @@ class JAPITest extends TestCase
         $japi->bootstrap($mockController, $mockRequest);
     }
 
+    /**
+     * @throws Exception
+     */
     #[Test]
     public function itHandlesABootStrappingError(): void
     {
@@ -283,8 +305,8 @@ class JAPITest extends TestCase
             ->onlyMethods(['sendResponse'])
             ->getMock()
         ;
- 
-        // JAPI expectatations
+
+        // JAPI expectations
         $japi->expects($this->once())
             ->method("sendResponse")
             ->with($mockResponse)
@@ -312,7 +334,7 @@ class JAPITest extends TestCase
             ->onlyMethods(['sendResponse'])
             ->getMock()
         ;
- 
+
         // JAPI expectatations
         $japi->expects($this->once())
             ->method("sendResponse")
@@ -328,6 +350,9 @@ class JAPITest extends TestCase
         $japi->bootstrap(fn() => throw new Routing(), $mockRequest);
     }
 
+    /**
+     * @throws Exception
+     */
     #[Test]
     public function itHandlesAuthError(): void
     {
@@ -348,7 +373,7 @@ class JAPITest extends TestCase
             ->onlyMethods(['sendResponse'])
             ->getMock()
         ;
- 
+
         // JAPI expectatations
         $japi->expects($this->once())
             ->method("sendResponse")
@@ -364,6 +389,9 @@ class JAPITest extends TestCase
         $japi->bootstrap($mockController, $mockRequest);
     }
 
+    /**
+     * @throws Exception
+     */
     #[Test]
     public function itHandlesAccessDeniedError(): void
     {
@@ -384,8 +412,8 @@ class JAPITest extends TestCase
             ->onlyMethods(['sendResponse'])
             ->getMock()
         ;
- 
-        // JAPI expectatations
+
+        // JAPI expectations
         $japi->expects($this->once())
             ->method("sendResponse")
             ->with($mockResponse)
@@ -400,6 +428,9 @@ class JAPITest extends TestCase
         $japi->bootstrap($mockController, $mockRequest);
     }
 
+    /**
+     * @throws Exception
+     */
     #[Test]
     public function itHandlesGeneralError(): void
     {
@@ -420,8 +451,8 @@ class JAPITest extends TestCase
             ->onlyMethods(['sendResponse'])
             ->getMock()
         ;
- 
-        // JAPI expectatations
+
+        // JAPI expectations
         $japi->expects($this->once())
             ->method("sendResponse")
             ->with($mockResponse)
@@ -436,6 +467,9 @@ class JAPITest extends TestCase
         $japi->bootstrap($mockController, $mockRequest);
     }
 
+    /**
+     * @throws Exception
+     */
     #[Test]
     public function itHandlesGeneralErrorWithValidErrorCode(): void
     {
@@ -456,8 +490,8 @@ class JAPITest extends TestCase
             ->onlyMethods(['sendResponse'])
             ->getMock()
         ;
- 
-        // JAPI expectatations
+
+        // JAPI expectations
         $japi->expects($this->once())
             ->method("sendResponse")
             ->with($mockResponse)

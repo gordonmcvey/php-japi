@@ -33,7 +33,8 @@
     "autoload-dev": {
         "classmap": [
             "tests/Controllers/"
-        ]
+        ],
+        "psr-4": {"Docnet\\JAPI\\examples\\": "examples/"}
     },
     "include-path": ["src/"],
     "repositories": [

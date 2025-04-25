@@ -16,6 +16,8 @@
  * limitations under the License.
  */
 
+namespace Docnet\JAPI\examples\helloworld;
+
 use Docnet\JAPI\controller\RequestHandlerInterface;
 use Docnet\JAPI\error\JsonErrorHandler;
 use Docnet\JAPI\JAPI;
@@ -23,8 +25,8 @@ use Docnet\JAPI\middleware\CallStackFactory;
 use Docnet\JAPI\routing\Router;
 use Docnet\JAPI\routing\SingleControllerStrategy;
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
-use gordonmcvey\httpsupport\Request;
-use gordonmcvey\httpsupport\RequestInterface;
+use gordonmcvey\httpsupport\request\Request;
+use gordonmcvey\httpsupport\request\RequestInterface;
 
 /**
  * Trivial JAPI bootstrap
@@ -33,16 +35,15 @@ use gordonmcvey\httpsupport\RequestInterface;
  */
 
 // Includes or Auto-loader
-define('BASE_PATH', dirname( __DIR__, 2));
+define('BASE_PATH', dirname(__DIR__, 2));
 
 require_once BASE_PATH . '/vendor/autoload.php';
-require_once 'Hello.php';
 
 // Demo
 $request = Request::fromSuperGlobals();
-(new JAPI(new CallStackFactory(), new JsonErrorHandler(new StatusCodeFactory())))
+(new JAPI(new CallStackFactory(), new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true)))
     ->bootstrap(
-        function(RequestInterface $request): RequestHandlerInterface {
+        function (RequestInterface $request): RequestHandlerInterface {
             $obj_router = new Router(new SingleControllerStrategy(Hello::class));
             $str_controller = $obj_router->route($request);
 

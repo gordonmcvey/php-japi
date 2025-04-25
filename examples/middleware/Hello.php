@@ -18,13 +18,15 @@
 
 declare(strict_types=1);
 
+namespace Docnet\JAPI\examples\middleware;
+
 use Docnet\JAPI\controller\RequestHandlerInterface;
 use Docnet\JAPI\middleware\MiddlewareProviderInterface;
 use Docnet\JAPI\middleware\MiddlewareProviderTrait;
 use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
-use gordonmcvey\httpsupport\RequestInterface;
-use gordonmcvey\httpsupport\Response;
-use gordonmcvey\httpsupport\ResponseInterface;
+use gordonmcvey\httpsupport\request\RequestInterface;
+use gordonmcvey\httpsupport\response\Response;
+use gordonmcvey\httpsupport\response\ResponseInterface;
 
 /**
  * Example controller class
@@ -48,7 +50,7 @@ class Hello implements MiddlewareProviderInterface, RequestHandlerInterface
 
         return new Response(
             SuccessCodes::OK,
-            json_encode(new stdClass),
+            (string) json_encode(new \stdClass()),
         );
     }
 }

@@ -18,11 +18,13 @@
 
 declare(strict_types=1);
 
+namespace Docnet\JAPI\examples\helloworld;
+
 use Docnet\JAPI\controller\RequestHandlerInterface;
 use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
-use gordonmcvey\httpsupport\RequestInterface;
+use gordonmcvey\httpsupport\request\RequestInterface;
 use gordonmcvey\httpsupport\Response;
-use gordonmcvey\httpsupport\ResponseInterface;
+use gordonmcvey\httpsupport\response\ResponseInterface;
 
 /**
  * Example controller class
@@ -36,9 +38,9 @@ class Hello implements RequestHandlerInterface
      */
     public function dispatch(RequestInterface $request): ?ResponseInterface
     {
-        return new Response(
+        return new \gordonmcvey\httpsupport\response\Response(
             SuccessCodes::OK,
-            json_encode(['message' => 'Hello, World!']),
+            (string) json_encode(['message' => 'Hello, World!']),
         );
     }
 }

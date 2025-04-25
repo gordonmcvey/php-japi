@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * Copyright © 2025 Gordon McVey
  *
@@ -18,15 +16,20 @@ declare(strict_types=1);
  * limitations under the License.
  */
 
+declare(strict_types=1);
+
+namespace Docnet\JAPI\examples\middleware;
+
 use Docnet\JAPI\controller\RequestHandlerInterface;
 use Docnet\JAPI\error\JsonErrorHandler;
 use Docnet\JAPI\JAPI;
 use Docnet\JAPI\middleware\CallStackFactory;
+use Docnet\JAPI\middleware\MiddlewareProviderInterface;
 use Docnet\JAPI\routing\Router;
 use Docnet\JAPI\routing\SingleControllerStrategy;
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
-use gordonmcvey\httpsupport\Request;
-use gordonmcvey\httpsupport\RequestInterface;
+use gordonmcvey\httpsupport\request\Request;
+use gordonmcvey\httpsupport\request\RequestInterface;
 
 /**
  * Trivial JAPI bootstrap
@@ -35,34 +38,36 @@ use gordonmcvey\httpsupport\RequestInterface;
  */
 
 // Includes or Auto-loader
-define('BASE_PATH', dirname( __DIR__, 2));
+define('BASE_PATH', dirname(__DIR__, 2));
 
 require_once BASE_PATH . '/vendor/autoload.php';
-require_once 'AddParameter.php';
-require_once 'Hello.php';
-require_once "Profiler.php";
-require_once "RandomDelay.php";
 
 // Demo
 $request = Request::fromSuperGlobals();
-(new JAPI(new CallStackFactory(), new JsonErrorHandler(new StatusCodeFactory())))
+$japi = new JAPI(new CallStackFactory(), new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true));
+$japi
     ->addMiddleware(new AddParameter("globalMessage1", "Hello"))
     ->addMiddleware(new AddParameter("globalMessage2", "World"))
     ->addMiddleware(new AddParameter("globalMessage3", "Hello, World!"))
-    ->addMiddleware(new RandomDelay)
-    ->addMiddleware(new Profiler)
-    ->bootstrap(
-            function(RequestInterface $request): RequestHandlerInterface {
-            $router = new Router(new SingleControllerStrategy(Hello::class));
-            $controllerClass = $router->route($request);
-
-            return (new $controllerClass)
-                ->addMiddleware(new AddParameter("controllerMessage1", "Hello"))
-                ->addMiddleware(new AddParameter("controllerMessage2", "World"))
-                ->addMiddleware(new AddParameter("controllerMessage3", "Hello, World!"))
-                ->addMiddleware(new AddParameter("addedBy", __FUNCTION__))
-                ->addMiddleware(new RandomDelay);
-        },
-        $request
-    )
+    ->addMiddleware(new RandomDelay())
+    ->addMiddleware(new Profiler())
 ;
+
+$japi->bootstrap(
+    function (RequestInterface $request): RequestHandlerInterface {
+        $router = new Router(new SingleControllerStrategy(Hello::class));
+        $controllerClass = $router->route($request);
+
+        /** @var RequestHandlerInterface&MiddlewareProviderInterface $controller */
+        $controller = new $controllerClass();
+        $controller
+            ->addMiddleware(new AddParameter("controllerMessage1", "Hello"))
+            ->addMiddleware(new AddParameter("controllerMessage2", "World"))
+            ->addMiddleware(new AddParameter("controllerMessage3", "Hello, World!"))
+            ->addMiddleware(new AddParameter("addedBy", __FUNCTION__))
+            ->addMiddleware(new RandomDelay())
+        ;
+        return $controller;
+    },
+    $request
+);

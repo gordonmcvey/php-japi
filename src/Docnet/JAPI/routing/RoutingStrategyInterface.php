@@ -21,7 +21,7 @@ declare(strict_types=1);
 namespace Docnet\JAPI\routing;
 
 /**
- * Routing stragegy interface
+ * Routing strategy interface
  *
  * Strategies for the Router must implement this interface.
  */

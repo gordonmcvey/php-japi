@@ -20,11 +20,13 @@ declare(strict_types=1);
 
 namespace Docnet\JAPI\Exceptions;
 
+use Exception;
+
 /**
  * AccessDenied Exception
  *
  * @author Kamba Abudu <kamba@venditan.com>
  */
-class AccessDenied extends \Exception
+class AccessDenied extends Exception
 {
 }

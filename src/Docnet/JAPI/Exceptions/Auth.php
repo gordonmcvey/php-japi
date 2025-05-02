@@ -20,11 +20,13 @@ declare(strict_types=1);
 
 namespace Docnet\JAPI\Exceptions;
 
+use Exception;
+
 /**
  * Auth Exception
  *
  * @author Tom Walder
  */
-class Auth extends \Exception
+class Auth extends Exception
 {
 }

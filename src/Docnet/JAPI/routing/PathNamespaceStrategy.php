@@ -39,12 +39,12 @@ namespace Docnet\JAPI\routing;
  * the user!).  It also has to do a bit of string processing, so for smaller applications, static routing may be
  * preferable.
  */
-class PathNamespaceStrategy implements RoutingStrategyInterface
+readonly class PathNamespaceStrategy implements RoutingStrategyInterface
 {
     /**
      * @param string $controllerNamespace The namespace controllers will be located under, eg vendor\project\controllers
      */
-    public function __construct(private readonly string $controllerNamespace = '')
+    public function __construct(private string $controllerNamespace = '')
     {
     }
 

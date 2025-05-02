@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace Docnet\JAPI\error;
 
+use ErrorException;
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\response\Response;
 use gordonmcvey\httpsupport\response\ResponseInterface;
@@ -51,7 +52,7 @@ readonly class JsonErrorHandler implements ErrorHandlerInterface
 
         $payload = [
             "code" => $code->value,
-            "msg" => ($e instanceof \ErrorException ? "Internal Error" : "Exception")
+            "msg" => ($e instanceof ErrorException ? "Internal Error" : "Exception")
         ];
 
         if ($this->exposeDetails) {

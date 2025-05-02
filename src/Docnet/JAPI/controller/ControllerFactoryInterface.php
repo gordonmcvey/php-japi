@@ -30,7 +30,7 @@ interface ControllerFactoryInterface
     /**
      * Set the arguments that will be passed to the request handler's constructor if any are needed
      *
-     * @param array<mixed> $arguments
+     * @param array<array-key, mixed> $arguments
      */
     public function withArguments(...$arguments): self;
 }

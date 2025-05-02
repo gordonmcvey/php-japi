@@ -25,12 +25,15 @@ use Docnet\JAPI\error\ErrorHandlerInterface;
 use Docnet\JAPI\middleware\CallStackFactory;
 use Docnet\JAPI\middleware\MiddlewareProviderInterface;
 use Docnet\JAPI\middleware\MiddlewareProviderTrait;
+use ErrorException;
+use Exception;
 use gordonmcvey\httpsupport\enum\statuscodes\ServerErrorCodes;
 use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
 use gordonmcvey\httpsupport\request\RequestInterface;
 use gordonmcvey\httpsupport\response\Response;
 use gordonmcvey\httpsupport\response\ResponseInterface;
 use Psr\Log\LoggerAwareInterface;
+use Throwable;
 
 /**
  * Front controller for our JSON APIs
@@ -65,10 +68,11 @@ class JAPI implements MiddlewareProviderInterface, LoggerAwareInterface
         try {
             $controller = is_callable($controllerSource) ? $controllerSource($request) : $controllerSource;
             if (!$controller instanceof RequestHandlerInterface) {
-                throw new \Exception('Unable to bootstrap', ServerErrorCodes::INTERNAL_SERVER_ERROR->value);
+                // @todo Replace with a semantic exception
+                throw new Exception('Unable to bootstrap', ServerErrorCodes::INTERNAL_SERVER_ERROR->value);
             }
             $response = $this->dispatch($controller, $request);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->getLogger()->error("[JAPI] [{$e->getCode()}] Error: {$e->getMessage()}");
             $response = $this->errorHandler->handle($e);
         } finally {
@@ -84,7 +88,7 @@ class JAPI implements MiddlewareProviderInterface, LoggerAwareInterface
         $error = error_get_last();
         if ($error && in_array($error['type'], [E_ERROR, E_USER_ERROR, E_COMPILE_ERROR])) {
             $errorCode = ServerErrorCodes::INTERNAL_SERVER_ERROR;
-            $this->sendResponse($this->errorHandler->handle(new \ErrorException(
+            $this->sendResponse($this->errorHandler->handle(new ErrorException(
                 $error['message'],
                 $errorCode->value,
                 0,
@@ -115,8 +119,6 @@ class JAPI implements MiddlewareProviderInterface, LoggerAwareInterface
     private function dispatch(RequestHandlerInterface $controller, RequestInterface $request): ResponseInterface
     {
         $callStack = $this->callStackFactory->make($controller, $this);
-        $response = $callStack->dispatch($request) ?? new Response(SuccessCodes::NO_CONTENT, '');
-
-        return $response;
+        return $callStack->dispatch($request) ?? new Response(SuccessCodes::NO_CONTENT, '');
     }
 }

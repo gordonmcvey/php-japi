@@ -10,10 +10,11 @@ use Docnet\JAPI\middleware\MiddlewareInterface;
 use Docnet\JAPI\middleware\MiddlewareProviderInterface;
 use Docnet\JAPI\middleware\MiddlewareProviderTrait;
 use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
-use gordonmcvey\httpsupport\Request;
-use gordonmcvey\httpsupport\RequestInterface;
-use gordonmcvey\httpsupport\Response;
-use gordonmcvey\httpsupport\ResponseInterface;
+use gordonmcvey\httpsupport\request\payload\ArrayPayloadHandler;
+use gordonmcvey\httpsupport\request\Request;
+use gordonmcvey\httpsupport\request\RequestInterface;
+use gordonmcvey\httpsupport\response\Response;
+use gordonmcvey\httpsupport\response\ResponseInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -24,14 +25,16 @@ class CallStackTest extends TestCase
     {
         $controller = new class implements RequestHandlerInterface
         {
-            public function dispatch(RequestInterface $request): ResponseInterface {
+            public function dispatch(RequestInterface $request): ResponseInterface
+            {
                 return new Response(SuccessCodes::OK, "<p>I'm the controller</p>\n");
             }
         };
 
         $outer = new class implements MiddlewareInterface
         {
-            public function handle(RequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
+            public function handle(RequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+            {
                 $response = $handler->dispatch($request);
                 return new Response(SuccessCodes::OK, $response->body() . "<p>I'm the outer middleware</p>\n");
             }
@@ -39,22 +42,23 @@ class CallStackTest extends TestCase
 
         $inner = new class implements MiddlewareInterface
         {
-            public function handle(RequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
+            public function handle(RequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+            {
                 $response = $handler->dispatch($request);
                 return new Response(SuccessCodes::OK, $response->body() . "<p>I'm the inner middleware</p>\n");
             }
         };
 
-        $request = new Request([],[], [], [], []);
+        $request = new Request([], [], [], [], new ArrayPayloadHandler([]));
 
         $callstack = new CallStack($controller);
         $callstack->add($inner)->add($outer);
         $response = $callstack->dispatch($request);
 
-        // The stack should be called in the order outer -> inner -> controller 
+        // The stack should be called in the order outer -> inner -> controller
         // and should return in the order controller -> inner -> outer
-        $this->assertSame("<p>I'm the controller</p>\n" 
-            . "<p>I'm the inner middleware</p>\n" 
+        $this->assertSame("<p>I'm the controller</p>\n"
+            . "<p>I'm the inner middleware</p>\n"
             . "<p>I'm the outer middleware</p>\n", $response->body());
     }
 
@@ -63,27 +67,30 @@ class CallStackTest extends TestCase
     {
         $controller = new class implements RequestHandlerInterface
         {
-            public function dispatch(RequestInterface $request): ResponseInterface {
+            public function dispatch(RequestInterface $request): ResponseInterface
+            {
                 return new Response(SuccessCodes::OK, "<p>I'm the controller</p>\n");
             }
         };
 
         $outer = new class implements MiddlewareInterface
         {
-            public function handle(RequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
+            public function handle(RequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+            {
                 return new Response(SuccessCodes::OK, "<p>I'm the outer middleware</p>\n");
             }
         };
 
         $inner = new class implements MiddlewareInterface
         {
-            public function handle(RequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
+            public function handle(RequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+            {
                 $response = $handler->dispatch($request);
                 return new Response(SuccessCodes::OK, $response->body() . "<p>I'm the inner middleware</p>\n");
             }
         };
 
-        $request = new Request([],[], [], [], []);
+        $request = new Request([], [], [], [], new ArrayPayloadHandler([]));
 
         $callstack = new CallStack($controller);
         $callstack->add($inner)->add($outer);
@@ -98,18 +105,23 @@ class CallStackTest extends TestCase
     {
         $controller = new class implements RequestHandlerInterface
         {
-            public function dispatch(RequestInterface $request): ResponseInterface {
+            public function dispatch(RequestInterface $request): ResponseInterface
+            {
                 return new Response(SuccessCodes::OK, "<p>I'm the controller</p>\n");
             }
         };
 
         $outer = new class implements MiddlewareInterface
         {
-            public function handle(RequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
+            public function handle(RequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+            {
                 $response = $handler->dispatch($request);
 
                 if ("trigger" === $request->header("X-Outer-Condition")) {
-                    $response = new Response(SuccessCodes::OK, $response->body() . "<p>The outer middleware was triggered</p>\n");
+                    $response = new Response(
+                        SuccessCodes::OK,
+                        "{$response->body()}<p>The outer middleware was triggered</p>\n",
+                    );
                 }
 
                 return $response;
@@ -118,11 +130,15 @@ class CallStackTest extends TestCase
 
         $inner = new class implements MiddlewareInterface
         {
-            public function handle(RequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
+            public function handle(RequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+            {
                 $response = $handler->dispatch($request);
 
                 if ("trigger" === $request->header("X-Inner-Condition")) {
-                    $response = new Response(SuccessCodes::OK, $response->body() . "<p>The inner middleware was triggered</p>\n");
+                    $response = new Response(
+                        SuccessCodes::OK,
+                        "{$response->body()}<p>The inner middleware was triggered</p>\n",
+                    );
                 }
 
                 return $response;
@@ -132,33 +148,34 @@ class CallStackTest extends TestCase
         $callstack = new CallStack($controller);
         $callstack->add($inner)->add($outer);
 
-        $request = new Request([],[], [], [], []);
+        $request = new Request([], [], [], [], new ArrayPayloadHandler([]));
         $response = $callstack->dispatch($request);
         $this->assertSame("<p>I'm the controller</p>\n", $response->body());
 
-        $request = new Request([],[], [], [], [
+        $request = new Request([], [], [], [
             "HTTP_X_OUTER_CONDITION" => "trigger",
-        ]);
+        ], new ArrayPayloadHandler([]));
         $response = $callstack->dispatch($request);
-        $this->assertSame("<p>I'm the controller</p>\n" 
+        $this->assertSame("<p>I'm the controller</p>\n"
             . "<p>The outer middleware was triggered</p>\n", $response->body());
 
-        $request = new Request([],[], [], [], [
+        $request = new Request([], [], [], [
             "HTTP_X_INNER_CONDITION" => "trigger",
-        ]);
+        ], new ArrayPayloadHandler([]));
 
         $response = $callstack->dispatch($request);
 
-        $this->assertSame("<p>I'm the controller</p>\n" 
+        $this->assertSame("<p>I'm the controller</p>\n"
             . "<p>The inner middleware was triggered</p>\n", $response->body());
 
-            $request = new Request([],[], [], [], [
+        $request = new Request([], [], [], [
             "HTTP_X_OUTER_CONDITION" => "trigger",
             "HTTP_X_INNER_CONDITION" => "trigger",
-        ]);
+        ], new ArrayPayloadHandler([]));
+
         $response = $callstack->dispatch($request);
-        $this->assertSame("<p>I'm the controller</p>\n" 
-            . "<p>The inner middleware was triggered</p>\n" 
+        $this->assertSame("<p>I'm the controller</p>\n"
+            . "<p>The inner middleware was triggered</p>\n"
             . "<p>The outer middleware was triggered</p>\n", $response->body());
     }
 
@@ -167,14 +184,16 @@ class CallStackTest extends TestCase
     {
         $controller = new class implements RequestHandlerInterface
         {
-            public function dispatch(RequestInterface $request): ResponseInterface {
+            public function dispatch(RequestInterface $request): ResponseInterface
+            {
                 return new Response(SuccessCodes::OK, "<p>I'm the controller</p>\n");
             }
         };
 
         $outer = new class implements MiddlewareInterface
         {
-            public function handle(RequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
+            public function handle(RequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+            {
                 $response = $handler->dispatch($request);
                 return new Response(SuccessCodes::OK, $response->body() . "<p>I'm the outer middleware</p>\n");
             }
@@ -182,7 +201,8 @@ class CallStackTest extends TestCase
 
         $inner = new class implements MiddlewareInterface
         {
-            public function handle(RequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
+            public function handle(RequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+            {
                 $response = $handler->dispatch($request);
                 return new Response(SuccessCodes::OK, $response->body() . "<p>I'm the inner middleware</p>\n");
             }
@@ -193,16 +213,16 @@ class CallStackTest extends TestCase
             use MiddlewareProviderTrait;
         };
 
-        $request = new Request([],[], [], [], []);
+        $request = new Request([], [], [], [], new ArrayPayloadHandler([]));
 
         $callstack = new CallStack($controller);
         $callstack->fromProvider($provider->addMiddleware($inner)->addMiddleware($outer));
         $response = $callstack->dispatch($request);
 
-        // The stack should be called in the order outer -> inner -> controller 
+        // The stack should be called in the order outer -> inner -> controller
         // and should return in the order controller -> inner -> outer
-        $this->assertSame("<p>I'm the controller</p>\n" 
-            . "<p>I'm the inner middleware</p>\n" 
+        $this->assertSame("<p>I'm the controller</p>\n"
+            . "<p>I'm the inner middleware</p>\n"
             . "<p>I'm the outer middleware</p>\n", $response->body());
     }
 }

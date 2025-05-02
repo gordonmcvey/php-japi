@@ -23,13 +23,17 @@ namespace Docnet\JAPI\test\unit\middleware;
 use Docnet\JAPI\controller\RequestHandlerInterface;
 use Docnet\JAPI\middleware\MiddlewareInterface;
 use Docnet\JAPI\middleware\Slot;
-use gordonmcvey\httpsupport\RequestInterface;
-use gordonmcvey\httpsupport\ResponseInterface;
+use gordonmcvey\httpsupport\request\RequestInterface;
+use gordonmcvey\httpsupport\response\ResponseInterface;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 
 class SlotTest extends TestCase
 {
+    /**
+     * @throws Exception
+     */
     #[Test]
     public function itDispatchesARequest(): void
     {
@@ -38,10 +42,12 @@ class SlotTest extends TestCase
         $request = $this->createMock(RequestInterface::class);
         $expectedResponse = $this->createMock(ResponseInterface::class);
 
-        $middleware->expects($this->once())
+        $middleware
+            ->expects($this->once())
             ->method("handle")
             ->with($request, $nextHandler)
-            ->willReturn($expectedResponse);
+            ->willReturn($expectedResponse)
+        ;
 
         $slot = new Slot($middleware, $nextHandler);
         $actualResponse = $slot->dispatch($request);

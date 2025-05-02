@@ -20,7 +20,6 @@ declare(strict_types=1);
 
 namespace Docnet\JAPI\controller;
 
-use Docnet\JAPI\controller\RequestHandlerInterface;
 use Docnet\JAPI\Exceptions\Routing;
 use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
 
@@ -36,13 +35,16 @@ class ControllerFactory implements ControllerFactoryInterface
      */
     private array $arguments = [];
 
-    public function make(string $controllerClass): RequestHandlerInterface
+    /**
+     * @throws Routing
+     */
+    public function make(string $path): RequestHandlerInterface
     {
-        $controller = new $controllerClass(...$this->arguments);
+        $controller = new $path(...$this->arguments);
 
         if (!$controller instanceof RequestHandlerInterface) {
             throw new Routing(
-                sprintf("URI path %s does not correspond to a controller", $controllerClass),
+                sprintf("URI path %s does not correspond to a controller", $path),
                 ClientErrorCodes::BAD_REQUEST->value,
             );
         }

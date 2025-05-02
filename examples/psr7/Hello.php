@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © 2025 Gordon McVey
+ * Copyright 2015 Docnet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,21 +18,29 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\controller;
+namespace Docnet\JAPI\examples\psr7;
 
+use Docnet\JAPI\controller\RequestHandlerInterface;
+use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
 use gordonmcvey\httpsupport\request\RequestInterface;
+use gordonmcvey\httpsupport\Response;
 use gordonmcvey\httpsupport\response\ResponseInterface;
 
 /**
- * Interface for request handlers
+ * Example controller class
  *
- * Any class that returns a response for the given request is required to implement this method, this includes but is
- * not limited to controllers.  For example, the Middleware callstack implements it.
+ * @author Tom Walder <tom@docnet.nu>
  */
-interface RequestHandlerInterface
+class Hello implements RequestHandlerInterface
 {
     /**
-     * Main dispatch method
+     * Hello, World!
      */
-    public function dispatch(RequestInterface $request): ?ResponseInterface;
+    public function dispatch(RequestInterface $request): ?ResponseInterface
+    {
+        return new \gordonmcvey\httpsupport\response\Response(
+            SuccessCodes::OK,
+            (string) json_encode(['message' => 'Hello, World!']),
+        );
+    }
 }

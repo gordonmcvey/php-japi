@@ -24,14 +24,18 @@ use Docnet\JAPI\controller\RequestHandlerInterface;
 use Docnet\JAPI\middleware\CallStack;
 use Docnet\JAPI\middleware\MiddlewareInterface;
 use Docnet\JAPI\middleware\MiddlewareProviderInterface;
-use gordonmcvey\httpsupport\RequestInterface;
-use gordonmcvey\httpsupport\ResponseInterface;
+use gordonmcvey\httpsupport\request\RequestInterface;
+use gordonmcvey\httpsupport\response\ResponseInterface;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class CallStackTest extends TestCase
 {
+    /**
+     * @throws Exception
+     */
     #[Test]
     public function itRunsAController(): void
     {
@@ -39,16 +43,21 @@ class CallStackTest extends TestCase
         $response = $this->createMock(ResponseInterface::class);
         $controller = $this->createMock(RequestHandlerInterface::class);
 
-        $controller->expects($this->once())
+        $controller
+            ->expects($this->once())
             ->method("dispatch")
             ->with($request)
-            ->willReturn($response);
-        
+            ->willReturn($response)
+        ;
+
         $callStack = new CallStack($controller);
 
         $this->assertSame($response, $callStack->dispatch($request));
     }
 
+    /**
+     * @throws Exception
+     */
     #[Test]
     public function itRunsAControllerWithMiddleware(): void
     {
@@ -57,10 +66,12 @@ class CallStackTest extends TestCase
         $controller = $this->createMock(RequestHandlerInterface::class);
         $middleware = $this->createMock(MiddlewareInterface::class);
 
-        $middleware->expects($this->once())
+        $middleware
+            ->expects($this->once())
             ->method("handle")
             ->with($request, $controller)
-            ->willReturnCallback(fn(RequestInterface $request): ?ResponseInterface => $controller->dispatch($request));
+            ->willReturnCallback(fn(RequestInterface $request): ?ResponseInterface => $controller->dispatch($request))
+        ;
 
         $controller->expects($this->once())
             ->method("dispatch")
@@ -73,6 +84,9 @@ class CallStackTest extends TestCase
         $this->assertSame($response, $callStack->dispatch($request));
     }
 
+    /**
+     * @throws Exception
+     */
     #[Test]
     public function itRunsAControllerAndItsProvidedMiddleware(): void
     {
@@ -85,18 +99,21 @@ class CallStackTest extends TestCase
         $response = $this->createMock(ResponseInterface::class);
         $middleware = $this->createMock(MiddlewareInterface::class);
 
-        $middleware->expects($this->once())
+        $middleware
+            ->expects($this->once())
             ->method("handle")
             ->with($request, $controller)
             ->willReturnCallback(fn(RequestInterface $request): ?ResponseInterface => $controller->dispatch($request))
         ;
 
-        $controller->expects($this->once())
+        $controller
+            ->expects($this->once())
             ->method("getAllMiddleware")
             ->willReturn([$middleware])
         ;
-        
-        $controller->expects($this->once())
+
+        $controller
+            ->expects($this->once())
             ->method("dispatch")
             ->with($request)
             ->willReturn($response)
@@ -107,6 +124,9 @@ class CallStackTest extends TestCase
         $this->assertSame($response, $callStack->dispatch($request));
     }
 
+    /**
+     * @throws Exception
+     */
     #[Test]
     public function itAllowsResetting(): void
     {
@@ -115,21 +135,30 @@ class CallStackTest extends TestCase
         $controller = $this->createMock(RequestHandlerInterface::class);
         $middleware = $this->createMock(MiddlewareInterface::class);
 
-        $middleware->expects($this->never())
-            ->method("handle");
+        $middleware
+            ->expects($this->never())
+            ->method("handle")
+        ;
 
-        $controller->expects($this->once())
+        $controller
+            ->expects($this->once())
             ->method("dispatch")
             ->with($request)
-            ->willReturn($response);
+            ->willReturn($response)
+        ;
 
         $callStack = new CallStack($controller);
-        $callStack->add($middleware)
-            ->reset();
+        $callStack
+            ->add($middleware)
+            ->reset()
+        ;
 
         $this->assertSame($response, $callStack->dispatch($request));
     }
 
+    /**
+     * @throws Exception
+     */
     #[Test]
     public function itAllowsReplacingMiddleware(): void
     {
@@ -139,27 +168,37 @@ class CallStackTest extends TestCase
         $removedMiddleware = $this->createMock(MiddlewareInterface::class);
         $replacingMiddleware = $this->createMock(MiddlewareInterface::class);
 
-        $removedMiddleware->expects($this->never())
-            ->method("handle");
+        $removedMiddleware
+            ->expects($this->never())
+            ->method("handle")
+        ;
 
-        $replacingMiddleware->expects($this->once())
+        $replacingMiddleware
+            ->expects($this->once())
             ->method("handle")
             ->with($request, $controller)
-            ->willReturnCallback(fn(RequestInterface $request): ?ResponseInterface => $controller->dispatch($request));
+            ->willReturnCallback(fn(RequestInterface $request): ?ResponseInterface => $controller->dispatch($request))
+        ;
 
-        $controller->expects($this->once())
+        $controller
+            ->expects($this->once())
             ->method("dispatch")
             ->with($request)
-            ->willReturn($response);
+            ->willReturn($response)
+        ;
 
         $callStack = new CallStack($controller);
-        $callStack->add($removedMiddleware)
-            ->replaceWith($replacingMiddleware);
+        $callStack
+            ->add($removedMiddleware)
+            ->replaceWith($replacingMiddleware)
+        ;
 
         $this->assertSame($response, $callStack->dispatch($request));
-
     }
 
+    /**
+     * @throws Exception
+     */
     #[Test]
     public function itAllowsMiddlewareProviders(): void
     {
@@ -169,19 +208,25 @@ class CallStackTest extends TestCase
         $middleware = $this->createMock(MiddlewareInterface::class);
         $provider = $this->createMock(MiddlewareProviderInterface::class);
 
-        $middleware->expects($this->once())
+        $middleware
+            ->expects($this->once())
             ->method("handle")
             ->with($request, $controller)
-            ->willReturnCallback(fn(RequestInterface $request): ?ResponseInterface => $controller->dispatch($request));
+            ->willReturnCallback(fn(RequestInterface $request): ?ResponseInterface => $controller->dispatch($request))
+        ;
 
-        $controller->expects($this->once())
+        $controller
+            ->expects($this->once())
             ->method("dispatch")
             ->with($request)
-            ->willReturn($response);
+            ->willReturn($response)
+        ;
 
-        $provider->expects($this->once())
+        $provider
+            ->expects($this->once())
             ->method("getAllMiddleware")
-            ->willReturn([$middleware]);
+            ->willReturn([$middleware])
+        ;
 
         $callStack = new CallStack($controller);
         $callStack->fromProvider($provider);
@@ -189,6 +234,9 @@ class CallStackTest extends TestCase
         $this->assertSame($response, $callStack->dispatch($request));
     }
 
+    /**
+     * @throws Exception
+     */
     #[Test]
     public function itAllowsAddMulti(): void
     {
@@ -197,15 +245,19 @@ class CallStackTest extends TestCase
         $controller = $this->createMock(RequestHandlerInterface::class);
         $middleware = $this->createMock(MiddlewareInterface::class);
 
-        $middleware->expects($this->once())
+        $middleware
+            ->expects($this->once())
             ->method("handle")
             ->with($request, $controller)
-            ->willReturnCallback(fn(RequestInterface $request): ?ResponseInterface => $controller->dispatch($request));
+            ->willReturnCallback(fn(RequestInterface $request): ?ResponseInterface => $controller->dispatch($request))
+        ;
 
-        $controller->expects($this->once())
+        $controller
+            ->expects($this->once())
             ->method("dispatch")
             ->with($request)
-            ->willReturn($response);
+            ->willReturn($response)
+        ;
 
         $callStack = new CallStack($controller);
         $callStack->addMulti($middleware);

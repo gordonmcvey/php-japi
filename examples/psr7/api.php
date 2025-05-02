@@ -16,17 +16,19 @@
  * limitations under the License.
  */
 
-namespace Docnet\JAPI\examples\bootstrap;
+namespace Docnet\JAPI\examples\psr7;
 
-use Docnet\JAPI\Bootstrap;
-use Docnet\JAPI\controller\ControllerFactory;
+use Docnet\JAPI\controller\RequestHandlerInterface;
 use Docnet\JAPI\error\JsonErrorHandler;
 use Docnet\JAPI\JAPI;
 use Docnet\JAPI\middleware\CallStackFactory;
 use Docnet\JAPI\routing\Router;
 use Docnet\JAPI\routing\SingleControllerStrategy;
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
-use gordonmcvey\httpsupport\request\Request;
+use gordonmcvey\httpsupport\request\psr7\ServerRequestAdaptor;
+use gordonmcvey\httpsupport\request\RequestInterface;
+use GuzzleHttp\Psr7\ServerRequest;
+use GuzzleHttp\Psr7\Utils;
 
 /**
  * Trivial JAPI bootstrap
@@ -39,14 +41,28 @@ define('BASE_PATH', dirname(__DIR__, 2));
 
 require_once BASE_PATH . '/vendor/autoload.php';
 
+
 // Demo
-$request = Request::fromSuperGlobals();
+$request = new ServerRequestAdaptor(
+    new ServerRequest(
+        "GET",
+        "https://example.com/",
+        [],
+        Utils::streamFor("This is the request!"),
+    )
+);
+
 (new JAPI(new CallStackFactory(), new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true)))
     ->bootstrap(
-        new Bootstrap(
-            new Router(new SingleControllerStrategy(Hello::class)),
-            new ControllerFactory(),
-        ),
-        $request,
+        function (RequestInterface $request): RequestHandlerInterface {
+            error_log($request->verb()->value);
+            error_log($request->body());
+
+            $router = new Router(new SingleControllerStrategy(Hello::class));
+            $controllerClass = $router->route($request);
+
+            return new $controllerClass();
+        },
+        $request
     )
 ;

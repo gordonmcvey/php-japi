@@ -36,7 +36,7 @@ namespace Docnet\JAPI\routing;
  * This strategy can theoretically return a valid controller for any path so long as that path fits the criteria for
  * your application's namespace without having to specify an explicit mapping, hence why defining a root namespace is
  * so strongly recommended (whilst unlikely, you wouldn't want to make it possible to expose non-controller classes to
- * the user!).  It also has to do a bit of string processing, so for smaller applications static routing may be
+ * the user!).  It also has to do a bit of string processing, so for smaller applications, static routing may be
  * preferable.
  */
 class PathNamespaceStrategy implements RoutingStrategyInterface

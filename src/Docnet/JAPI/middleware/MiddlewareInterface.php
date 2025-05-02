@@ -21,8 +21,8 @@ declare(strict_types=1);
 namespace Docnet\JAPI\middleware;
 
 use Docnet\JAPI\controller\RequestHandlerInterface;
-use gordonmcvey\httpsupport\RequestInterface;
-use gordonmcvey\httpsupport\ResponseInterface;
+use gordonmcvey\httpsupport\request\RequestInterface;
+use gordonmcvey\httpsupport\response\ResponseInterface;
 
 /**
  * Middleware interface

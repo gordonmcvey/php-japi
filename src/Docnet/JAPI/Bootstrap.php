@@ -23,7 +23,7 @@ namespace Docnet\JAPI;
 use Docnet\JAPI\controller\ControllerFactoryInterface;
 use Docnet\JAPI\controller\RequestHandlerInterface;
 use Docnet\JAPI\routing\RouterInterface;
-use gordonmcvey\httpsupport\RequestInterface;
+use gordonmcvey\httpsupport\request\RequestInterface;
 
 /**
  * Simple bootstrap implementation

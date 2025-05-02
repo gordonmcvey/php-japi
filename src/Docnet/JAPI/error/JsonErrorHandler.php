@@ -21,8 +21,8 @@ declare(strict_types=1);
 namespace Docnet\JAPI\error;
 
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
-use gordonmcvey\httpsupport\Response;
-use gordonmcvey\httpsupport\ResponseInterface;
+use gordonmcvey\httpsupport\response\Response;
+use gordonmcvey\httpsupport\response\ResponseInterface;
 use Throwable;
 
 /**

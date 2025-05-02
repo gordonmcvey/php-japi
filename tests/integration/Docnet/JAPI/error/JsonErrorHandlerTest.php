@@ -32,7 +32,7 @@ class JsonErrorHandlerTest extends TestCase
     public function itHandlesAnError(): void
     {
         $handler = new JsonErrorHandler(new StatusCodeFactory());
-        
+
         $response = $handler->handle(new \Exception("Test", ClientErrorCodes::NOT_FOUND->value));
         $payload = $response->body();
         $decodedPayload = json_decode($payload);
@@ -52,7 +52,7 @@ class JsonErrorHandlerTest extends TestCase
     public function itHandlesAnInternalError(): void
     {
         $handler = new JsonErrorHandler(new StatusCodeFactory());
-        
+
         $response = $handler->handle(new \ErrorException("Test", ClientErrorCodes::NOT_FOUND->value));
         $payload = $response->body();
         $decodedPayload = json_decode($payload);
@@ -72,7 +72,7 @@ class JsonErrorHandlerTest extends TestCase
     public function itHandlesAnErrorWithDetails(): void
     {
         $handler = new JsonErrorHandler(statusCodeFactory: new StatusCodeFactory(), exposeDetails: true);
-        
+
         $response = $handler->handle(new \Exception("Test", ClientErrorCodes::NOT_FOUND->value));
         $payload = $response->body();
         $decodedPayload = json_decode($payload);

@@ -29,14 +29,18 @@ use Docnet\JAPI\JAPI;
 use Docnet\JAPI\middleware\CallStack;
 use Docnet\JAPI\middleware\CallStackFactory;
 use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
-use gordonmcvey\httpsupport\RequestInterface;
-use gordonmcvey\httpsupport\ResponseInterface;
+use gordonmcvey\httpsupport\request\RequestInterface;
+use gordonmcvey\httpsupport\response\ResponseInterface;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 class JAPITest extends TestCase
 {
+    /**
+     * @throws Exception
+     */
     #[Test]
     public function itHandlesATypicalDispatchCycle(): void
     {
@@ -76,7 +80,7 @@ class JAPITest extends TestCase
             ->getMock()
         ;
 
-        // JAPI expectatations
+        // JAPI expectations
         $japi->expects($this->once())
             ->method("sendResponse")
             ->with($mockResponse)
@@ -85,6 +89,9 @@ class JAPITest extends TestCase
         $japi->bootstrap($mockController, $mockRequest);
     }
 
+    /**
+     * @throws Exception
+     */
     #[Test]
     public function itHandlesATypicalDispatchCycleWithControllerFactoryFunction(): void
     {
@@ -124,7 +131,7 @@ class JAPITest extends TestCase
             ->getMock()
         ;
 
-        // JAPI expectatations
+        // JAPI expectations
         $japi->expects($this->once())
             ->method("sendResponse")
             ->with($mockResponse)
@@ -133,6 +140,9 @@ class JAPITest extends TestCase
         $japi->bootstrap(fn() => $mockController, $mockRequest);
     }
 
+    /**
+     * @throws Exception
+     */
     #[Test]
     public function itHandlesATypicalDispatchCycleWithControllerFactoryObject(): void
     {
@@ -172,16 +182,19 @@ class JAPITest extends TestCase
             ->method("handle")
         ;
 
-        // JAPI expectatations
+        // JAPI expectations
         $japi->expects($this->once())
             ->method("sendResponse")
             ->with($mockResponse)
         ;
 
         $japi->bootstrap(
-            new class($mockController) {
-                public function __construct(private readonly RequestHandlerInterface $controller) {}
-                public function __invoke(): RequestHandlerInterface {
+            new readonly class ($mockController) {
+                public function __construct(private RequestHandlerInterface $controller)
+                {
+                }
+                public function __invoke(): RequestHandlerInterface
+                {
                     return $this->controller;
                 }
             },
@@ -189,6 +202,9 @@ class JAPITest extends TestCase
         );
     }
 
+    /**
+     * @throws Exception
+     */
     #[Test]
     public function itHandlesABootstrappingError(): void
     {
@@ -210,15 +226,18 @@ class JAPITest extends TestCase
             ->getMock()
         ;
 
-        // JAPI expectatations
+        // JAPI expectations
         $japi->expects($this->once())
             ->method("sendResponse")
             ->with($mockResponse)
         ;
 
-        $japi->bootstrap(fn() => "Hello" , $mockRequest);        
+        $japi->bootstrap(fn() => "Hello", $mockRequest);
     }
 
+    /**
+     * @throws Exception
+     */
     #[Test]
     public function itHandlesARoutingError(): void
     {
@@ -240,15 +259,18 @@ class JAPITest extends TestCase
             ->getMock()
         ;
 
-        // JAPI expectatations
+        // JAPI expectations
         $japi->expects($this->once())
             ->method("sendResponse")
             ->with($mockResponse);
         ;
 
-        $japi->bootstrap(fn() => throw new Routing() , $mockRequest);        
+        $japi->bootstrap(fn() => throw new Routing(), $mockRequest);
     }
 
+    /**
+     * @throws Exception
+     */
     #[Test]
     public function itHandlesAuthError(): void
     {
@@ -284,7 +306,7 @@ class JAPITest extends TestCase
             ->getMock()
         ;
 
-        // JAPI expectatations
+        // JAPI expectations
         $japi->expects($this->once())
             ->method("sendResponse")
             ->with($mockResponse)
@@ -293,6 +315,9 @@ class JAPITest extends TestCase
         $japi->bootstrap($mockController, $mockRequest);
     }
 
+    /**
+     * @throws Exception
+     */
     #[Test]
     public function itHandlesAccessDeniedError(): void
     {
@@ -328,7 +353,7 @@ class JAPITest extends TestCase
             ->getMock()
         ;
 
-        // JAPI expectatations
+        // JAPI expectations
         $japi->expects($this->once())
             ->method("sendResponse")
             ->with($mockResponse)
@@ -337,6 +362,9 @@ class JAPITest extends TestCase
         $japi->bootstrap($mockController, $mockRequest);
     }
 
+    /**
+     * @throws Exception
+     */
     #[Test]
     public function itHandlesGeneralError(): void
     {
@@ -372,7 +400,7 @@ class JAPITest extends TestCase
             ->getMock()
         ;
 
-        // JAPI expectatations
+        // JAPI expectations
         $japi->expects($this->once())
             ->method("sendResponse")
             ->with($mockResponse)
@@ -381,6 +409,9 @@ class JAPITest extends TestCase
         $japi->bootstrap($mockController, $mockRequest);
     }
 
+    /**
+     * @throws Exception
+     */
     #[Test]
     public function itHandlesGeneralErrorWithValidErrorCode(): void
     {
@@ -416,7 +447,7 @@ class JAPITest extends TestCase
             ->getMock()
         ;
 
-        // JAPI expectatations
+        // JAPI expectations
         $japi->expects($this->once())
             ->method("sendResponse")
             ->with($mockResponse)
@@ -425,6 +456,9 @@ class JAPITest extends TestCase
         $japi->bootstrap($mockController, $mockRequest);
     }
 
+    /**
+     * @throws Exception
+     */
     #[Test]
     public function itLogsErrorsIfGivenALogger(): void
     {
@@ -446,6 +480,6 @@ class JAPITest extends TestCase
         ;
 
         $japi->setLogger($mockLogger);
-        $japi->bootstrap(fn() => "Hello" , $mockRequest);        
+        $japi->bootstrap(fn() => "Hello", $mockRequest);
     }
 }

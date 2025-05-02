@@ -15,7 +15,7 @@
         "php": ">=8.3.0",
         "ext-json": "*",
         "psr/log": "^2.0",
-        "gordonmcvey/httpsupport": "dev-dev-v2-payload-handling-refactor"
+        "gordonmcvey/httpsupport": "dev-dev-v2"
     },
     "require-dev": {
         "phpunit/phpunit": "^12.0",

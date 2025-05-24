@@ -33,7 +33,7 @@ use Throwable;
  */
 readonly class JsonErrorHandler implements ErrorHandlerInterface
 {
-    private const string CONTENT_TYPE = "text/json";
+    private const string CONTENT_TYPE = "application/json";
 
     /**
      * @param int $jsonFlags Bitmask affecting the JSON output.  Takes the same flags as the json_encode() method

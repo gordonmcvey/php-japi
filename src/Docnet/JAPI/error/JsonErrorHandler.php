@@ -52,11 +52,13 @@ readonly class JsonErrorHandler implements ErrorHandlerInterface
 
         $payload = [
             "code" => $code->value,
-            "msg" => ($e instanceof ErrorException ? "Internal Error" : "Exception")
+            "msg"  => ($e instanceof ErrorException ? "Internal Error" : "Exception")
         ];
 
         if ($this->exposeDetails) {
             $payload["detail"] = sprintf("%s: %s", get_class($e), $e->getMessage());
+            $payload["file"] = $e->getFile();
+            $payload["line"] = $e->getLine();
         }
 
         return new Response(

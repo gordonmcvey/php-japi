@@ -38,12 +38,7 @@ use Throwable;
 /**
  * Front controller for our JSON APIs
  *
- * I'm conflicted about whether or not this class adheres to PSR-1 "symbols or
- * side-effects" rule, as one or more of the methods generated output or have
- * side effects (like register_shutdown_function()).
- *
  * @author Tom Walder <tom@docnet.nu>
- * @todo Deal with register_shutdown_function in a nicer way
  */
 class JAPI implements MiddlewareProviderInterface, LoggerAwareInterface
 {
@@ -57,7 +52,6 @@ class JAPI implements MiddlewareProviderInterface, LoggerAwareInterface
         private readonly CallStackFactory $callStackFactory,
         private readonly ErrorHandlerInterface $errorHandler,
     ) {
-        register_shutdown_function($this->timeToDie(...));
     }
 
     /**
@@ -66,47 +60,40 @@ class JAPI implements MiddlewareProviderInterface, LoggerAwareInterface
     public function bootstrap(RequestHandlerInterface|callable $controllerSource, RequestInterface $request): void
     {
         try {
-            $controller = is_callable($controllerSource) ? $controllerSource($request) : $controllerSource;
-            if (!$controller instanceof RequestHandlerInterface) {
-                // @todo Replace with a semantic exception
-                throw new Exception('Unable to bootstrap', ServerErrorCodes::INTERNAL_SERVER_ERROR->value);
-            }
+            $controller = $this->getController($controllerSource, $request);
             $response = $this->dispatch($controller, $request);
         } catch (Throwable $e) {
             $this->getLogger()->error("[JAPI] [{$e->getCode()}] Error: {$e->getMessage()}");
             $response = $this->errorHandler->handle($e);
-        } finally {
-            isset($response) && $this->sendResponse($response);
         }
-    }
-
-    /**
-     * Custom shutdown function
-     */
-    public function timeToDie(): void
-    {
-        $error = error_get_last();
-        if ($error && in_array($error['type'], [E_ERROR, E_USER_ERROR, E_COMPILE_ERROR])) {
-            $errorCode = ServerErrorCodes::INTERNAL_SERVER_ERROR;
-            $this->sendResponse($this->errorHandler->handle(new ErrorException(
-                $error['message'],
-                $errorCode->value,
-                0,
-                $error['file'],
-                $error['line'],
-            )));
-        }
+        $this->sendResponse($response);
     }
 
     /**
      * Output the response as JSON with HTTP headers
      *
-     * @todo Maybe this should be part of the Response itself?
+     * @todo Maybe this should be part of the Response or implemented in a separate class?
      */
     protected function sendResponse(ResponseInterface $response): void
     {
         $response->sendHeaders();
         echo $response->body();
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function getController(
+        RequestHandlerInterface|callable $controllerSource,
+        RequestInterface $request,
+    ): RequestHandlerInterface {
+        $controller = is_callable($controllerSource) ? $controllerSource($request) : $controllerSource;
+        if (!$controller instanceof RequestHandlerInterface) {
+            // @todo Replace with a semantic exception
+            throw new Exception('Unable to bootstrap', ServerErrorCodes::INTERNAL_SERVER_ERROR->value);
+        }
+
+        return $controller;
     }
 
     /**

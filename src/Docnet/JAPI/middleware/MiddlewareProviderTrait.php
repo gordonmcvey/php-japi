@@ -34,19 +34,19 @@ trait MiddlewareProviderTrait
      */
     private array $middleware = [];
 
-    public function addMiddleware(MiddlewareInterface $newMiddleware): MiddlewareProviderInterface
+    public function addMiddleware(MiddlewareInterface $newMiddleware): self
     {
         $this->middleware[] = $newMiddleware;
         return $this;
     }
 
-    public function resetMiddleware(): MiddlewareProviderInterface
+    public function resetMiddleware(): self
     {
         $this->middleware = [];
         return $this;
     }
 
-    public function replaceMiddlewareWith(MiddlewareInterface $middleware): MiddlewareProviderInterface
+    public function replaceMiddlewareWith(MiddlewareInterface $middleware): self
     {
         return $this->resetMiddleware()->addMiddleware($middleware);
     }

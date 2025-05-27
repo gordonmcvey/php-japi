@@ -32,9 +32,7 @@ use gordonmcvey\httpsupport\request\Request;
 use gordonmcvey\httpsupport\request\RequestInterface;
 
 /**
- * Trivial JAPI bootstrap
- *
- * @author Tom Walder <tom@docnet.nu>
+ * Example using custom bootstrap with middleware
  */
 
 // Includes or Auto-loader
@@ -43,7 +41,6 @@ define('BASE_PATH', dirname(__DIR__, 2));
 require_once BASE_PATH . '/vendor/autoload.php';
 
 // Demo
-$request = Request::fromSuperGlobals();
 $japi = new JAPI(new CallStackFactory(), new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true));
 $japi
     ->addMiddleware(new AddParameter("globalMessage1", "Hello"))
@@ -51,23 +48,21 @@ $japi
     ->addMiddleware(new AddParameter("globalMessage3", "Hello, World!"))
     ->addMiddleware(new RandomDelay())
     ->addMiddleware(new Profiler())
+    ->bootstrap(
+        function (RequestInterface $request): RequestHandlerInterface {
+            $router = new Router(new SingleControllerStrategy(Hello::class));
+            /** @var RequestHandlerInterface&MiddlewareProviderInterface $controller */
+            $controller = new ($router->route($request))();
+
+            $controller
+                ->addMiddleware(new AddParameter("controllerMessage1", "Hello"))
+                ->addMiddleware(new AddParameter("controllerMessage2", "World"))
+                ->addMiddleware(new AddParameter("controllerMessage3", "Hello, World!"))
+                ->addMiddleware(new AddParameter("addedBy", __FUNCTION__))
+                ->addMiddleware(new RandomDelay())
+            ;
+            return $controller;
+        },
+        Request::fromSuperGlobals(),
+    )
 ;
-
-$japi->bootstrap(
-    function (RequestInterface $request): RequestHandlerInterface {
-        $router = new Router(new SingleControllerStrategy(Hello::class));
-        $controllerClass = $router->route($request);
-
-        /** @var RequestHandlerInterface&MiddlewareProviderInterface $controller */
-        $controller = new $controllerClass();
-        $controller
-            ->addMiddleware(new AddParameter("controllerMessage1", "Hello"))
-            ->addMiddleware(new AddParameter("controllerMessage2", "World"))
-            ->addMiddleware(new AddParameter("controllerMessage3", "Hello, World!"))
-            ->addMiddleware(new AddParameter("addedBy", __FUNCTION__))
-            ->addMiddleware(new RandomDelay())
-        ;
-        return $controller;
-    },
-    $request
-);

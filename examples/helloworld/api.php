@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright 2015 Docnet
+ * Copyright © 2015 Docnet, 2025 Gordon McVey
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,9 +29,7 @@ use gordonmcvey\httpsupport\request\Request;
 use gordonmcvey\httpsupport\request\RequestInterface;
 
 /**
- * Trivial JAPI bootstrap
- *
- * @author Tom Walder <tom@docnet.nu>
+ * Example using custom bootstrap function
  */
 
 // Includes or Auto-loader
@@ -40,15 +38,18 @@ define('BASE_PATH', dirname(__DIR__, 2));
 require_once BASE_PATH . '/vendor/autoload.php';
 
 // Demo
-$request = Request::fromSuperGlobals();
-(new JAPI(new CallStackFactory(), new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true)))
+$errorHandler = new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true);
+
+(new JAPI(new CallStackFactory(), $errorHandler))
     ->bootstrap(
         function (RequestInterface $request): RequestHandlerInterface {
-            $obj_router = new Router(new SingleControllerStrategy(Hello::class));
-            $str_controller = $obj_router->route($request);
+            $router = new Router(new SingleControllerStrategy(Hello::class));
 
-            return new $str_controller();
+            /** @var RequestHandlerInterface $controller */
+            $controller = new ($router->route($request));
+
+            return $controller;
         },
-        $request
+        Request::fromSuperGlobals()
     )
 ;

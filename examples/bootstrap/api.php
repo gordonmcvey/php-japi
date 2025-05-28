@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright 2015 Docnet
+ * Copyright © 2015 Docnet, 2025 Gordon McVey
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,13 +25,12 @@ use Docnet\JAPI\JAPI;
 use Docnet\JAPI\middleware\CallStackFactory;
 use Docnet\JAPI\routing\Router;
 use Docnet\JAPI\routing\SingleControllerStrategy;
+use Docnet\JAPI\ShutdownHandler;
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\request\Request;
 
 /**
- * Trivial JAPI bootstrap
- *
- * @author Tom Walder <tom@docnet.nu>
+ * Example using the standard bootstrap as provided by JAPI
  */
 
 // Includes or Auto-loader
@@ -40,13 +39,12 @@ define('BASE_PATH', dirname(__DIR__, 2));
 require_once BASE_PATH . '/vendor/autoload.php';
 
 // Demo
-$request = Request::fromSuperGlobals();
 (new JAPI(new CallStackFactory(), new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true)))
     ->bootstrap(
         new Bootstrap(
             new Router(new SingleControllerStrategy(Hello::class)),
             new ControllerFactory(),
         ),
-        $request,
+        Request::fromSuperGlobals(),
     )
 ;

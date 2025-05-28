@@ -67,7 +67,7 @@ class JAPITest extends TestCase
             ->getMock()
         ;
 
-        // JAPI expectatations
+        // JAPI expectations
         $japi->expects($this->once())
             ->method("sendResponse")
             ->with($mockResponse)
@@ -104,7 +104,7 @@ class JAPITest extends TestCase
             ->getMock()
         ;
 
-        // JAPI expectatations
+        // JAPI expectations
         $japi->expects($this->once())
             ->method("sendResponse")
             ->with($mockResponse)
@@ -113,6 +113,9 @@ class JAPITest extends TestCase
         $japi->bootstrap(fn() => $mockController, $mockRequest);
     }
 
+    /**
+     * @throws Exception
+     */
     #[Test]
     public function itHandlesATypicalDispatchCycleWithFactoryObject(): void
     {
@@ -138,7 +141,7 @@ class JAPITest extends TestCase
             ->getMock()
         ;
 
-        // JAPI expectatations
+        // JAPI expectations
         $japi->expects($this->once())
             ->method("sendResponse")
             ->with($mockResponse)
@@ -210,13 +213,14 @@ class JAPITest extends TestCase
             ->getMock()
         ;
 
-        // JAPI expectatations
+        // JAPI expectations
         $japi->expects($this->once())
             ->method("sendResponse")
             ->with($mockResponse)
         ;
 
-        $japi->addMiddleware($middleware)->bootstrap($mockController, $mockRequest);
+        $japi->addMiddleware($middleware);
+        $japi->bootstrap($mockController, $mockRequest);
     }
 
     /**
@@ -280,7 +284,7 @@ class JAPITest extends TestCase
             ->getMock()
         ;
 
-        // JAPI expectatations
+        // JAPI expectations
         $japi->expects($this->once())
             ->method("sendResponse")
             ->with($mockResponse)
@@ -321,6 +325,9 @@ class JAPITest extends TestCase
         $japi->bootstrap(fn() => "Hello", $mockRequest);
     }
 
+    /**
+     * @throws Exception
+     */
     #[Test]
     public function itHandlesARoutingError(): void
     {
@@ -335,7 +342,7 @@ class JAPITest extends TestCase
             ->getMock()
         ;
 
-        // JAPI expectatations
+        // JAPI expectations
         $japi->expects($this->once())
             ->method("sendResponse")
             ->with($mockResponse)
@@ -374,7 +381,7 @@ class JAPITest extends TestCase
             ->getMock()
         ;
 
-        // JAPI expectatations
+        // JAPI expectations
         $japi->expects($this->once())
             ->method("sendResponse")
             ->with($mockResponse)

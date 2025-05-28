@@ -18,19 +18,21 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\controller;
+namespace Docnet\JAPI\examples\psr7;
 
-interface ControllerFactoryInterface
+use Docnet\JAPI\controller\RequestHandlerInterface;
+use Docnet\JAPI\middleware\MiddlewareInterface;
+use gordonmcvey\httpsupport\request\RequestInterface;
+use gordonmcvey\httpsupport\response\ResponseInterface;
+
+class RequestLogger implements MiddlewareInterface
 {
-    /**
-     * Return the handler to handle a request to the given path
-     */
-    public function make(string $path): RequestHandlerInterface;
+    public function handle(RequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    {
+        error_log($request->uri());
+        error_log($request->verb()->value);
+        error_log($request->body());
 
-    /**
-     * Set the arguments that will be passed to the request handler's constructor if any are needed
-     *
-     * @param array<array-key, mixed> $arguments
-     */
-    public function withArguments(...$arguments): self;
+        return $handler->dispatch($request);
+    }
 }

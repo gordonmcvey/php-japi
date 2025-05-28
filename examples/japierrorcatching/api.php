@@ -16,23 +16,19 @@
  * limitations under the License.
  */
 
-namespace Docnet\JAPI\examples\psr7;
+namespace Docnet\JAPI\examples\japierrorcatching;
 
-use Docnet\JAPI\Bootstrap;
-use Docnet\JAPI\controller\ControllerFactory;
 use Docnet\JAPI\error\JsonErrorHandler;
-use Docnet\JAPI\examples\bootstrap\Hello;
 use Docnet\JAPI\JAPI;
 use Docnet\JAPI\middleware\CallStackFactory;
-use Docnet\JAPI\routing\Router;
-use Docnet\JAPI\routing\SingleControllerStrategy;
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
-use gordonmcvey\httpsupport\request\psr7\ServerRequestAdaptor;
-use GuzzleHttp\Psr7\ServerRequest;
-use GuzzleHttp\Psr7\Utils;
+use gordonmcvey\httpsupport\request\Request;
+use gordonmcvey\httpsupport\request\RequestInterface;
 
 /**
- * Example for processing a PSR-7 compatible request
+ * Example of error handling when a problem occurs inside JAPI's dispatch cycle.  Note that standard handling can only
+ * deal with \Throwable errors.  Things outside this (like warnings, deprecation notices, etc) require additional logic
+ * to handle and are dealt with in the japierroruncaught example.
  */
 
 // Includes or Auto-loader
@@ -42,19 +38,10 @@ require_once BASE_PATH . '/vendor/autoload.php';
 
 // Demo
 (new JAPI(new CallStackFactory(), new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true)))
-    ->addMiddleware(new RequestLogger())
     ->bootstrap(
-        new Bootstrap(
-            new Router(new SingleControllerStrategy(Hello::class)),
-            new ControllerFactory(),
-        ),
-        new ServerRequestAdaptor(
-            new ServerRequest(
-                "GET",
-                "https://example.com/",
-                [],
-                Utils::streamFor("This is the request!"),
-            )
-        ),
+        function (RequestInterface $request) {
+            return new \stdClass();
+        },
+        Request::fromSuperGlobals()
     )
 ;

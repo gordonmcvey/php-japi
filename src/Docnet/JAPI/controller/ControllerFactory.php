@@ -31,7 +31,7 @@ class ControllerFactory implements ControllerFactoryInterface
     /**
      * Arguments that will be passed to the controller's constructor
      *
-     * @var array<mixed> $arguments
+     * @var array<array-key, mixed> $arguments
      */
     private array $arguments = [];
 

@@ -16,20 +16,24 @@
  * limitations under the License.
  */
 
-namespace Docnet\JAPI\examples\helloworld;
+namespace Docnet\JAPI\examples\japierrorcatching;
 
 use Docnet\JAPI\controller\RequestHandlerInterface;
 use Docnet\JAPI\error\JsonErrorHandler;
+use Docnet\JAPI\ErrorToException;
 use Docnet\JAPI\JAPI;
 use Docnet\JAPI\middleware\CallStackFactory;
 use Docnet\JAPI\routing\Router;
 use Docnet\JAPI\routing\SingleControllerStrategy;
+use Docnet\JAPI\ShutdownHandler;
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\request\Request;
 use gordonmcvey\httpsupport\request\RequestInterface;
 
 /**
- * Example using custom bootstrap function
+ * Example of error handling when a non-throwable error occurs.  This sets up an error handler that converts old-style
+ * PHP errors to ErrorExceptions.  It also adds a shutdown handler to produce the desired error output if an error
+ * doesn't occur inside JAPI's try/catch dispatch block.
  */
 
 // Includes or Auto-loader
@@ -37,8 +41,21 @@ define('BASE_PATH', dirname(__DIR__, 2));
 
 require_once BASE_PATH . '/vendor/autoload.php';
 
+// For live you don't want any error output.  You might want to use different values here for local development/testing
+error_reporting(0);
+ini_set('display_errors', false);
+
 // Demo
+set_error_handler(new errorToException(), E_ERROR ^ E_USER_ERROR ^ E_COMPILE_ERROR);
 $errorHandler = new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true);
+register_shutdown_function(new ShutdownHandler($errorHandler));
+
+/*
+ * Simulated error, in theory, any kind of error can be handled from the point the error handler and shutdown function
+ * have been registered until script execution ends. However, unbuffered script output may result in an error being
+ * appended to standard script output should an error occur after data starts streaming.
+ */
+trigger_error("whoops", E_USER_ERROR);
 
 (new JAPI(new CallStackFactory(), $errorHandler))
     ->bootstrap(

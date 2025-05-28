@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © 2025 Gordon McVey
+ * Copyright 2015 Docnet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,26 +18,29 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\middleware;
+namespace Docnet\JAPI\examples\japierroruncaught;
 
 use Docnet\JAPI\controller\RequestHandlerInterface;
+use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
+use gordonmcvey\httpsupport\request\RequestInterface;
+use gordonmcvey\httpsupport\Response;
+use gordonmcvey\httpsupport\response\ResponseInterface;
 
 /**
- * Callstack Factory
+ * Example controller class
+ *
+ * @author Tom Walder <tom@docnet.nu>
  */
-class CallStackFactory
+class Hello implements RequestHandlerInterface
 {
     /**
-     * Make a call stack and populate it from the given providers
+     * Hello, World!
      */
-    public function make(RequestHandlerInterface $root, MiddlewareProviderInterface ...$additionalProviders): CallStack
+    public function dispatch(RequestInterface $request): ?ResponseInterface
     {
-        $callStack = new CallStack($root);
-
-        foreach ($additionalProviders as $provider) {
-            $callStack->fromProvider($provider);
-        }
-
-        return $callStack;
+        return new \gordonmcvey\httpsupport\response\Response(
+            SuccessCodes::OK,
+            (string) json_encode(['message' => 'Hello, World!']),
+        );
     }
 }

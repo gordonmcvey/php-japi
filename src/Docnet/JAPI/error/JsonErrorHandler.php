@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace Docnet\JAPI\error;
 
+use ErrorException;
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\response\Response;
 use gordonmcvey\httpsupport\response\ResponseInterface;
@@ -32,7 +33,7 @@ use Throwable;
  */
 readonly class JsonErrorHandler implements ErrorHandlerInterface
 {
-    private const string CONTENT_TYPE = "text/json";
+    private const string CONTENT_TYPE = "application/json";
 
     /**
      * @param int $jsonFlags Bitmask affecting the JSON output.  Takes the same flags as the json_encode() method
@@ -51,11 +52,13 @@ readonly class JsonErrorHandler implements ErrorHandlerInterface
 
         $payload = [
             "code" => $code->value,
-            "msg" => ($e instanceof \ErrorException ? "Internal Error" : "Exception")
+            "msg"  => ($e instanceof ErrorException ? "Internal Error" : "Exception")
         ];
 
         if ($this->exposeDetails) {
             $payload["detail"] = sprintf("%s: %s", get_class($e), $e->getMessage());
+            $payload["file"] = $e->getFile();
+            $payload["line"] = $e->getLine();
         }
 
         return new Response(

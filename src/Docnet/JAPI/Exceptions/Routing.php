@@ -20,11 +20,13 @@ declare(strict_types=1);
 
 namespace Docnet\JAPI\Exceptions;
 
+use Exception;
+
 /**
  * Routing Exception
  *
  * @author Tom Walder
  */
-class Routing extends \Exception
+class Routing extends Exception
 {
 }

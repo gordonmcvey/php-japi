@@ -23,7 +23,7 @@ namespace Docnet\JAPI\examples\psr7;
 use Docnet\JAPI\controller\RequestHandlerInterface;
 use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
 use gordonmcvey\httpsupport\request\RequestInterface;
-use gordonmcvey\httpsupport\Response;
+use gordonmcvey\httpsupport\response\Response;
 use gordonmcvey\httpsupport\response\ResponseInterface;
 
 /**
@@ -38,7 +38,7 @@ class Hello implements RequestHandlerInterface
      */
     public function dispatch(RequestInterface $request): ?ResponseInterface
     {
-        return new \gordonmcvey\httpsupport\response\Response(
+        return new Response(
             SuccessCodes::OK,
             (string) json_encode(['message' => 'Hello, World!']),
         );

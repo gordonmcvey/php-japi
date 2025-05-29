@@ -29,7 +29,9 @@
         "classmap": [
             "src/"
         ],
-        "psr-4": {"Docnet\\": "src/Docnet/"}
+        "psr-4": {
+            "Docnet\\JAPI\\": "src/"
+        }
     },
     "autoload-dev": {
         "classmap": [

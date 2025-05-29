@@ -25,7 +25,6 @@ use Docnet\JAPI\error\ErrorHandlerInterface;
 use Docnet\JAPI\middleware\CallStackFactory;
 use Docnet\JAPI\middleware\MiddlewareProviderInterface;
 use Docnet\JAPI\middleware\MiddlewareProviderTrait;
-use ErrorException;
 use Exception;
 use gordonmcvey\httpsupport\enum\statuscodes\ServerErrorCodes;
 use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;

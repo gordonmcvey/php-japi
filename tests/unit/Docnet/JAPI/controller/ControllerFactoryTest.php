@@ -20,9 +20,7 @@ declare(strict_types=1);
 
 namespace Docnet\JAPI\test\unit\factory;
 
-use Controller;
 use Docnet\JAPI\controller\ControllerFactory;
-use Docnet\JAPI\controller\RequestHandlerInterface;
 use Docnet\JAPI\Exceptions\Routing;
 use Docnet\JAPI\test\Controllers\FactoryInstantiated;
 use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;

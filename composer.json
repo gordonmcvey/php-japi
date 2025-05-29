@@ -26,18 +26,15 @@
         "guzzlehttp/psr7": "^2.7"
     },
     "autoload": {
-        "classmap": [
-            "src/"
-        ],
         "psr-4": {
             "Docnet\\JAPI\\": "src/"
         }
     },
     "autoload-dev": {
-        "classmap": [
-            "tests/Controllers/"
-        ],
-        "psr-4": {"Docnet\\JAPI\\examples\\": "examples/"}
+        "psr-4": {
+            "Docnet\\JAPI\\test\\": "tests/",
+            "Docnet\\JAPI\\examples\\": "examples/"
+        }
     },
     "include-path": ["src/"],
     "repositories": [

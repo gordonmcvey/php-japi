@@ -18,7 +18,7 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\test\unit\factory;
+namespace Docnet\JAPI\test\unit\controller;
 
 use Docnet\JAPI\controller\ControllerFactory;
 use Docnet\JAPI\Exceptions\Routing;

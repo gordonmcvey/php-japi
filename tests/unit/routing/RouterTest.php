@@ -147,37 +147,37 @@ class RouterTest extends TestCase
     {
         yield "Invalid characters" => [
             "path" => "/foo/bar=baz/quux",
-            "code" => ClientErrorCodes::BAD_REQUEST->value
+            "code" => ClientErrorCodes::BAD_REQUEST->value,
         ];
 
         yield "Double-slash" => [
             "path" => "/foo/bar//baz/quux",
-            "code" => ClientErrorCodes::BAD_REQUEST->value
+            "code" => ClientErrorCodes::BAD_REQUEST->value,
         ];
 
         yield "repeating hyphen" => [
             "path" => "/foo/bar--baz/quux",
-            "code" => ClientErrorCodes::BAD_REQUEST->value            
+            "code" => ClientErrorCodes::BAD_REQUEST->value,
         ];
 
         yield "Repeating underscore" => [
             "path" => "/foo/bar__baz/quux",
-            "code" => ClientErrorCodes::BAD_REQUEST->value            
+            "code" => ClientErrorCodes::BAD_REQUEST->value,
         ];
 
         yield "Hyphen underscore sequence" => [
             "path" => "/foo/bar-_baz/quux",
-            "code" => ClientErrorCodes::BAD_REQUEST->value            
+            "code" => ClientErrorCodes::BAD_REQUEST->value,
         ];
 
         yield "Underscore hyphen sequence" => [
             "path" => "/foo/bar_-baz/quux",
-            "code" => ClientErrorCodes::BAD_REQUEST->value            
+            "code" => ClientErrorCodes::BAD_REQUEST->value,
         ];
 
         yield "Empty path" => [
-                "path" => "",
-                "code" => ClientErrorCodes::BAD_REQUEST->value            
+            "path" => "",
+            "code" => ClientErrorCodes::BAD_REQUEST->value,
         ];
     }
 

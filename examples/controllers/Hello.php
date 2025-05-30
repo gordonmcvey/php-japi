@@ -18,7 +18,7 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\examples\japierrorcatching;
+namespace Docnet\JAPI\examples\controllers;
 
 use Docnet\JAPI\controller\RequestHandlerInterface;
 use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;

@@ -20,10 +20,10 @@ declare(strict_types=1);
 
 namespace Docnet\JAPI;
 
-use Docnet\JAPI\controller\RequestHandlerInterface;
-use Docnet\JAPI\error\ErrorHandlerInterface;
+use Docnet\JAPI\interface\controller\RequestHandlerInterface;
+use Docnet\JAPI\interface\error\ErrorHandlerInterface;
+use Docnet\JAPI\interface\middleware\MiddlewareProviderInterface;
 use Docnet\JAPI\middleware\CallStackFactory;
-use Docnet\JAPI\middleware\MiddlewareProviderInterface;
 use Docnet\JAPI\middleware\MiddlewareProviderTrait;
 use Exception;
 use gordonmcvey\httpsupport\enum\statuscodes\ServerErrorCodes;

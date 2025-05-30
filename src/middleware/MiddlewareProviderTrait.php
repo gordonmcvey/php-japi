@@ -20,6 +20,8 @@ declare(strict_types=1);
 
 namespace Docnet\JAPI\middleware;
 
+use Docnet\JAPI\interface\middleware\MiddlewareInterface;
+
 /**
  * Standard MiddlewareProvider implementation
  *

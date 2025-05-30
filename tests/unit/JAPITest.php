@@ -20,11 +20,11 @@ declare(strict_types=1);
 
 namespace Docnet\JAPI\test\unit;
 
-use Docnet\JAPI\controller\RequestHandlerInterface;
-use Docnet\JAPI\error\ErrorHandlerInterface;
 use Docnet\JAPI\Exceptions\AccessDenied;
 use Docnet\JAPI\Exceptions\Auth;
 use Docnet\JAPI\Exceptions\Routing;
+use Docnet\JAPI\interface\controller\RequestHandlerInterface;
+use Docnet\JAPI\interface\error\ErrorHandlerInterface;
 use Docnet\JAPI\JAPI;
 use Docnet\JAPI\middleware\CallStack;
 use Docnet\JAPI\middleware\CallStackFactory;

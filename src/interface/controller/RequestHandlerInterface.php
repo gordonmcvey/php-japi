@@ -18,18 +18,21 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\error;
+namespace Docnet\JAPI\interface\controller;
 
+use gordonmcvey\httpsupport\request\RequestInterface;
 use gordonmcvey\httpsupport\response\ResponseInterface;
-use Throwable;
 
 /**
- * Error handler interface
+ * Interface for request handlers
+ *
+ * Any class that returns a response for the given request is required to implement this method, this includes but is
+ * not limited to controllers.  For example, the Middleware callstack implements it.
  */
-interface ErrorHandlerInterface
+interface RequestHandlerInterface
 {
     /**
-     * Generate a suitable response for the given error condition
+     * Main dispatch method
      */
-    public function handle(Throwable $e): ResponseInterface;
+    public function dispatch(RequestInterface $request): ?ResponseInterface;
 }

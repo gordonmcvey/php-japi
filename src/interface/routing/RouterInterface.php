@@ -18,18 +18,17 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\routing;
+namespace Docnet\JAPI\interface\routing;
+
+use gordonmcvey\httpsupport\request\RequestInterface;
 
 /**
- * Routing strategy interface
+ * Interface for Router implementations
  *
- * Strategies for the Router must implement this interface.
+ * The standard Router is flexible enough for most typical use cases but if you have more specific needs you can
+ * implement this class to make a drop-in replacement router.
  */
-interface RoutingStrategyInterface
+interface RouterInterface
 {
-    /**
-     * Determine the request handler to use for the given request.  It should return null if an appropriate request
-     * handler cannot be found
-     */
-    public function route(string $path): ?string;
+    public function route(RequestInterface $request): string;
 }

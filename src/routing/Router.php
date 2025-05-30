@@ -21,6 +21,8 @@ declare(strict_types=1);
 namespace Docnet\JAPI\routing;
 
 use Docnet\JAPI\Exceptions\Routing;
+use Docnet\JAPI\interface\routing\RouterInterface;
+use Docnet\JAPI\interface\routing\RoutingStrategyInterface;
 use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
 use gordonmcvey\httpsupport\request\RequestInterface;
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Docnet\JAPI\test\unit;
 
-use Docnet\JAPI\error\ErrorHandlerInterface;
+use Docnet\JAPI\interface\error\ErrorHandlerInterface;
 use Docnet\JAPI\ShutdownHandler;
 use gordonmcvey\httpsupport\enum\statuscodes\ServerErrorCodes;
 use gordonmcvey\httpsupport\response\ResponseInterface;

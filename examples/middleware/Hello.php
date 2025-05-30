@@ -20,8 +20,8 @@ declare(strict_types=1);
 
 namespace Docnet\JAPI\examples\middleware;
 
-use Docnet\JAPI\controller\RequestHandlerInterface;
-use Docnet\JAPI\middleware\MiddlewareProviderInterface;
+use Docnet\JAPI\interface\controller\RequestHandlerInterface;
+use Docnet\JAPI\interface\middleware\MiddlewareProviderInterface;
 use Docnet\JAPI\middleware\MiddlewareProviderTrait;
 use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
 use gordonmcvey\httpsupport\request\RequestInterface;

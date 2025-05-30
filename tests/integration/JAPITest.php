@@ -20,15 +20,15 @@ declare(strict_types=1);
 
 namespace Docnet\JAPI\test\integration;
 
-use Docnet\JAPI\controller\RequestHandlerInterface;
-use Docnet\JAPI\error\ErrorHandlerInterface;
 use Docnet\JAPI\Exceptions\AccessDenied;
 use Docnet\JAPI\Exceptions\Auth;
 use Docnet\JAPI\Exceptions\Routing;
+use Docnet\JAPI\interface\controller\RequestHandlerInterface;
+use Docnet\JAPI\interface\error\ErrorHandlerInterface;
+use Docnet\JAPI\interface\middleware\MiddlewareInterface;
+use Docnet\JAPI\interface\middleware\MiddlewareProviderInterface;
 use Docnet\JAPI\JAPI;
 use Docnet\JAPI\middleware\CallStackFactory;
-use Docnet\JAPI\middleware\MiddlewareInterface;
-use Docnet\JAPI\middleware\MiddlewareProviderInterface;
 use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
 use gordonmcvey\httpsupport\request\RequestInterface;
 use gordonmcvey\httpsupport\response\ResponseInterface;

@@ -18,17 +18,18 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\routing;
+namespace Docnet\JAPI\interface\error;
 
-use gordonmcvey\httpsupport\request\RequestInterface;
+use gordonmcvey\httpsupport\response\ResponseInterface;
+use Throwable;
 
 /**
- * Interface for Router implementations
- *
- * The standard Router is flexible enough for most typical use cases but if you have more specific needs you can
- * implement this class to make a drop-in replacement router.
+ * Error handler interface
  */
-interface RouterInterface
+interface ErrorHandlerInterface
 {
-    public function route(RequestInterface $request): string;
+    /**
+     * Generate a suitable response for the given error condition
+     */
+    public function handle(Throwable $e): ResponseInterface;
 }

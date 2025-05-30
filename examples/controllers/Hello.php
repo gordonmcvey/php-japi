@@ -20,7 +20,7 @@ declare(strict_types=1);
 
 namespace Docnet\JAPI\examples\controllers;
 
-use Docnet\JAPI\controller\RequestHandlerInterface;
+use Docnet\JAPI\interface\controller\RequestHandlerInterface;
 use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
 use gordonmcvey\httpsupport\request\RequestInterface;
 use gordonmcvey\httpsupport\response\Response;

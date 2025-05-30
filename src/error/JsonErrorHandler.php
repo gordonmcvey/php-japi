@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace Docnet\JAPI\error;
 
+use Docnet\JAPI\interface\error\ErrorHandlerInterface;
 use ErrorException;
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\response\Response;

@@ -18,18 +18,19 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\middleware;
+namespace Docnet\JAPI\interface\controller;
 
-use Docnet\JAPI\controller\RequestHandlerInterface;
-use gordonmcvey\httpsupport\request\RequestInterface;
-use gordonmcvey\httpsupport\response\ResponseInterface;
-
-/**
- * Middleware interface
- *
- * To be used as middleware, a class must implement this interface
- */
-interface MiddlewareInterface
+interface ControllerFactoryInterface
 {
-    public function handle(RequestInterface $request, RequestHandlerInterface $handler): ResponseInterface;
+    /**
+     * Return the handler to handle a request to the given path
+     */
+    public function make(string $path): RequestHandlerInterface;
+
+    /**
+     * Set the arguments that will be passed to the request handler's constructor if any are needed
+     *
+     * @param array<array-key, mixed> $arguments
+     */
+    public function withArguments(...$arguments): self;
 }

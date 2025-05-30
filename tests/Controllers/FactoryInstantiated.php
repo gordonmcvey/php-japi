@@ -2,7 +2,7 @@
 
 namespace Docnet\JAPI\test\Controllers;
 
-use Docnet\JAPI\controller\RequestHandlerInterface;
+use Docnet\JAPI\interface\controller\RequestHandlerInterface;
 use gordonmcvey\httpsupport\request\RequestInterface;
 use gordonmcvey\httpsupport\response\ResponseInterface;
 

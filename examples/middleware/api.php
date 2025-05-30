@@ -20,11 +20,11 @@ declare(strict_types=1);
 
 namespace Docnet\JAPI\examples\middleware;
 
-use Docnet\JAPI\controller\RequestHandlerInterface;
 use Docnet\JAPI\error\JsonErrorHandler;
+use Docnet\JAPI\interface\controller\RequestHandlerInterface;
+use Docnet\JAPI\interface\middleware\MiddlewareProviderInterface;
 use Docnet\JAPI\JAPI;
 use Docnet\JAPI\middleware\CallStackFactory;
-use Docnet\JAPI\middleware\MiddlewareProviderInterface;
 use Docnet\JAPI\routing\Router;
 use Docnet\JAPI\routing\SingleControllerStrategy;
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;

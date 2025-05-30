@@ -20,7 +20,7 @@ declare(strict_types=1);
 
 namespace Docnet\JAPI;
 
-use Docnet\JAPI\error\ErrorHandlerInterface;
+use Docnet\JAPI\interface\error\ErrorHandlerInterface;
 use ErrorException;
 use gordonmcvey\httpsupport\enum\statuscodes\ServerErrorCodes;
 use Psr\Log\LoggerInterface;

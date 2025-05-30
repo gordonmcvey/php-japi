@@ -21,8 +21,8 @@ declare(strict_types=1);
 namespace Docnet\JAPI\test\unit\routing;
 
 use Docnet\JAPI\Exceptions\Routing;
+use Docnet\JAPI\interface\routing\RoutingStrategyInterface;
 use Docnet\JAPI\routing\Router;
-use Docnet\JAPI\routing\RoutingStrategyInterface;
 use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
 use gordonmcvey\httpsupport\request\RequestInterface;
 use PHPUnit\Framework\Attributes\DataProvider;

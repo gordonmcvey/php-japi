@@ -20,8 +20,8 @@ declare(strict_types=1);
 
 namespace Docnet\JAPI\test\unit\middleware;
 
-use Docnet\JAPI\controller\RequestHandlerInterface;
-use Docnet\JAPI\middleware\MiddlewareInterface;
+use Docnet\JAPI\interface\controller\RequestHandlerInterface;
+use Docnet\JAPI\interface\middleware\MiddlewareInterface;
 use Docnet\JAPI\middleware\Slot;
 use gordonmcvey\httpsupport\request\RequestInterface;
 use gordonmcvey\httpsupport\response\ResponseInterface;

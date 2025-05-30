@@ -20,9 +20,9 @@ declare(strict_types=1);
 
 namespace Docnet\JAPI;
 
-use Docnet\JAPI\controller\ControllerFactoryInterface;
-use Docnet\JAPI\controller\RequestHandlerInterface;
-use Docnet\JAPI\routing\RouterInterface;
+use Docnet\JAPI\interface\controller\ControllerFactoryInterface;
+use Docnet\JAPI\interface\controller\RequestHandlerInterface;
+use Docnet\JAPI\interface\routing\RouterInterface;
 use gordonmcvey\httpsupport\request\RequestInterface;
 
 /**

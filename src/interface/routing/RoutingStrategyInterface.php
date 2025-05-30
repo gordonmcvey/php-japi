@@ -18,21 +18,18 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\controller;
-
-use gordonmcvey\httpsupport\request\RequestInterface;
-use gordonmcvey\httpsupport\response\ResponseInterface;
+namespace Docnet\JAPI\interface\routing;
 
 /**
- * Interface for request handlers
+ * Routing strategy interface
  *
- * Any class that returns a response for the given request is required to implement this method, this includes but is
- * not limited to controllers.  For example, the Middleware callstack implements it.
+ * Strategies for the Router must implement this interface.
  */
-interface RequestHandlerInterface
+interface RoutingStrategyInterface
 {
     /**
-     * Main dispatch method
+     * Determine the request handler to use for the given request.  It should return null if an appropriate request
+     * handler cannot be found
      */
-    public function dispatch(RequestInterface $request): ?ResponseInterface;
+    public function route(string $path): ?string;
 }

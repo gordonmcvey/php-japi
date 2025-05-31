@@ -42,6 +42,15 @@ trait MiddlewareProviderTrait
         return $this;
     }
 
+    public function addMultipleMiddleware(MiddlewareInterface ...$middleware): self
+    {
+        foreach ($middleware as $newMiddleware) {
+            $this->addMiddleware($newMiddleware);
+        }
+
+        return $this;
+    }
+
     public function resetMiddleware(): self
     {
         $this->middleware = [];

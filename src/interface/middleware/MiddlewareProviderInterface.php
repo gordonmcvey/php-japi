@@ -36,6 +36,8 @@ interface MiddlewareProviderInterface
      */
     public function addMiddleware(MiddlewareInterface $newMiddleware): self;
 
+    public function addMultipleMiddleware(MiddlewareInterface ...$newMiddleware): self;
+
     /**
      * Clear all middleware from the provider
      */

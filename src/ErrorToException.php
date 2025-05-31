@@ -48,6 +48,8 @@ readonly class ErrorToException
 
     /**
      * Protected in order to facilitate testing.  Do not override!
+     *
+     * @codeCoverageIgnore
      */
     protected function getErrorReporting(): int
     {

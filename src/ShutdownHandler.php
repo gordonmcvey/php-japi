@@ -61,6 +61,7 @@ readonly class ShutdownHandler
      *     file: string,
      *     line: int,
      * }|null
+     * @codeCoverageIgnore
      */
     protected function getLastError(): ?array
     {
@@ -69,6 +70,8 @@ readonly class ShutdownHandler
 
     /**
      * Protected in order to facilitate testing.  Do not override!
+     *
+     * @codeCoverageIgnore
      */
     protected function flushBuffers(): void
     {

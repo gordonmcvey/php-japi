@@ -40,4 +40,14 @@ class StaticStrategyTest extends TestCase
         $this->assertSame("FooBarBazController", $strategy->route("/foo/bar/baz"));
         $this->assertNull($strategy->route("/quux"));
     }
+
+    #[Test]
+    public function itAddsRoutes(): void
+    {
+        $strategy = new StaticStrategy([]);
+
+        $this->assertNull($strategy->route("/foo"));
+        $strategy->addRoute("/foo", "FooController");
+        $this->assertSame("FooController", $strategy->route("/foo"));
+    }
 }

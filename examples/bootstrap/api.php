@@ -21,11 +21,11 @@ namespace Docnet\JAPI\examples\bootstrap;
 use Docnet\JAPI\Bootstrap;
 use Docnet\JAPI\controller\ControllerFactory;
 use Docnet\JAPI\error\JsonErrorHandler;
+use Docnet\JAPI\examples\controllers\Hello;
 use Docnet\JAPI\JAPI;
 use Docnet\JAPI\middleware\CallStackFactory;
 use Docnet\JAPI\routing\Router;
 use Docnet\JAPI\routing\SingleControllerStrategy;
-use Docnet\JAPI\ShutdownHandler;
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\request\Request;
 

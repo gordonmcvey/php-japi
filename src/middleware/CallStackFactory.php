@@ -18,21 +18,27 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\examples\psr7;
+namespace Docnet\JAPI\middleware;
 
 use Docnet\JAPI\interface\controller\RequestHandlerInterface;
-use Docnet\JAPI\interface\middleware\MiddlewareInterface;
-use gordonmcvey\httpsupport\request\RequestInterface;
-use gordonmcvey\httpsupport\response\ResponseInterface;
+use Docnet\JAPI\interface\middleware\MiddlewareProviderInterface;
 
-class RequestLogger implements MiddlewareInterface
+/**
+ * Callstack Factory
+ */
+class CallStackFactory
 {
-    public function handle(RequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    /**
+     * Make a call stack and populate it from the given providers
+     */
+    public function make(RequestHandlerInterface $root, MiddlewareProviderInterface ...$additionalProviders): CallStack
     {
-        error_log($request->uri());
-        error_log($request->verb()->value);
-        error_log($request->body());
+        $callStack = new CallStack($root);
 
-        return $handler->dispatch($request);
+        foreach ($additionalProviders as $provider) {
+            $callStack->fromProvider($provider);
+        }
+
+        return $callStack;
     }
 }

@@ -20,11 +20,11 @@ declare(strict_types=1);
 
 namespace Docnet\JAPI\examples\middleware;
 
-use Docnet\JAPI\controller\RequestHandlerInterface;
 use Docnet\JAPI\error\JsonErrorHandler;
+use Docnet\JAPI\interface\controller\RequestHandlerInterface;
+use Docnet\JAPI\interface\middleware\MiddlewareProviderInterface;
 use Docnet\JAPI\JAPI;
 use Docnet\JAPI\middleware\CallStackFactory;
-use Docnet\JAPI\middleware\MiddlewareProviderInterface;
 use Docnet\JAPI\routing\Router;
 use Docnet\JAPI\routing\SingleControllerStrategy;
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
@@ -41,8 +41,7 @@ define('BASE_PATH', dirname(__DIR__, 2));
 require_once BASE_PATH . '/vendor/autoload.php';
 
 // Demo
-$japi = new JAPI(new CallStackFactory(), new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true));
-$japi
+(new JAPI(new CallStackFactory(), new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true)))
     ->addMiddleware(new AddParameter("globalMessage1", "Hello"))
     ->addMiddleware(new AddParameter("globalMessage2", "World"))
     ->addMiddleware(new AddParameter("globalMessage3", "Hello, World!"))

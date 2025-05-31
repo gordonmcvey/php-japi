@@ -18,21 +18,29 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\examples\psr7;
+namespace Docnet\JAPI;
 
+use Docnet\JAPI\interface\controller\ControllerFactoryInterface;
 use Docnet\JAPI\interface\controller\RequestHandlerInterface;
-use Docnet\JAPI\interface\middleware\MiddlewareInterface;
+use Docnet\JAPI\interface\routing\RouterInterface;
 use gordonmcvey\httpsupport\request\RequestInterface;
-use gordonmcvey\httpsupport\response\ResponseInterface;
 
-class RequestLogger implements MiddlewareInterface
+/**
+ * Simple bootstrap implementation
+ *
+ * Developers are free to use any method of bootstrapping they like, so long as they return a class that implements
+ * RequestHandlerInterface, but in most cases this basic bootstrap class should suffice.
+ */
+readonly class Bootstrap
 {
-    public function handle(RequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
-    {
-        error_log($request->uri());
-        error_log($request->verb()->value);
-        error_log($request->body());
+    public function __construct(
+        private RouterInterface $router,
+        private ControllerFactoryInterface $controllerFactory,
+    ) {
+    }
 
-        return $handler->dispatch($request);
+    public function __invoke(RequestInterface $request): RequestHandlerInterface
+    {
+        return $this->controllerFactory->make($this->router->route($request));
     }
 }

@@ -18,21 +18,28 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\examples\psr7;
+namespace Docnet\JAPI\middleware;
 
 use Docnet\JAPI\interface\controller\RequestHandlerInterface;
 use Docnet\JAPI\interface\middleware\MiddlewareInterface;
 use gordonmcvey\httpsupport\request\RequestInterface;
 use gordonmcvey\httpsupport\response\ResponseInterface;
 
-class RequestLogger implements MiddlewareInterface
+/**
+ * Slot class
+ *
+ * This class represents a slot in a middleware call stack
+ *
+ * @internal This class is used by the Middleware call stack, you're not meant to instantiate it in your applications
+ */
+readonly class Slot implements RequestHandlerInterface
 {
-    public function handle(RequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    public function __construct(private MiddlewareInterface $middleware, private RequestHandlerInterface $next)
     {
-        error_log($request->uri());
-        error_log($request->verb()->value);
-        error_log($request->body());
+    }
 
-        return $handler->dispatch($request);
+    public function dispatch(RequestInterface $request): ResponseInterface
+    {
+        return $this->middleware->handle($request, $this->next);
     }
 }

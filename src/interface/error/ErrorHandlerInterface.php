@@ -18,21 +18,18 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\examples\psr7;
+namespace Docnet\JAPI\interface\error;
 
-use Docnet\JAPI\interface\controller\RequestHandlerInterface;
-use Docnet\JAPI\interface\middleware\MiddlewareInterface;
-use gordonmcvey\httpsupport\request\RequestInterface;
 use gordonmcvey\httpsupport\response\ResponseInterface;
+use Throwable;
 
-class RequestLogger implements MiddlewareInterface
+/**
+ * Error handler interface
+ */
+interface ErrorHandlerInterface
 {
-    public function handle(RequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
-    {
-        error_log($request->uri());
-        error_log($request->verb()->value);
-        error_log($request->body());
-
-        return $handler->dispatch($request);
-    }
+    /**
+     * Generate a suitable response for the given error condition
+     */
+    public function handle(Throwable $e): ResponseInterface;
 }

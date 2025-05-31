@@ -18,21 +18,18 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\examples\psr7;
+namespace Docnet\JAPI\interface\routing;
 
-use Docnet\JAPI\interface\controller\RequestHandlerInterface;
-use Docnet\JAPI\interface\middleware\MiddlewareInterface;
-use gordonmcvey\httpsupport\request\RequestInterface;
-use gordonmcvey\httpsupport\response\ResponseInterface;
-
-class RequestLogger implements MiddlewareInterface
+/**
+ * Routing strategy interface
+ *
+ * Strategies for the Router must implement this interface.
+ */
+interface RoutingStrategyInterface
 {
-    public function handle(RequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
-    {
-        error_log($request->uri());
-        error_log($request->verb()->value);
-        error_log($request->body());
-
-        return $handler->dispatch($request);
-    }
+    /**
+     * Determine the request handler to use for the given request.  It should return null if an appropriate request
+     * handler cannot be found
+     */
+    public function route(string $path): ?string;
 }

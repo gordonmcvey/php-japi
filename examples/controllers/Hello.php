@@ -18,11 +18,9 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\examples\middleware;
+namespace Docnet\JAPI\examples\controllers;
 
 use Docnet\JAPI\interface\controller\RequestHandlerInterface;
-use Docnet\JAPI\interface\middleware\MiddlewareProviderInterface;
-use Docnet\JAPI\middleware\MiddlewareProviderTrait;
 use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
 use gordonmcvey\httpsupport\request\RequestInterface;
 use gordonmcvey\httpsupport\response\Response;
@@ -33,24 +31,16 @@ use gordonmcvey\httpsupport\response\ResponseInterface;
  *
  * @author Tom Walder <tom@docnet.nu>
  */
-class Hello implements MiddlewareProviderInterface, RequestHandlerInterface
+class Hello implements RequestHandlerInterface
 {
-    use MiddlewareProviderTrait;
-
     /**
      * Hello, World!
      */
     public function dispatch(RequestInterface $request): ?ResponseInterface
     {
-        error_log(message: sprintf(
-            "%s: handling request %s",
-            __METHOD__,
-            $request->header("X-Middleware-Profile-Request-Id"),
-        ));
-
         return new Response(
             SuccessCodes::OK,
-            (string) json_encode(new \stdClass()),
+            (string) json_encode(['message' => 'Hello, World!']),
         );
     }
 }

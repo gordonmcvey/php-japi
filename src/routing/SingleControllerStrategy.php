@@ -18,21 +18,24 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\examples\psr7;
+namespace Docnet\JAPI\routing;
 
-use Docnet\JAPI\interface\controller\RequestHandlerInterface;
-use Docnet\JAPI\interface\middleware\MiddlewareInterface;
-use gordonmcvey\httpsupport\request\RequestInterface;
-use gordonmcvey\httpsupport\response\ResponseInterface;
+use Docnet\JAPI\interface\routing\RoutingStrategyInterface;
 
-class RequestLogger implements MiddlewareInterface
+/**
+ * Single Controller Strategy
+ *
+ * This basically routes any request to the same controller regardless of its value.  This can be handy for very simple
+ * applications, or as a "last resort" strategy when all the usual routing approaches have failed to find a controller.
+ */
+readonly class SingleControllerStrategy implements RoutingStrategyInterface
 {
-    public function handle(RequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    public function __construct(private string $controllerClass)
     {
-        error_log($request->uri());
-        error_log($request->verb()->value);
-        error_log($request->body());
+    }
 
-        return $handler->dispatch($request);
+    public function route(string $path): ?string
+    {
+        return $this->controllerClass;
     }
 }

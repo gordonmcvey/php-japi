@@ -23,7 +23,6 @@ use Docnet\JAPI\JAPI;
 use Docnet\JAPI\middleware\CallStackFactory;
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\request\Request;
-use gordonmcvey\httpsupport\request\RequestInterface;
 
 /**
  * Example of error handling when a problem occurs inside JAPI's dispatch cycle.  Note that standard handling can only
@@ -39,7 +38,7 @@ require_once BASE_PATH . '/vendor/autoload.php';
 // Demo
 (new JAPI(new CallStackFactory(), new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true)))
     ->bootstrap(
-        function (RequestInterface $request) {
+        function () {
             return new \stdClass();
         },
         Request::fromSuperGlobals()

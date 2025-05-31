@@ -18,8 +18,9 @@
 
 namespace Docnet\JAPI\examples\helloworld;
 
-use Docnet\JAPI\controller\RequestHandlerInterface;
 use Docnet\JAPI\error\JsonErrorHandler;
+use Docnet\JAPI\examples\controllers\Hello;
+use Docnet\JAPI\interface\controller\RequestHandlerInterface;
 use Docnet\JAPI\JAPI;
 use Docnet\JAPI\middleware\CallStackFactory;
 use Docnet\JAPI\routing\Router;

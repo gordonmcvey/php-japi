@@ -18,21 +18,21 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\examples\psr7;
+namespace Docnet\JAPI\interface\controller;
 
-use Docnet\JAPI\interface\controller\RequestHandlerInterface;
-use Docnet\JAPI\interface\middleware\MiddlewareInterface;
 use gordonmcvey\httpsupport\request\RequestInterface;
 use gordonmcvey\httpsupport\response\ResponseInterface;
 
-class RequestLogger implements MiddlewareInterface
+/**
+ * Interface for request handlers
+ *
+ * Any class that returns a response for the given request is required to implement this method, this includes but is
+ * not limited to controllers.  For example, the Middleware callstack implements it.
+ */
+interface RequestHandlerInterface
 {
-    public function handle(RequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
-    {
-        error_log($request->uri());
-        error_log($request->verb()->value);
-        error_log($request->body());
-
-        return $handler->dispatch($request);
-    }
+    /**
+     * Main dispatch method
+     */
+    public function dispatch(RequestInterface $request): ?ResponseInterface;
 }

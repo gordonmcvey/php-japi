@@ -1,5 +1,5 @@
 {
-    "name": "docnet/php-japi",
+    "name": "gordonmcvey/php-japi",
     "type": "library",
     "description": "Simple framework for building HTTP JSON APIs in PHP. 2.",
     "authors": [
@@ -8,8 +8,13 @@
             "email": "tom@docnet.nu"
         }
     ],
-    "keywords": ["docnet", "json", "http", "api"],
-    "homepage": "https://github.com/DocnetUK/php-japi",
+    "keywords": [
+        "json",
+        "http",
+        "api",
+        "microservice"
+    ],
+    "homepage": "https://github.com/gordonmcvey/php-japi",
     "license": "Apache-2.0",
     "require": {
         "php": ">=8.3.0",

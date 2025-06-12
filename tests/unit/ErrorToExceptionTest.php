@@ -18,7 +18,7 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\test\unit;
+namespace gordonmcvey\JAPI\test\unit;
 
 use Docnet\JAPI\ErrorToException;
 use ErrorException;

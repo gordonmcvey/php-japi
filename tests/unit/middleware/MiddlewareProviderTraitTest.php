@@ -18,7 +18,7 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\test\unit\middleware;
+namespace gordonmcvey\JAPI\test\unit\middleware;
 
 use Docnet\JAPI\interface\middleware\MiddlewareInterface;
 use Docnet\JAPI\interface\middleware\MiddlewareProviderInterface;

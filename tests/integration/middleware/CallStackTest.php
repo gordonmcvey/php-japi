@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\test\integration\middleware;
+namespace gordonmcvey\JAPI\test\integration\middleware;
 
 use Docnet\JAPI\interface\controller\RequestHandlerInterface;
 use Docnet\JAPI\interface\middleware\MiddlewareInterface;

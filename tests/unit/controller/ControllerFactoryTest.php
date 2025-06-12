@@ -18,12 +18,12 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\test\unit\controller;
+namespace gordonmcvey\JAPI\test\unit\controller;
 
 use Docnet\JAPI\controller\ControllerFactory;
 use Docnet\JAPI\Exceptions\Routing;
-use Docnet\JAPI\test\Controllers\FactoryInstantiated;
 use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
+use gordonmcvey\JAPI\test\Controllers\FactoryInstantiated;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 

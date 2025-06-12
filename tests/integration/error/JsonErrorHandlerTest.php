@@ -18,7 +18,7 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\test\integration\error;
+namespace gordonmcvey\JAPI\test\integration\error;
 
 use Docnet\JAPI\error\JsonErrorHandler;
 use ErrorException;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\test\unit;
+namespace gordonmcvey\JAPI\test\unit;
 
 use Docnet\JAPI\interface\error\ErrorHandlerInterface;
 use Docnet\JAPI\ShutdownHandler;

@@ -18,7 +18,7 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\test\integration;
+namespace gordonmcvey\JAPI\test\integration;
 
 use Docnet\JAPI\Exceptions\AccessDenied;
 use Docnet\JAPI\Exceptions\Auth;

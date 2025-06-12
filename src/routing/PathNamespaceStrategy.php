@@ -18,9 +18,9 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\routing;
+namespace gordonmcvey\JAPI\routing;
 
-use Docnet\JAPI\interface\routing\RoutingStrategyInterface;
+use gordonmcvey\JAPI\interface\routing\RoutingStrategyInterface;
 
 /**
  * Path to namespace routing strategy

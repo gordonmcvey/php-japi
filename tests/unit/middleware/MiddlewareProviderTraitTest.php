@@ -20,9 +20,9 @@ declare(strict_types=1);
 
 namespace gordonmcvey\JAPI\test\unit\middleware;
 
-use Docnet\JAPI\interface\middleware\MiddlewareInterface;
-use Docnet\JAPI\interface\middleware\MiddlewareProviderInterface;
-use Docnet\JAPI\middleware\MiddlewareProviderTrait;
+use gordonmcvey\JAPI\interface\middleware\MiddlewareInterface;
+use gordonmcvey\JAPI\interface\middleware\MiddlewareProviderInterface;
+use gordonmcvey\JAPI\middleware\MiddlewareProviderTrait;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;

@@ -20,13 +20,13 @@ declare(strict_types=1);
 
 namespace gordonmcvey\JAPI\examples\middleware;
 
-use Docnet\JAPI\interface\controller\RequestHandlerInterface;
-use Docnet\JAPI\interface\middleware\MiddlewareProviderInterface;
-use Docnet\JAPI\middleware\MiddlewareProviderTrait;
 use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
 use gordonmcvey\httpsupport\request\RequestInterface;
 use gordonmcvey\httpsupport\response\Response;
 use gordonmcvey\httpsupport\response\ResponseInterface;
+use gordonmcvey\JAPI\interface\controller\RequestHandlerInterface;
+use gordonmcvey\JAPI\interface\middleware\MiddlewareProviderInterface;
+use gordonmcvey\JAPI\middleware\MiddlewareProviderTrait;
 
 /**
  * Example controller class

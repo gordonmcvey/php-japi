@@ -20,7 +20,7 @@ declare(strict_types=1);
 
 namespace gordonmcvey\JAPI\test\unit\routing;
 
-use Docnet\JAPI\routing\SingleControllerStrategy;
+use gordonmcvey\JAPI\routing\SingleControllerStrategy;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 

@@ -18,19 +18,19 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI;
+namespace gordonmcvey\JAPI;
 
-use Docnet\JAPI\interface\controller\RequestHandlerInterface;
-use Docnet\JAPI\interface\error\ErrorHandlerInterface;
-use Docnet\JAPI\interface\middleware\MiddlewareProviderInterface;
-use Docnet\JAPI\middleware\CallStackFactory;
-use Docnet\JAPI\middleware\MiddlewareProviderTrait;
 use Exception;
 use gordonmcvey\httpsupport\enum\statuscodes\ServerErrorCodes;
 use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
 use gordonmcvey\httpsupport\request\RequestInterface;
 use gordonmcvey\httpsupport\response\Response;
 use gordonmcvey\httpsupport\response\ResponseInterface;
+use gordonmcvey\JAPI\interface\controller\RequestHandlerInterface;
+use gordonmcvey\JAPI\interface\error\ErrorHandlerInterface;
+use gordonmcvey\JAPI\interface\middleware\MiddlewareProviderInterface;
+use gordonmcvey\JAPI\middleware\CallStackFactory;
+use gordonmcvey\JAPI\middleware\MiddlewareProviderTrait;
 use Psr\Log\LoggerAwareInterface;
 use Throwable;
 

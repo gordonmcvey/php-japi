@@ -18,13 +18,13 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\error;
+namespace gordonmcvey\JAPI\error;
 
-use Docnet\JAPI\interface\error\ErrorHandlerInterface;
 use ErrorException;
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\response\Response;
 use gordonmcvey\httpsupport\response\ResponseInterface;
+use gordonmcvey\JAPI\interface\error\ErrorHandlerInterface;
 use Throwable;
 
 /**

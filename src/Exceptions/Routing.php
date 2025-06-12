@@ -18,7 +18,7 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\Exceptions;
+namespace gordonmcvey\JAPI\Exceptions;
 
 use Exception;
 

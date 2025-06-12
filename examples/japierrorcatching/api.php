@@ -18,11 +18,11 @@
 
 namespace gordonmcvey\JAPI\examples\japierrorcatching;
 
-use Docnet\JAPI\error\JsonErrorHandler;
-use Docnet\JAPI\JAPI;
-use Docnet\JAPI\middleware\CallStackFactory;
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\request\Request;
+use gordonmcvey\JAPI\error\JsonErrorHandler;
+use gordonmcvey\JAPI\JAPI;
+use gordonmcvey\JAPI\middleware\CallStackFactory;
 
 /**
  * Example of error handling when a problem occurs inside JAPI's dispatch cycle.  Note that standard handling can only

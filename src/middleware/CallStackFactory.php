@@ -18,10 +18,10 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\middleware;
+namespace gordonmcvey\JAPI\middleware;
 
-use Docnet\JAPI\interface\controller\RequestHandlerInterface;
-use Docnet\JAPI\interface\middleware\MiddlewareProviderInterface;
+use gordonmcvey\JAPI\interface\controller\RequestHandlerInterface;
+use gordonmcvey\JAPI\interface\middleware\MiddlewareProviderInterface;
 
 /**
  * Callstack Factory

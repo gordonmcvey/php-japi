@@ -20,12 +20,12 @@ declare(strict_types=1);
 
 namespace gordonmcvey\JAPI\test\unit\middleware;
 
-use Docnet\JAPI\interface\controller\RequestHandlerInterface;
-use Docnet\JAPI\interface\middleware\MiddlewareInterface;
-use Docnet\JAPI\interface\middleware\MiddlewareProviderInterface;
-use Docnet\JAPI\middleware\CallStack;
 use gordonmcvey\httpsupport\request\RequestInterface;
 use gordonmcvey\httpsupport\response\ResponseInterface;
+use gordonmcvey\JAPI\interface\controller\RequestHandlerInterface;
+use gordonmcvey\JAPI\interface\middleware\MiddlewareInterface;
+use gordonmcvey\JAPI\interface\middleware\MiddlewareProviderInterface;
+use gordonmcvey\JAPI\middleware\CallStack;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;

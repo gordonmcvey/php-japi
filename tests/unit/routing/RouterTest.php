@@ -20,11 +20,11 @@ declare(strict_types=1);
 
 namespace gordonmcvey\JAPI\test\unit\routing;
 
-use Docnet\JAPI\Exceptions\Routing;
-use Docnet\JAPI\interface\routing\RoutingStrategyInterface;
-use Docnet\JAPI\routing\Router;
 use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
 use gordonmcvey\httpsupport\request\RequestInterface;
+use gordonmcvey\JAPI\Exceptions\Routing;
+use gordonmcvey\JAPI\interface\routing\RoutingStrategyInterface;
+use gordonmcvey\JAPI\routing\Router;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;

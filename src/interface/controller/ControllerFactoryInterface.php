@@ -18,7 +18,7 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\interface\controller;
+namespace gordonmcvey\JAPI\interface\controller;
 
 interface ControllerFactoryInterface
 {

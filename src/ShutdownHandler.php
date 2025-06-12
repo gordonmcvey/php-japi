@@ -18,11 +18,11 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI;
+namespace gordonmcvey\JAPI;
 
-use Docnet\JAPI\interface\error\ErrorHandlerInterface;
 use ErrorException;
 use gordonmcvey\httpsupport\enum\statuscodes\ServerErrorCodes;
+use gordonmcvey\JAPI\interface\error\ErrorHandlerInterface;
 use Psr\Log\LoggerInterface;
 
 /**

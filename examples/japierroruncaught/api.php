@@ -18,18 +18,18 @@
 
 namespace gordonmcvey\JAPI\examples\japierrorcatching;
 
-use Docnet\JAPI\error\JsonErrorHandler;
-use Docnet\JAPI\ErrorToException;
-use Docnet\JAPI\interface\controller\RequestHandlerInterface;
-use Docnet\JAPI\JAPI;
-use Docnet\JAPI\middleware\CallStackFactory;
-use Docnet\JAPI\routing\Router;
-use Docnet\JAPI\routing\SingleControllerStrategy;
-use Docnet\JAPI\ShutdownHandler;
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\request\Request;
 use gordonmcvey\httpsupport\request\RequestInterface;
+use gordonmcvey\JAPI\error\JsonErrorHandler;
+use gordonmcvey\JAPI\ErrorToException;
 use gordonmcvey\JAPI\examples\controllers\Hello;
+use gordonmcvey\JAPI\interface\controller\RequestHandlerInterface;
+use gordonmcvey\JAPI\JAPI;
+use gordonmcvey\JAPI\middleware\CallStackFactory;
+use gordonmcvey\JAPI\routing\Router;
+use gordonmcvey\JAPI\routing\SingleControllerStrategy;
+use gordonmcvey\JAPI\ShutdownHandler;
 
 /**
  * Example of error handling when a non-throwable error occurs.  This sets up an error handler that converts old-style

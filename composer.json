@@ -32,13 +32,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Docnet\\JAPI\\": "src/"
+            "gordonmcvey\\JAPI\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Docnet\\JAPI\\test\\": "tests/",
-            "Docnet\\JAPI\\examples\\": "examples/"
+            "gordonmcvey\\JAPI\\test\\": "tests/",
+            "gordonmcvey\\JAPI\\examples\\": "examples/"
         }
     },
     "include-path": ["src/"],

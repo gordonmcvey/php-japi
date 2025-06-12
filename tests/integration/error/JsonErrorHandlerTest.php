@@ -20,11 +20,11 @@ declare(strict_types=1);
 
 namespace gordonmcvey\JAPI\test\integration\error;
 
-use Docnet\JAPI\error\JsonErrorHandler;
 use ErrorException;
 use Exception;
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
+use gordonmcvey\JAPI\error\JsonErrorHandler;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 

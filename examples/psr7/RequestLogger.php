@@ -20,10 +20,10 @@ declare(strict_types=1);
 
 namespace gordonmcvey\JAPI\examples\psr7;
 
-use Docnet\JAPI\interface\controller\RequestHandlerInterface;
-use Docnet\JAPI\interface\middleware\MiddlewareInterface;
 use gordonmcvey\httpsupport\request\RequestInterface;
 use gordonmcvey\httpsupport\response\ResponseInterface;
+use gordonmcvey\JAPI\interface\controller\RequestHandlerInterface;
+use gordonmcvey\JAPI\interface\middleware\MiddlewareInterface;
 
 class RequestLogger implements MiddlewareInterface
 {

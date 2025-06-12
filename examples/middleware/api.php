@@ -18,7 +18,7 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\examples\middleware;
+namespace gordonmcvey\JAPI\examples\middleware;
 
 use Docnet\JAPI\error\JsonErrorHandler;
 use Docnet\JAPI\interface\controller\RequestHandlerInterface;

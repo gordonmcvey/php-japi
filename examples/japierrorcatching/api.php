@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-namespace Docnet\JAPI\examples\japierrorcatching;
+namespace gordonmcvey\JAPI\examples\japierrorcatching;
 
 use Docnet\JAPI\error\JsonErrorHandler;
 use Docnet\JAPI\JAPI;

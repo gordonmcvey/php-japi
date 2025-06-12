@@ -18,7 +18,7 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\examples\psr7;
+namespace gordonmcvey\JAPI\examples\psr7;
 
 use Docnet\JAPI\interface\controller\RequestHandlerInterface;
 use Docnet\JAPI\interface\middleware\MiddlewareInterface;

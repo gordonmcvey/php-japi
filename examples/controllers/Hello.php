@@ -18,7 +18,7 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\examples\controllers;
+namespace gordonmcvey\JAPI\examples\controllers;
 
 use Docnet\JAPI\interface\controller\RequestHandlerInterface;
 use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;

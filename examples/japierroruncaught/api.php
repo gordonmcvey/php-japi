@@ -16,11 +16,10 @@
  * limitations under the License.
  */
 
-namespace Docnet\JAPI\examples\japierrorcatching;
+namespace gordonmcvey\JAPI\examples\japierrorcatching;
 
 use Docnet\JAPI\error\JsonErrorHandler;
 use Docnet\JAPI\ErrorToException;
-use Docnet\JAPI\examples\controllers\Hello;
 use Docnet\JAPI\interface\controller\RequestHandlerInterface;
 use Docnet\JAPI\JAPI;
 use Docnet\JAPI\middleware\CallStackFactory;
@@ -30,6 +29,7 @@ use Docnet\JAPI\ShutdownHandler;
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\request\Request;
 use gordonmcvey\httpsupport\request\RequestInterface;
+use gordonmcvey\JAPI\examples\controllers\Hello;
 
 /**
  * Example of error handling when a non-throwable error occurs.  This sets up an error handler that converts old-style

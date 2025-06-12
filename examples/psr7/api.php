@@ -16,18 +16,18 @@
  * limitations under the License.
  */
 
-namespace Docnet\JAPI\examples\psr7;
+namespace gordonmcvey\JAPI\examples\psr7;
 
 use Docnet\JAPI\Bootstrap;
 use Docnet\JAPI\controller\ControllerFactory;
 use Docnet\JAPI\error\JsonErrorHandler;
-use Docnet\JAPI\examples\controllers\Hello;
 use Docnet\JAPI\JAPI;
 use Docnet\JAPI\middleware\CallStackFactory;
 use Docnet\JAPI\routing\Router;
 use Docnet\JAPI\routing\SingleControllerStrategy;
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\request\psr7\ServerRequestAdaptor;
+use gordonmcvey\JAPI\examples\controllers\Hello;
 use GuzzleHttp\Psr7\ServerRequest;
 use GuzzleHttp\Psr7\Utils;
 

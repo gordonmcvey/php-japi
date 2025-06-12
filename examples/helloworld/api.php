@@ -16,10 +16,9 @@
  * limitations under the License.
  */
 
-namespace Docnet\JAPI\examples\helloworld;
+namespace gordonmcvey\JAPI\examples\helloworld;
 
 use Docnet\JAPI\error\JsonErrorHandler;
-use Docnet\JAPI\examples\controllers\Hello;
 use Docnet\JAPI\interface\controller\RequestHandlerInterface;
 use Docnet\JAPI\JAPI;
 use Docnet\JAPI\middleware\CallStackFactory;
@@ -28,6 +27,7 @@ use Docnet\JAPI\routing\SingleControllerStrategy;
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\request\Request;
 use gordonmcvey\httpsupport\request\RequestInterface;
+use gordonmcvey\JAPI\examples\controllers\Hello;
 
 /**
  * Example using custom bootstrap function

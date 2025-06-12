@@ -18,13 +18,13 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\examples\controllers;
+namespace gordonmcvey\JAPI\examples\controllers;
 
-use Docnet\JAPI\interface\controller\RequestHandlerInterface;
 use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
 use gordonmcvey\httpsupport\request\RequestInterface;
 use gordonmcvey\httpsupport\response\Response;
 use gordonmcvey\httpsupport\response\ResponseInterface;
+use gordonmcvey\JAPI\interface\controller\RequestHandlerInterface;
 
 /**
  * Example controller class

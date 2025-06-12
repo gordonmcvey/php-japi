@@ -18,18 +18,18 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\examples\middleware;
+namespace gordonmcvey\JAPI\examples\middleware;
 
-use Docnet\JAPI\error\JsonErrorHandler;
-use Docnet\JAPI\interface\controller\RequestHandlerInterface;
-use Docnet\JAPI\interface\middleware\MiddlewareProviderInterface;
-use Docnet\JAPI\JAPI;
-use Docnet\JAPI\middleware\CallStackFactory;
-use Docnet\JAPI\routing\Router;
-use Docnet\JAPI\routing\SingleControllerStrategy;
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\request\Request;
 use gordonmcvey\httpsupport\request\RequestInterface;
+use gordonmcvey\JAPI\error\JsonErrorHandler;
+use gordonmcvey\JAPI\interface\controller\RequestHandlerInterface;
+use gordonmcvey\JAPI\interface\middleware\MiddlewareProviderInterface;
+use gordonmcvey\JAPI\JAPI;
+use gordonmcvey\JAPI\middleware\CallStackFactory;
+use gordonmcvey\JAPI\routing\Router;
+use gordonmcvey\JAPI\routing\SingleControllerStrategy;
 
 /**
  * Example using custom bootstrap with middleware

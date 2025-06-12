@@ -18,19 +18,19 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\test\unit;
+namespace gordonmcvey\JAPI\test\unit;
 
-use Docnet\JAPI\Exceptions\AccessDenied;
-use Docnet\JAPI\Exceptions\Auth;
-use Docnet\JAPI\Exceptions\Routing;
-use Docnet\JAPI\interface\controller\RequestHandlerInterface;
-use Docnet\JAPI\interface\error\ErrorHandlerInterface;
-use Docnet\JAPI\JAPI;
-use Docnet\JAPI\middleware\CallStack;
-use Docnet\JAPI\middleware\CallStackFactory;
 use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
 use gordonmcvey\httpsupport\request\RequestInterface;
 use gordonmcvey\httpsupport\response\ResponseInterface;
+use gordonmcvey\JAPI\Exceptions\AccessDenied;
+use gordonmcvey\JAPI\Exceptions\Auth;
+use gordonmcvey\JAPI\Exceptions\Routing;
+use gordonmcvey\JAPI\interface\controller\RequestHandlerInterface;
+use gordonmcvey\JAPI\interface\error\ErrorHandlerInterface;
+use gordonmcvey\JAPI\JAPI;
+use gordonmcvey\JAPI\middleware\CallStack;
+use gordonmcvey\JAPI\middleware\CallStackFactory;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;

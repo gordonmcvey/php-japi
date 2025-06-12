@@ -18,7 +18,7 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\interface\routing;
+namespace gordonmcvey\JAPI\interface\routing;
 
 use gordonmcvey\httpsupport\request\RequestInterface;
 

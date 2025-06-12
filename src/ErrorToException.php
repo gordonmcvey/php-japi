@@ -18,7 +18,7 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI;
+namespace gordonmcvey\JAPI;
 
 use ErrorException;
 

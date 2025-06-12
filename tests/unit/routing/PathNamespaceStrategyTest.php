@@ -18,9 +18,9 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\test\unit\routing;
+namespace gordonmcvey\JAPI\test\unit\routing;
 
-use Docnet\JAPI\routing\PathNamespaceStrategy;
+use gordonmcvey\JAPI\routing\PathNamespaceStrategy;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\examples\middleware;
+namespace gordonmcvey\JAPI\examples\middleware;
 
-use Docnet\JAPI\interface\controller\RequestHandlerInterface;
-use Docnet\JAPI\interface\middleware\MiddlewareInterface;
 use gordonmcvey\httpsupport\request\RequestInterface;
 use gordonmcvey\httpsupport\response\ResponseInterface;
+use gordonmcvey\JAPI\interface\controller\RequestHandlerInterface;
+use gordonmcvey\JAPI\interface\middleware\MiddlewareInterface;
 
 /**
  * Request/response cycle profiler

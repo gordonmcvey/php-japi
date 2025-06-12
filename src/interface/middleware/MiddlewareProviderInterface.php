@@ -18,7 +18,7 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\interface\middleware;
+namespace gordonmcvey\JAPI\interface\middleware;
 
 /**
  * Middleware Provider Interface

@@ -18,13 +18,13 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\routing;
+namespace gordonmcvey\JAPI\routing;
 
-use Docnet\JAPI\Exceptions\Routing;
-use Docnet\JAPI\interface\routing\RouterInterface;
-use Docnet\JAPI\interface\routing\RoutingStrategyInterface;
 use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
 use gordonmcvey\httpsupport\request\RequestInterface;
+use gordonmcvey\JAPI\Exceptions\Routing;
+use gordonmcvey\JAPI\interface\routing\RouterInterface;
+use gordonmcvey\JAPI\interface\routing\RoutingStrategyInterface;
 
 /**
  * Router class

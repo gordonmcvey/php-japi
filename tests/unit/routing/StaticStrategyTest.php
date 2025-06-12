@@ -18,9 +18,9 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\test\unit\routing;
+namespace gordonmcvey\JAPI\test\unit\routing;
 
-use Docnet\JAPI\routing\StaticStrategy;
+use gordonmcvey\JAPI\routing\StaticStrategy;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 

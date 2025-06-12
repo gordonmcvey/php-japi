@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\test\unit;
+namespace gordonmcvey\JAPI\test\unit;
 
-use Docnet\JAPI\interface\error\ErrorHandlerInterface;
-use Docnet\JAPI\ShutdownHandler;
 use gordonmcvey\httpsupport\enum\statuscodes\ServerErrorCodes;
 use gordonmcvey\httpsupport\response\ResponseInterface;
+use gordonmcvey\JAPI\interface\error\ErrorHandlerInterface;
+use gordonmcvey\JAPI\ShutdownHandler;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;

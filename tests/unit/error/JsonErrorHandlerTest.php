@@ -18,12 +18,12 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI\test\unit\error;
+namespace gordonmcvey\JAPI\test\unit\error;
 
-use Docnet\JAPI\error\JsonErrorHandler;
 use ErrorException;
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
+use gordonmcvey\JAPI\error\JsonErrorHandler;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;

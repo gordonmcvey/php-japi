@@ -18,12 +18,12 @@
 
 declare(strict_types=1);
 
-namespace Docnet\JAPI;
+namespace gordonmcvey\JAPI;
 
-use Docnet\JAPI\interface\controller\ControllerFactoryInterface;
-use Docnet\JAPI\interface\controller\RequestHandlerInterface;
-use Docnet\JAPI\interface\routing\RouterInterface;
 use gordonmcvey\httpsupport\request\RequestInterface;
+use gordonmcvey\JAPI\interface\controller\ControllerFactoryInterface;
+use gordonmcvey\JAPI\interface\controller\RequestHandlerInterface;
+use gordonmcvey\JAPI\interface\routing\RouterInterface;
 
 /**
  * Simple bootstrap implementation

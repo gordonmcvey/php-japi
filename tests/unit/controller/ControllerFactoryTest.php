@@ -65,12 +65,22 @@ class ControllerFactoryTest extends TestCase
     }
 
     #[Test]
-    public function itDoesntMakeANonController(): void
+    public function itDoesntMakeANonControllerForNonControllerClasses(): void
     {
         $factory = new ControllerFactory();
 
         $this->expectException(Routing::class);
         $this->expectExceptionCode(ClientErrorCodes::BAD_REQUEST->value);
         $factory->make(\stdClass::class);
+    }
+
+    #[Test]
+    public function itDoesntMakeANonControllerForNonExistantClass(): void
+    {
+        $factory = new ControllerFactory();
+
+        $this->expectException(Routing::class);
+        $this->expectExceptionCode(ClientErrorCodes::NOT_FOUND->value);
+        $factory->make(__NAMESPACE__ . "NonExistentClass");
     }
 }

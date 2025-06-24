@@ -42,6 +42,13 @@ class ControllerFactory implements ControllerFactoryInterface
      */
     public function make(string $path): RequestHandlerInterface
     {
+        if (!class_exists($path)) {
+            throw new Routing(
+                sprintf("No controller found for URI path %s", $path),
+                ClientErrorCodes::NOT_FOUND->value,
+            );
+        }
+
         $controller = new $path(...$this->arguments);
 
         if (!$controller instanceof RequestHandlerInterface) {

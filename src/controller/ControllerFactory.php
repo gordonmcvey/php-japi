@@ -42,6 +42,22 @@ class ControllerFactory implements ControllerFactoryInterface
      */
     public function make(string $path): RequestHandlerInterface
     {
+        $checkedPath = $this->checkControllerExists($path);
+        $controller = new $checkedPath(...$this->arguments);
+        return $this->checkIsController($controller, $path);
+    }
+
+    public function withArguments(...$arguments): self
+    {
+        $this->arguments = $arguments;
+        return $this;
+    }
+
+    /**
+     * @throws Routing
+     */
+    protected function checkControllerExists(string $path): string
+    {
         if (!class_exists($path)) {
             throw new Routing(
                 sprintf("No controller found for URI path %s", $path),
@@ -49,8 +65,14 @@ class ControllerFactory implements ControllerFactoryInterface
             );
         }
 
-        $controller = new $path(...$this->arguments);
+        return $path;
+    }
 
+    /**
+     * @throws Routing
+     */
+    protected function checkIsController(object $controller, string $path): RequestHandlerInterface
+    {
         if (!$controller instanceof RequestHandlerInterface) {
             throw new Routing(
                 sprintf("URI path %s does not correspond to a controller", $path),
@@ -59,11 +81,5 @@ class ControllerFactory implements ControllerFactoryInterface
         }
 
         return $controller;
-    }
-
-    public function withArguments(...$arguments): self
-    {
-        $this->arguments = $arguments;
-        return $this;
     }
 }

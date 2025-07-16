@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace gordonmcvey\JAPI\test\unit;
 
+use ErrorException;
 use gordonmcvey\httpsupport\enum\statuscodes\ServerErrorCodes;
 use gordonmcvey\httpsupport\response\ResponseInterface;
+use gordonmcvey\httpsupport\response\sender\ResponseSenderInterface;
 use gordonmcvey\JAPI\interface\error\ErrorHandlerInterface;
 use gordonmcvey\JAPI\ShutdownHandler;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ShutdownHandlerTest extends TestCase
@@ -21,13 +22,12 @@ class ShutdownHandlerTest extends TestCase
     #[Test]
     public function itHandlesNormalShutdown(): void
     {
-        /** @var ErrorHandlerInterface&MockObject $errorHandler */
+        $responseSender = $this->createMock(ResponseSenderInterface::class);
         $errorHandler = $this->createMock(ErrorHandlerInterface::class);
 
-        /** @var ShutdownHandler&MockObject $handler */
         $handler = $this
             ->getMockBuilder(ShutdownHandler::class)
-            ->setConstructorArgs([$errorHandler])
+            ->setConstructorArgs([$responseSender, $errorHandler])
             ->onlyMethods(["getLastError", "flushBuffers"])
             ->getMock()
         ;
@@ -44,16 +44,12 @@ class ShutdownHandlerTest extends TestCase
     #[Test]
     public function itHandlesSupportedErrors(): void
     {
-        /** @var ErrorHandlerInterface&MockObject $errorHandler */
         $errorHandler = $this->createMock(ErrorHandlerInterface::class);
-
-        /** @var ResponseInterface&MockObject $response */
         $response = $this->createMock(ResponseInterface::class);
-
-        /** @var ShutdownHandler&MockObject $handler */
+        $responseSender = $this->createMock(ResponseSenderInterface::class);
         $handler = $this
             ->getMockBuilder(ShutdownHandler::class)
-            ->setConstructorArgs([$errorHandler])
+            ->setConstructorArgs([$responseSender, $errorHandler])
             ->onlyMethods(["getLastError", "flushBuffers"])
             ->getMock()
         ;
@@ -73,8 +69,7 @@ class ShutdownHandlerTest extends TestCase
             ->expects($this->once())
             ->method("handle")
             ->with($this->callback(
-                fn($e): bool
-                    => $e instanceof \ErrorException
+                fn($e): bool => $e instanceof ErrorException
                     && "I'm a handled error" === $e->getMessage()
                     && ServerErrorCodes::INTERNAL_SERVER_ERROR->value === $e->getCode()
                     && __FILE__ === $e->getFile()
@@ -84,8 +79,8 @@ class ShutdownHandlerTest extends TestCase
             ->willReturn($response)
         ;
 
-        $response->expects($this->once())->method("sendHeaders")->willReturnSelf();
-        $response->expects($this->once())->method("body")->willReturn("");
+        $responseSender->expects($this->once())->method("sendHeaders")->willReturnSelf();
+        $responseSender->expects($this->once())->method("sendBody")->willReturnself();
 
         $handler();
     }
@@ -96,13 +91,12 @@ class ShutdownHandlerTest extends TestCase
     #[Test]
     public function itSkipsUnsupportedErrors(): void
     {
-        /** @var ErrorHandlerInterface&MockObject $errorHandler */
+        $responseSender = $this->createMock(ResponseSenderInterface::class);
         $errorHandler = $this->createMock(ErrorHandlerInterface::class);
 
-        /** @var ShutdownHandler&MockObject $handler */
         $handler = $this
             ->getMockBuilder(ShutdownHandler::class)
-            ->setConstructorArgs([$errorHandler])
+            ->setConstructorArgs([$responseSender, $errorHandler])
             ->onlyMethods(["getLastError", "flushBuffers"])
             ->getMock()
         ;

@@ -21,6 +21,7 @@ namespace gordonmcvey\JAPI\examples\helloworld;
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\request\Request;
 use gordonmcvey\httpsupport\request\RequestInterface;
+use gordonmcvey\httpsupport\response\sender\ResponseSender;
 use gordonmcvey\JAPI\error\JsonErrorHandler;
 use gordonmcvey\JAPI\examples\controllers\Hello;
 use gordonmcvey\JAPI\interface\controller\RequestHandlerInterface;
@@ -39,18 +40,18 @@ define('BASE_PATH', dirname(__DIR__, 2));
 require_once BASE_PATH . '/vendor/autoload.php';
 
 // Demo
-$errorHandler = new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true);
+(new JAPI(
+    new CallStackFactory(),
+    new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true),
+    new ResponseSender(),
+))->bootstrap(
+    function (RequestInterface $request): RequestHandlerInterface {
+        $router = new Router(new SingleControllerStrategy(Hello::class));
 
-(new JAPI(new CallStackFactory(), $errorHandler))
-    ->bootstrap(
-        function (RequestInterface $request): RequestHandlerInterface {
-            $router = new Router(new SingleControllerStrategy(Hello::class));
+        /** @var RequestHandlerInterface $controller */
+        $controller = new ($router->route($request));
 
-            /** @var RequestHandlerInterface $controller */
-            $controller = new ($router->route($request));
-
-            return $controller;
-        },
-        Request::fromSuperGlobals()
-    )
-;
+        return $controller;
+    },
+    Request::fromSuperGlobals()
+);

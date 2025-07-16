@@ -27,6 +27,7 @@ use gordonmcvey\httpsupport\response\ResponseInterface;
 use gordonmcvey\JAPI\interface\controller\RequestHandlerInterface;
 use gordonmcvey\JAPI\interface\middleware\MiddlewareProviderInterface;
 use gordonmcvey\JAPI\middleware\MiddlewareProviderTrait;
+use stdClass;
 
 /**
  * Example controller class
@@ -50,7 +51,7 @@ class Hello implements MiddlewareProviderInterface, RequestHandlerInterface
 
         return new Response(
             SuccessCodes::OK,
-            (string) json_encode(new \stdClass()),
+            (string) json_encode(new stdClass()),
         );
     }
 }

@@ -23,6 +23,7 @@ namespace gordonmcvey\JAPI\examples\middleware;
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\request\Request;
 use gordonmcvey\httpsupport\request\RequestInterface;
+use gordonmcvey\httpsupport\response\sender\ResponseSender;
 use gordonmcvey\JAPI\error\JsonErrorHandler;
 use gordonmcvey\JAPI\interface\controller\RequestHandlerInterface;
 use gordonmcvey\JAPI\interface\middleware\MiddlewareProviderInterface;
@@ -41,7 +42,11 @@ define('BASE_PATH', dirname(__DIR__, 2));
 require_once BASE_PATH . '/vendor/autoload.php';
 
 // Demo
-(new JAPI(new CallStackFactory(), new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true)))
+(new JAPI(
+    new CallStackFactory(),
+    new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true),
+    new ResponseSender(),
+))
     ->addMiddleware(new AddParameter("globalMessage1", "Hello"))
     ->addMiddleware(new AddParameter("globalMessage2", "World"))
     ->addMiddleware(new AddParameter("globalMessage3", "Hello, World!"))

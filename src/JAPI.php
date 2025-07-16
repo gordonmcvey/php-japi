@@ -26,6 +26,7 @@ use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
 use gordonmcvey\httpsupport\request\RequestInterface;
 use gordonmcvey\httpsupport\response\Response;
 use gordonmcvey\httpsupport\response\ResponseInterface;
+use gordonmcvey\httpsupport\response\sender\ResponseSenderInterface;
 use gordonmcvey\JAPI\interface\controller\RequestHandlerInterface;
 use gordonmcvey\JAPI\interface\error\ErrorHandlerInterface;
 use gordonmcvey\JAPI\interface\middleware\MiddlewareProviderInterface;
@@ -50,6 +51,7 @@ class JAPI implements MiddlewareProviderInterface, LoggerAwareInterface
     public function __construct(
         private readonly CallStackFactory $callStackFactory,
         private readonly ErrorHandlerInterface $errorHandler,
+        private readonly ResponseSenderInterface $responseSender,
     ) {
     }
 
@@ -65,18 +67,7 @@ class JAPI implements MiddlewareProviderInterface, LoggerAwareInterface
             $this->getLogger()->error("[JAPI] [{$e->getCode()}] Error: {$e->getMessage()}");
             $response = $this->errorHandler->handle($e);
         }
-        $this->sendResponse($response);
-    }
-
-    /**
-     * Output the response as JSON with HTTP headers
-     *
-     * @todo Maybe this should be part of the Response or implemented in a separate class?
-     */
-    protected function sendResponse(ResponseInterface $response): void
-    {
-        $response->sendHeaders();
-        echo $response->body();
+        $this->responseSender->send($response);
     }
 
     /**

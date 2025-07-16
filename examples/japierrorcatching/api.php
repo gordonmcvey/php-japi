@@ -20,9 +20,11 @@ namespace gordonmcvey\JAPI\examples\japierrorcatching;
 
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\request\Request;
+use gordonmcvey\httpsupport\response\sender\ResponseSender;
 use gordonmcvey\JAPI\error\JsonErrorHandler;
 use gordonmcvey\JAPI\JAPI;
 use gordonmcvey\JAPI\middleware\CallStackFactory;
+use stdClass;
 
 /**
  * Example of error handling when a problem occurs inside JAPI's dispatch cycle.  Note that standard handling can only
@@ -36,11 +38,13 @@ define('BASE_PATH', dirname(__DIR__, 2));
 require_once BASE_PATH . '/vendor/autoload.php';
 
 // Demo
-(new JAPI(new CallStackFactory(), new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true)))
-    ->bootstrap(
-        function () {
-            return new \stdClass();
-        },
-        Request::fromSuperGlobals()
-    )
-;
+(new JAPI(
+    new CallStackFactory(),
+    new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true),
+    new ResponseSender(),
+))->bootstrap(
+    function () {
+        return new stdClass();
+    },
+    Request::fromSuperGlobals()
+);

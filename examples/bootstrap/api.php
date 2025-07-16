@@ -20,6 +20,7 @@ namespace gordonmcvey\JAPI\examples\bootstrap;
 
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\request\Request;
+use gordonmcvey\httpsupport\response\sender\ResponseSender;
 use gordonmcvey\JAPI\Bootstrap;
 use gordonmcvey\JAPI\controller\ControllerFactory;
 use gordonmcvey\JAPI\error\JsonErrorHandler;
@@ -39,12 +40,15 @@ define('BASE_PATH', dirname(__DIR__, 2));
 require_once BASE_PATH . '/vendor/autoload.php';
 
 // Demo
-(new JAPI(new CallStackFactory(), new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true)))
-    ->bootstrap(
-        new Bootstrap(
-            new Router(new SingleControllerStrategy(Hello::class)),
-            new ControllerFactory(),
-        ),
-        Request::fromSuperGlobals(),
-    )
-;
+
+(new JAPI(
+    new CallStackFactory(),
+    new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true),
+    new ResponseSender(),
+))->bootstrap(
+    new Bootstrap(
+        new Router(new SingleControllerStrategy(Hello::class)),
+        new ControllerFactory(),
+    ),
+    Request::fromSuperGlobals(),
+);

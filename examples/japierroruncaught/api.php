@@ -21,6 +21,7 @@ namespace gordonmcvey\JAPI\examples\japierrorcatching;
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\request\Request;
 use gordonmcvey\httpsupport\request\RequestInterface;
+use gordonmcvey\httpsupport\response\sender\ResponseSender;
 use gordonmcvey\JAPI\error\JsonErrorHandler;
 use gordonmcvey\JAPI\ErrorToException;
 use gordonmcvey\JAPI\examples\controllers\Hello;
@@ -48,8 +49,9 @@ ini_set('display_errors', false);
 
 // Demo
 set_error_handler(new errorToException(), E_ERROR ^ E_USER_ERROR ^ E_COMPILE_ERROR);
+$responseSender = new ResponseSender();
 $errorHandler = new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true);
-register_shutdown_function(new ShutdownHandler($errorHandler));
+register_shutdown_function(new ShutdownHandler($responseSender, $errorHandler));
 
 /*
  * Simulated error, in theory, any kind of error can be handled from the point the error handler and shutdown function
@@ -58,7 +60,7 @@ register_shutdown_function(new ShutdownHandler($errorHandler));
  */
 trigger_error("whoops", E_USER_ERROR);
 
-(new JAPI(new CallStackFactory(), $errorHandler))
+(new JAPI(new CallStackFactory(), $errorHandler, $responseSender))
     ->bootstrap(
         function (RequestInterface $request): RequestHandlerInterface {
             $router = new Router(new SingleControllerStrategy(Hello::class));

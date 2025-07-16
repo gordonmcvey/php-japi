@@ -22,6 +22,7 @@ namespace gordonmcvey\JAPI;
 
 use ErrorException;
 use gordonmcvey\httpsupport\enum\statuscodes\ServerErrorCodes;
+use gordonmcvey\httpsupport\response\sender\ResponseSenderInterface;
 use gordonmcvey\JAPI\interface\error\ErrorHandlerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -38,6 +39,7 @@ readonly class ShutdownHandler
     private const int REPORTED_ERROR_TYPES = E_ERROR ^ E_USER_ERROR ^ E_COMPILE_ERROR;
 
     public function __construct(
+        private ResponseSenderInterface $responseSender,
         private ErrorHandlerInterface $errorHandler,
         private ?LoggerInterface $logger = null,
     ) {
@@ -77,7 +79,7 @@ readonly class ShutdownHandler
     {
         while (ob_get_level()) {
             ob_end_clean();
-        };
+        }
     }
 
     /**
@@ -101,9 +103,9 @@ readonly class ShutdownHandler
         $this->flushBuffers();
 
         if (!headers_sent()) {
-            $response->sendHeaders();
+            $this->responseSender->sendHeaders($response);
         }
 
-        echo $response->body();
+        $this->responseSender->sendBody($response);
     }
 }

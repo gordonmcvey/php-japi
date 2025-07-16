@@ -26,6 +26,7 @@ use gordonmcvey\JAPI\Exceptions\Routing;
 use gordonmcvey\JAPI\test\Controllers\FactoryInstantiated;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 
 class ControllerFactoryTest extends TestCase
 {
@@ -71,7 +72,7 @@ class ControllerFactoryTest extends TestCase
 
         $this->expectException(Routing::class);
         $this->expectExceptionCode(ClientErrorCodes::BAD_REQUEST->value);
-        $factory->make(\stdClass::class);
+        $factory->make(stdClass::class);
     }
 
     #[Test]

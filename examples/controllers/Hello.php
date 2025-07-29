@@ -18,40 +18,29 @@
 
 declare(strict_types=1);
 
-namespace gordonmcvey\JAPI\examples\middleware;
+namespace gordonmcvey\JAPI\examples\controllers;
 
 use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
 use gordonmcvey\httpsupport\request\RequestInterface;
 use gordonmcvey\httpsupport\response\Response;
 use gordonmcvey\httpsupport\response\ResponseInterface;
 use gordonmcvey\JAPI\interface\controller\RequestHandlerInterface;
-use gordonmcvey\JAPI\interface\middleware\MiddlewareProviderInterface;
-use gordonmcvey\JAPI\middleware\MiddlewareProviderTrait;
-use stdClass;
 
 /**
  * Example controller class
  *
  * @author Tom Walder <tom@docnet.nu>
  */
-class Hello implements MiddlewareProviderInterface, RequestHandlerInterface
+class Hello implements RequestHandlerInterface
 {
-    use MiddlewareProviderTrait;
-
     /**
      * Hello, World!
      */
     public function dispatch(RequestInterface $request): ?ResponseInterface
     {
-        error_log(message: sprintf(
-            "%s: handling request %s",
-            __METHOD__,
-            $request->header("X-Middleware-Profile-Request-Id"),
-        ));
-
         return new Response(
             SuccessCodes::OK,
-            (string) json_encode(new stdClass()),
+            (string) json_encode(['message' => 'Hello, World!']),
         );
     }
 }

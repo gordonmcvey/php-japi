@@ -16,22 +16,20 @@
  * limitations under the License.
  */
 
-namespace gordonmcvey\JAPI\examples\helloworld;
+namespace gordonmcvey\JAPI\examples\japierrorcatching;
 
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\request\Request;
-use gordonmcvey\httpsupport\request\RequestInterface;
 use gordonmcvey\httpsupport\response\sender\ResponseSender;
 use gordonmcvey\JAPI\error\JsonErrorHandler;
-use gordonmcvey\JAPI\examples\controllers\Hello;
-use gordonmcvey\JAPI\interface\controller\RequestHandlerInterface;
 use gordonmcvey\JAPI\JAPI;
 use gordonmcvey\JAPI\middleware\CallStackFactory;
-use gordonmcvey\JAPI\routing\Router;
-use gordonmcvey\JAPI\routing\SingleControllerStrategy;
+use stdClass;
 
 /**
- * Example using custom bootstrap function
+ * Example of error handling when a problem occurs inside JAPI's dispatch cycle.  Note that standard handling can only
+ * deal with \Throwable errors.  Things outside this (like warnings, deprecation notices, etc) require additional logic
+ * to handle and are dealt with in the japierroruncaught example.
  */
 
 // Includes or Auto-loader
@@ -45,13 +43,8 @@ require_once BASE_PATH . '/vendor/autoload.php';
     new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true),
     new ResponseSender(),
 ))->bootstrap(
-    function (RequestInterface $request): RequestHandlerInterface {
-        $router = new Router(new SingleControllerStrategy(Hello::class));
-
-        /** @var RequestHandlerInterface $controller */
-        $controller = new ($router->route($request));
-
-        return $controller;
+    function () {
+        return new stdClass();
     },
     Request::fromSuperGlobals()
 );

@@ -2,21 +2,23 @@
 
 declare(strict_types=1);
 
-use Docnet\JAPI\controller\RequestHandlerInterface;
-use Docnet\JAPI\middleware\MiddlewareInterface;
-use gordonmcvey\httpsupport\RequestInterface;
-use gordonmcvey\httpsupport\ResponseInterface;
+namespace gordonmcvey\JAPI\examples\middleware;
+
+use gordonmcvey\httpsupport\request\RequestInterface;
+use gordonmcvey\httpsupport\response\ResponseInterface;
+use gordonmcvey\JAPI\interface\controller\RequestHandlerInterface;
+use gordonmcvey\JAPI\interface\middleware\MiddlewareInterface;
 
 /**
  * Request/response cycle profiler
- * 
+ *
  * This class tags every request/response cycle with a "unique" ID and logs how long it took for everything in the call
  * stack to execute.  As such it should be the outer-most middleware in your stack.
  */
 class Profiler implements MiddlewareInterface
 {
     public function handle(RequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
-    {  
+    {
         $start = microtime(true);
         $id = uniqid('', true);
 

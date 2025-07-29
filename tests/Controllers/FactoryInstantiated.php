@@ -1,10 +1,10 @@
 <?php
 
-namespace Docnet\JAPI\test\Controllers;
+namespace gordonmcvey\JAPI\test\Controllers;
 
-use Docnet\JAPI\controller\RequestHandlerInterface;
-use gordonmcvey\httpsupport\RequestInterface;
-use gordonmcvey\httpsupport\ResponseInterface;
+use gordonmcvey\httpsupport\request\RequestInterface;
+use gordonmcvey\httpsupport\response\ResponseInterface;
+use gordonmcvey\JAPI\interface\controller\RequestHandlerInterface;
 
 readonly class FactoryInstantiated implements RequestHandlerInterface
 {

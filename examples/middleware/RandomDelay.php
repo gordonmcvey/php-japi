@@ -2,10 +2,12 @@
 
 declare(strict_types=1);
 
-use Docnet\JAPI\controller\RequestHandlerInterface;
-use Docnet\JAPI\middleware\MiddlewareInterface;
-use gordonmcvey\httpsupport\RequestInterface;
-use gordonmcvey\httpsupport\ResponseInterface;
+namespace gordonmcvey\JAPI\examples\middleware;
+
+use gordonmcvey\httpsupport\request\RequestInterface;
+use gordonmcvey\httpsupport\response\ResponseInterface;
+use gordonmcvey\JAPI\interface\controller\RequestHandlerInterface;
+use gordonmcvey\JAPI\interface\middleware\MiddlewareInterface;
 
 /**
  * Middleware to add a randomised delay into the request/response cycle of 0 .. 1 second

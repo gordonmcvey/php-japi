@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright 2015 Docnet
+ * Copyright © 2015 Docnet, 2025 Gordon McVey
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,36 +16,39 @@
  * limitations under the License.
  */
 
-use Docnet\JAPI\Bootstrap;
-use Docnet\JAPI\controller\ControllerFactory;
-use Docnet\JAPI\error\JsonErrorHandler;
-use Docnet\JAPI\JAPI;
-use Docnet\JAPI\middleware\CallStackFactory;
-use Docnet\JAPI\routing\Router;
-use Docnet\JAPI\routing\SingleControllerStrategy;
+namespace gordonmcvey\JAPI\examples\bootstrap;
+
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
-use gordonmcvey\httpsupport\Request;
+use gordonmcvey\httpsupport\request\Request;
+use gordonmcvey\httpsupport\response\sender\ResponseSender;
+use gordonmcvey\JAPI\Bootstrap;
+use gordonmcvey\JAPI\controller\ControllerFactory;
+use gordonmcvey\JAPI\error\JsonErrorHandler;
+use gordonmcvey\JAPI\examples\controllers\Hello;
+use gordonmcvey\JAPI\JAPI;
+use gordonmcvey\JAPI\middleware\CallStackFactory;
+use gordonmcvey\JAPI\routing\Router;
+use gordonmcvey\JAPI\routing\SingleControllerStrategy;
 
 /**
- * Trivial JAPI bootstrap
- *
- * @author Tom Walder <tom@docnet.nu>
+ * Example using the standard bootstrap as provided by JAPI
  */
 
 // Includes or Auto-loader
-define('BASE_PATH', dirname( __DIR__, 2));
+define('BASE_PATH', dirname(__DIR__, 2));
 
 require_once BASE_PATH . '/vendor/autoload.php';
-require_once 'Hello.php';
 
 // Demo
-$request = Request::fromSuperGlobals();
-(new JAPI(new CallStackFactory(), new JsonErrorHandler(new StatusCodeFactory())))
-    ->bootstrap(
-        new Bootstrap(
-            new Router(new SingleControllerStrategy(Hello::class)),
-            new ControllerFactory(),
-        ),
-        $request,
-    )
-;
+
+(new JAPI(
+    new CallStackFactory(),
+    new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true),
+    new ResponseSender(),
+))->bootstrap(
+    new Bootstrap(
+        new Router(new SingleControllerStrategy(Hello::class)),
+        new ControllerFactory(),
+    ),
+    Request::fromSuperGlobals(),
+);

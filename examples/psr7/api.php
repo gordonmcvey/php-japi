@@ -16,22 +16,24 @@
  * limitations under the License.
  */
 
-namespace gordonmcvey\JAPI\examples\helloworld;
+namespace gordonmcvey\JAPI\examples\psr7;
 
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
-use gordonmcvey\httpsupport\request\Request;
-use gordonmcvey\httpsupport\request\RequestInterface;
+use gordonmcvey\httpsupport\request\psr7\ServerRequestAdaptor;
 use gordonmcvey\httpsupport\response\sender\ResponseSender;
+use gordonmcvey\JAPI\Bootstrap;
+use gordonmcvey\JAPI\controller\ControllerFactory;
 use gordonmcvey\JAPI\error\JsonErrorHandler;
 use gordonmcvey\JAPI\examples\controllers\Hello;
-use gordonmcvey\JAPI\interface\controller\RequestHandlerInterface;
 use gordonmcvey\JAPI\JAPI;
 use gordonmcvey\JAPI\middleware\CallStackFactory;
 use gordonmcvey\JAPI\routing\Router;
 use gordonmcvey\JAPI\routing\SingleControllerStrategy;
+use GuzzleHttp\Psr7\ServerRequest;
+use GuzzleHttp\Psr7\Utils;
 
 /**
- * Example using custom bootstrap function
+ * Example for processing a PSR-7 compatible request
  */
 
 // Includes or Auto-loader
@@ -43,15 +45,20 @@ require_once BASE_PATH . '/vendor/autoload.php';
 (new JAPI(
     new CallStackFactory(),
     new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true),
-    new ResponseSender(),
-))->bootstrap(
-    function (RequestInterface $request): RequestHandlerInterface {
-        $router = new Router(new SingleControllerStrategy(Hello::class));
-
-        /** @var RequestHandlerInterface $controller */
-        $controller = new ($router->route($request));
-
-        return $controller;
-    },
-    Request::fromSuperGlobals()
-);
+    new ResponseSender()
+))->addMiddleware(new RequestLogger())
+    ->bootstrap(
+        new Bootstrap(
+            new Router(new SingleControllerStrategy(Hello::class)),
+            new ControllerFactory(),
+        ),
+        new ServerRequestAdaptor(
+            new ServerRequest(
+                "GET",
+                "https://example.com/",
+                [],
+                Utils::streamFor("This is the request!"),
+            )
+        ),
+    )
+;

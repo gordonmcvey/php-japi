@@ -1,3 +1,18 @@
+> [!WARNING]
+> This repo is no longer under active development.
+>
+> This project started off as a demonstration of refactoring a legacy codebase, but it's since taken on a life of its
+> own
+>
+> As such, it's been migrated to an entirely new project, [Warp Core](https://github.com/gordonmcvey/warp-core-php),
+> where all future development will take place.
+>
+> I've left this repo up as a record of the process that I went through, as the commit history serves as an illustration
+> of how I'd go about refactoring old code into something more modern, but you should not try using it as the basis of
+> any new projects.
+>
+> Thanks for your attention!
+
 [![Build Status](https://api.travis-ci.org/DocnetUK/php-japi.svg?branch=2.0)](https://travis-ci.org/DocnetUK/php-japi)
 [![Coverage Status](https://coveralls.io/repos/DocnetUK/php-japi/badge.svg?branch=2.0)](https://coveralls.io/r/DocnetUK/php-japi)
 
